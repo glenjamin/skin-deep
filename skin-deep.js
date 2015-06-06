@@ -21,7 +21,9 @@ function shallowRender(makeComponent, context) {
       if (!node || !node.props) throw new Error('Unknown field ' + query);
       node.props.onChange({ target: {value: value} });
     },
-    getRenderOutput: shallowRenderer.getRenderOutput.bind(shallowRenderer)
+    getRenderOutput: function() {
+      return shallowRenderer.getRenderOutput();
+    }
   };
 }
 
