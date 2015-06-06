@@ -3,12 +3,14 @@ var TestUtils = React.addons.TestUtils;
 var ReactContext = require('react/lib/ReactContext');
 
 exports.shallowRender = shallowRender;
-function shallowRender(makeComponent, context) {
+function shallowRender(elementOrFunction, context) {
   context = context || {};
   global.document = global.document || { body: {} };
   ReactContext.current = context;
   var shallowRenderer = TestUtils.createRenderer();
-  shallowRenderer.render(makeComponent(), context);
+  var element = TestUtils.isElement(elementOrFunction) ?
+    elementOrFunction : elementOrFunction();
+  shallowRenderer.render(element, context);
   ReactContext.current = {};
   return {
     findNode: findNodeIn.bind(0, shallowRenderer),
