@@ -10,10 +10,12 @@ npm install skin-deep
 
 ## Usage
 
-```js
+> TODO
 
-```
+For now, see [the tests](test/test.js).
 
 # Docs
 
 > TODO
+
+For now, see [the tests](test/test.js).

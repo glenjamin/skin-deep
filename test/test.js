@@ -110,4 +110,11 @@ describe("skin-deep", function() {
     });
   });
 
+  describe("toString", function() {
+    it("should give HTML", function() {
+      var tree = sd.shallowRender($('h1', { title: "blah" }, "Heading!"));
+      expect('' + tree).to.eql('<h1 title="blah">Heading!</h1>');
+    });
+  });
+
 });

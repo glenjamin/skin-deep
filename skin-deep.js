@@ -25,6 +25,9 @@ function shallowRender(elementOrFunction, context) {
     },
     getRenderOutput: function() {
       return shallowRenderer.getRenderOutput();
+    },
+    toString: function() {
+      return React.renderToStaticMarkup(shallowRenderer.getRenderOutput());
     }
   };
 }
