@@ -31,27 +31,34 @@ function shallowRender(elementOrFunction, context) {
 
 function findNodeIn(shallowRenderer, query) {
   var node = shallowRenderer.getRenderOutput();
-  if (query.match(/\.[\w\-]+/)) {
-    return findNodeByClass(node, query.substring(1));
+  var finder = null;
+  if (query.match(/^\.[\w\-]+$/)) {
+    finder = findNodeByClass(query.substring(1));
   }
-  if (query.match(/\#[\w\-]+/)) {
-    return findNodeById(node, query.substring(1));
+  if (query.match(/^\#[\w\-]+$/)) {
+    finder = findNodeById(query.substring(1));
   }
-  throw new Error('Invalid node query ' + query);
+  if (query.match(/^[\w\-]+$/)) {
+    finder = function(n) { return n.type == query; };
+  }
+  if (!finder) {
+    throw new Error('Invalid node query ' + query);
+  }
+  return findNode(node, finder);
 }
 
-function findNodeByClass(node, cls) {
+function findNodeByClass(cls) {
   var regex = new RegExp('\\b' + cls + '\\b');
 
-  return findNode(node, function(n) {
+  return function(n) {
     return n.props && String(n.props.className).match(regex);
-  });
+  };
 }
 
-function findNodeById(node, id) {
-  return findNode(node, function(n) {
+function findNodeById(id) {
+  return function(n) {
     return n.props && String(n.props.id) == id;
-  });
+  };
 }
 
 function findNode(node, fn) {
