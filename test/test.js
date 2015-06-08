@@ -110,6 +110,54 @@ describe("skin-deep", function() {
     });
   });
 
+  describe("fillField", function() {
+    var tree;
+    var Component = React.createClass({
+      getInitialState: function() {
+        return { "username": "" };
+      },
+      getNickname: function() {
+        return React.findDOMNode(this.refs.nickname).value;
+      },
+      render: function() {
+        return $('form', {},
+          $('input', {
+            type: "text", id: "username",
+            value: this.state.username, onChange: function(event) {
+              this.setState({"username": event.target.value});
+            }.bind(this)
+          }),
+          $('input', {
+            type: "text", ref: "nickname", className: "nickname"
+          })
+        );
+      }
+    });
+    beforeEach(function() {
+      tree = sd.shallowRender($(Component));
+    });
+
+    it("should set value of controlled text field", function() {
+      expect(tree.findNode("#username").props)
+        .to.have.property("value", "");
+
+      tree.fillField("#username", "glenjamin");
+
+      expect(tree.findNode("#username").props)
+        .to.have.property("value", "glenjamin");
+    });
+
+    it.skip("should set value of uncontrolled text field", function() {
+      // Can this be done?
+    });
+
+    it("should throw if field not found", function() {
+      expect(function() {
+        tree.fillField("#losername", "not-glenjamin");
+      }).to.throw(/unknown/i);
+    });
+  });
+
   describe("toString", function() {
     it("should give HTML", function() {
       var tree = sd.shallowRender($('h1', { title: "blah" }, "Heading!"));
