@@ -74,9 +74,14 @@ describe("skin-deep", function() {
   describe("findNode", function() {
     var tree = sd.shallowRender(
       $('div', {},
-        $('div', {className: "abc"}, "ABC"),
+        $('div', {}, 'objection!'),
         $('div', {id: "def"}, "DEF"),
-        $('object', {}, "objection!")
+        $('div', {}, [
+          $('div', {}, "objection!"),
+          $('object', {}, "objection!"),
+          'hello',
+          [$('div', {className: "abc"}, "ABC")]
+        ])
       )
     );
 

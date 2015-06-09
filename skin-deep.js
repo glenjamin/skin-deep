@@ -74,21 +74,18 @@ function findNode(node, fn) {
   if (fn(node)) {
     return node;
   }
-  if (!node.props || !node.props.children) {
-    return false;
-  }
-  if (typeof node.props.children.some === 'function') {
+  if (node.some) {
     var matched = false;
-    node.props.children.some(function(n) {
+    node.some(function(n) {
       matched = findNode(n, fn);
       return matched;
     });
     return matched;
   }
-  if (typeof node.props.children === 'object') {
-    return findNode(node.props.children, fn);
+  if (!node.props || !node.props.children) {
+    return false;
   }
-  return false;
+  return findNode(node.props.children, fn);
 }
 
 function getTextFromNodes(nodes) {
