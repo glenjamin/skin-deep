@@ -110,6 +110,21 @@ describe("skin-deep", function() {
     });
   });
 
+  describe("textIn", function() {
+    var tree = sd.shallowRender(
+      $('div', {},
+        $('div', {className: "abc"}, "ABC"),
+        $('div', {id: "def"}, "DEF"),
+        $('object', {}, "objection!")
+      )
+    );
+    it("should grab text in selector", function() {
+      expect(tree.textIn(".abc")).to.eql("ABC");
+      expect(tree.textIn("#def")).to.eql("DEF");
+      expect(tree.textIn("object")).to.eql("objection!");
+    });
+  });
+
   describe("fillField", function() {
     var tree;
     var Component = React.createClass({

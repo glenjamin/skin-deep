@@ -26,7 +26,7 @@ function shallowRender(elementOrFunction, context) {
       var node = findNodeIn(shallowRenderer, query);
       if (!node || !node.props) throw new Error('Unknown field ' + query);
       if (node.props.onChange) {
-        node.props.onChange({ target: {value: value} });
+        node.props.onChange({ target: { value: value } });
       }
     },
     getRenderOutput: function() {
