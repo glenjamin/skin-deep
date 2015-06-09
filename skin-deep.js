@@ -89,8 +89,8 @@ function findNode(node, fn) {
 }
 
 function getTextFromNodes(nodes) {
-  if (typeof nodes.type === 'function') {
-    return '<' + nodes.type.displayName + ' />';
+  if (typeof nodes === 'function') {
+    return '<' + nodes.displayName + ' />';
   }
   if (typeof nodes === 'string') return nodes;
   if (typeof nodes.map === 'function') {
