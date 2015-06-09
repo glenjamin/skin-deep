@@ -7,6 +7,7 @@ function shallowRender(elementOrFunction, context) {
   context = context || {};
   global.document = global.document || { body: {} };
   ReactContext.current = context;
+
   var shallowRenderer = TestUtils.createRenderer();
   var element = TestUtils.isElement(elementOrFunction) ?
     elementOrFunction : elementOrFunction();
@@ -17,6 +18,9 @@ function shallowRender(elementOrFunction, context) {
     textIn: function(query) {
       var node = findNodeIn(shallowRenderer, query);
       return node && node.props && String(node.props.children);
+    },
+    text: function() {
+      return getTextFromNodes(shallowRenderer.getRenderOutput());
     },
     fillField: function(query, value) {
       var node = findNodeIn(shallowRenderer, query);
@@ -85,6 +89,20 @@ function findNode(node, fn) {
     return findNode(node.props.children, fn);
   }
   return false;
+}
+
+function getTextFromNodes(nodes) {
+  if (typeof nodes.type === 'function') {
+    return '<' + nodes.type.displayName + ' />';
+  }
+  if (typeof nodes === 'string') return nodes;
+  if (typeof nodes.map === 'function') {
+    return nodes.map(getTextFromNodes).join(' ');
+  }
+
+  var children = nodes.props && nodes.props.children;
+  if (!children) return '';
+  return getTextFromNodes(children);
 }
 
 exports.chaiShallowRender = function(chai, utils) {

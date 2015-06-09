@@ -165,4 +165,19 @@ describe("skin-deep", function() {
     });
   });
 
+  describe("text", function() {
+    it("should out a textual representation of the tree", function() {
+      var tree = sd.shallowRender($('h1', { title: "blah" }, [
+        "Heading!", $('div', { title: "blah" }, [
+          React.createClass({
+            displayName: 'Widget',
+            render: function() { return 'Should not see'; }
+          }),
+          'Some text.',
+          'More text.'
+        ])
+      ]));
+      expect(tree.text()).to.eql('Heading! <Widget /> Some text. More text.');
+    });
+  });
 });
