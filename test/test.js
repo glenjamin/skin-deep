@@ -76,12 +76,12 @@ describe("skin-deep", function() {
       $('div', {},
         $('div', {}, 'objection!'),
         $('div', {id: "def"}, "DEF"),
-        $('div', {}, [
+        $('div', {},
           $('div', {}, "objection!"),
           $('object', {}, "objection!"),
           'hello',
-          [$('div', {className: "abc"}, "ABC")]
-        ])
+          [$('div', {className: "abc", key: "1"}, "ABC")]
+        )
       )
     );
 
@@ -186,18 +186,22 @@ describe("skin-deep", function() {
   });
 
   describe("text", function() {
-    it("should out a textual representation of the tree", function() {
-      var tree = sd.shallowRender($('h1', { title: "blah" }, [
-        "Heading!", $('div', { title: "blah" }, [
-          React.createClass({
-            displayName: 'Widget',
-            render: function() { return 'Should not see'; }
-          }),
+    var Widget = React.createClass({
+      displayName: 'Widget',
+      render: function() { return 'Should not see'; }
+    });
+    it("should give a textual representation of the tree", function() {
+      var tree = sd.shallowRender($('h1', { title: "blah" },
+        "Heading!",
+        $('div', { title: "blah" },
+          123,
           'Some text.',
-          'More text.'
-        ])
-      ]));
-      expect(tree.text()).to.eql('Heading! <Widget /> Some text. More text.');
+          'More text.',
+          [ React.createElement(Widget, { key: 1 }),
+            React.createElement(Widget, { key: 2 }) ])
+      ));
+      expect(tree.text())
+        .to.eql('Heading! 123 Some text. More text. <Widget /> <Widget />');
     });
   });
 });

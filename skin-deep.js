@@ -20,7 +20,7 @@ function shallowRender(elementOrFunction, context) {
       return node && node.props && String(node.props.children);
     },
     text: function() {
-      return getTextFromNodes(shallowRenderer.getRenderOutput());
+      return getTextFromNode(shallowRenderer.getRenderOutput());
     },
     fillField: function(query, value) {
       var node = findNodeIn(shallowRenderer, query);
@@ -88,18 +88,26 @@ function findNode(node, fn) {
   return findNode(node.props.children, fn);
 }
 
-function getTextFromNodes(nodes) {
-  if (typeof nodes === 'function') {
-    return '<' + nodes.displayName + ' />';
+function getTextFromNode(node) {
+  // strings and numbers are just text
+  if (typeof node === 'string' || typeof node === 'number') {
+    return '' + node;
   }
-  if (typeof nodes === 'string') return nodes;
-  if (typeof nodes.map === 'function') {
-    return nodes.map(getTextFromNodes).join(' ');
+  // Iterables get combined with spaces
+  if (typeof node.map === 'function') {
+    return node.map(getTextFromNode).join(' ');
+  }
+  // Non-dom components are a black box
+  if (TestUtils.isElement(node) && typeof node.type !== 'string') {
+    return '<' + node.type.displayName + ' />';
   }
 
-  var children = nodes.props && nodes.props.children;
-  if (!children) return '';
-  return getTextFromNodes(children);
+  // Recurse down through children if present
+  var children = node.props && node.props.children;
+  if (children) return getTextFromNode(children);
+
+  // Otherwise, stop
+  return '';
 }
 
 exports.chaiShallowRender = function(chai, utils) {
