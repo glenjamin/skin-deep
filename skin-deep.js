@@ -5,14 +5,17 @@ var ReactContext = require('react/lib/ReactContext');
 exports.shallowRender = shallowRender;
 function shallowRender(elementOrFunction, context) {
   context = context || {};
-  global.document = global.document || { body: {} };
-  ReactContext.current = context;
 
   var shallowRenderer = TestUtils.createRenderer();
+
+  // Workaround for
+  ReactContext.current = context;
   var element = TestUtils.isElement(elementOrFunction) ?
     elementOrFunction : elementOrFunction();
-  shallowRenderer.render(element, context);
   ReactContext.current = {};
+
+  shallowRenderer.render(element, context);
+
   return {
     findNode: function(query) {
       return findNodeIn(shallowRenderer, query);
@@ -28,6 +31,9 @@ function shallowRender(elementOrFunction, context) {
       var node = findNodeIn(shallowRenderer, query);
       if (!node || !node.props) throw new Error('Unknown field ' + query);
       if (node.props.onChange) {
+        // workaround for https://github.com/facebook/react/issues/4019
+        global.document = global.document || { body: {} };
+
         node.props.onChange({ target: { value: value } });
       }
     },
