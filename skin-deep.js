@@ -103,8 +103,9 @@ function getTextFromNode(node) {
   }
 
   // Recurse down through children if present
-  var children = node.props && node.props.children;
-  if (children) return getTextFromNode(children);
+  if (node.props && 'children' in node.props) {
+    return getTextFromNode(node.props.children);
+  }
 
   // Otherwise, stop
   return '';

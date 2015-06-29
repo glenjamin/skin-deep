@@ -203,5 +203,9 @@ describe("skin-deep", function() {
       expect(tree.text())
         .to.eql('Heading! 123 Some text. More text. <Widget /> <Widget />');
     });
+    it("Should render a single zero child correctly", function() {
+      var tree = sd.shallowRender($('h1', {}, 0));
+      expect(tree.text()).to.eql('0');
+    });
   });
 });
