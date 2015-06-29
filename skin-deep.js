@@ -8,7 +8,6 @@ function shallowRender(elementOrFunction, context) {
 
   var shallowRenderer = TestUtils.createRenderer();
 
-  // Workaround for
   ReactContext.current = context;
   var element = TestUtils.isElement(elementOrFunction) ?
     elementOrFunction : elementOrFunction();
@@ -16,21 +15,29 @@ function shallowRender(elementOrFunction, context) {
 
   shallowRenderer.render(element, context);
 
+  return new SkinDeep(function() {
+    return shallowRenderer.getRenderOutput();
+  });
+}
+
+function SkinDeep(getCurrentNode) {
   return {
     findNode: function(query) {
-      return findNodeIn(shallowRenderer, query);
+      return findNodeIn(getCurrentNode(), query);
     },
     textIn: function(query) {
-      var node = findNodeIn(shallowRenderer, query);
+      var node = findNodeIn(getCurrentNode(), query);
       return getTextFromNode(node);
     },
     text: function() {
-      return getTextFromNode(shallowRenderer.getRenderOutput());
+      return getTextFromNode(getCurrentNode());
     },
     fillField: function(query, value) {
-      var node = findNodeIn(shallowRenderer, query);
+      var node = findNodeIn(getCurrentNode(), query);
       if (!node || !node.props) throw new Error('Unknown field ' + query);
+
       if (node.props.onChange) {
+
         // workaround for https://github.com/facebook/react/issues/4019
         global.document = global.document || { body: {} };
 
@@ -38,16 +45,15 @@ function shallowRender(elementOrFunction, context) {
       }
     },
     getRenderOutput: function() {
-      return shallowRenderer.getRenderOutput();
+      return getCurrentNode();
     },
     toString: function() {
-      return React.renderToStaticMarkup(shallowRenderer.getRenderOutput());
+      return React.renderToStaticMarkup(getCurrentNode());
     }
   };
 }
 
-function findNodeIn(shallowRenderer, query) {
-  var node = shallowRenderer.getRenderOutput();
+function findNodeIn(node, query) {
   var finder = null;
   if (query.match(/^\.[\w\-]+$/)) {
     finder = findNodeByClass(query.substring(1));
