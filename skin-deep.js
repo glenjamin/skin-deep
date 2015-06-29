@@ -14,10 +14,12 @@ function shallowRender(elementOrFunction, context) {
   shallowRenderer.render(element, context);
   ReactContext.current = {};
   return {
-    findNode: findNodeIn.bind(0, shallowRenderer),
+    findNode: function(query) {
+      return findNodeIn(shallowRenderer, query);
+    },
     textIn: function(query) {
       var node = findNodeIn(shallowRenderer, query);
-      return node && node.props && String(node.props.children);
+      return getTextFromNode(node);
     },
     text: function() {
       return getTextFromNode(shallowRenderer.getRenderOutput());
@@ -95,7 +97,7 @@ function getTextFromNode(node) {
   }
   // Iterables get combined with spaces
   if (typeof node.map === 'function') {
-    return node.map(getTextFromNode).join(' ');
+    return node.map(getTextFromNode).join(' ').replace(/\s+/, ' ');
   }
   // Non-dom components are a black box
   if (TestUtils.isElement(node) && typeof node.type !== 'string') {
@@ -110,30 +112,3 @@ function getTextFromNode(node) {
   // Otherwise, stop
   return '';
 }
-
-exports.chaiShallowRender = function(chai, utils) {
-  var Assertion = chai.Assertion;
-  var flag = utils.flag;
-
-  function inRenderedOutput(query, msg) {
-    if (msg) flag(this, 'message', msg);
-    var renderer = flag(this, 'object');
-
-    var node = renderer.findNode(query);
-    this.assert(node,
-      'Expected to find #{exp} in #{act}',
-      'Expected not to find #{exp} in #{act}',
-      query, React.renderToString(renderer.getRenderOutput())
-    );
-  }
-
-  Assertion.addMethod('inRenderedOutput', inRenderedOutput);
-
-  chai.assert.inRenderedOutput = function(renderer, query, msg) {
-    new Assertion(renderer, msg).to.have.inRenderedOutput(query, msg);
-  };
-
-  chai.assert.notInRenderedOutput = function(renderer, query, msg) {
-    new Assertion(renderer, msg).to.not.have.inRenderedOutput(query, msg);
-  };
-};

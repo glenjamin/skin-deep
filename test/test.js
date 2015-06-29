@@ -167,6 +167,14 @@ describe("skin-deep", function() {
         .to.have.property("value", "glenjamin");
     });
 
+    it("should no-op on field without change handler", function() {
+      var before = tree.findNode(".nickname");
+
+      tree.fillField(".nickname", "glenjamin");
+
+      expect(tree.findNode(".nickname")).to.eql(before);
+    });
+
     it.skip("should set value of uncontrolled text field", function() {
       // Can this be done?
     });
@@ -194,7 +202,7 @@ describe("skin-deep", function() {
       var tree = sd.shallowRender($('h1', { title: "blah" },
         "Heading!",
         $('div', { title: "blah" },
-          123,
+          123, $('hr'),
           'Some text.',
           'More text.',
           [ React.createElement(Widget, { key: 1 }),
