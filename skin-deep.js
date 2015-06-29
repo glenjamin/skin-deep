@@ -22,6 +22,10 @@ function shallowRender(elementOrFunction, context) {
 
 function SkinDeep(getCurrentNode) {
   return {
+    subTree: function(query) {
+      var node = findNodeIn(getCurrentNode(), query);
+      return new SkinDeep(function() { return node; });
+    },
     findNode: function(query) {
       return findNodeIn(getCurrentNode(), query);
     },

@@ -226,4 +226,53 @@ describe("skin-deep", function() {
       expect(tree.text()).to.eql('0');
     });
   });
+
+  describe("subTree", function() {
+    var subTree;
+    var tree = sd.shallowRender(
+      $('div', {},
+        $('div', {id: "def", className: "abc"},
+          "DEF", $('hr')),
+        $('div', {id: "abc"},
+          $('div', {}, "objection!"),
+          $('object', {}, "objection!"),
+          'hello',
+          [$('div', {id: "abc2", className: "abc", key: "1"}, "ABC")]
+        )
+      )
+    );
+    it("should grab a subtree by id selector", function() {
+      var abc = tree.subTree("#abc");
+      expect(abc).to.be.an('object');
+      expect(abc.getRenderOutput().props).to.have.property("id", "abc");
+    });
+    it("should grab a subtree by class selector", function() {
+      var abc = tree.subTree(".abc");
+      expect(abc).to.be.an('object');
+      expect(abc.getRenderOutput().props).to.have.property("className", "abc");
+    });
+    it("should grab a subtree by tag selector", function() {
+      var abc = tree.subTree("object");
+      expect(abc).to.be.an('object');
+      expect(abc.getRenderOutput().props)
+        .to.have.property("children", "objection!");
+    });
+    describe("methods", function() {
+      beforeEach(function() {
+        subTree = tree.subTree('#abc');
+      });
+      it("should have same methods as main tree", function() {
+        expect(Object.keys(tree)).to.eql(Object.keys(subTree));
+      });
+      it("should provide scoped findNode()", function() {
+        expect(subTree.findNode(".abc")).to.eql(tree.findNode("#abc2"));
+      });
+      it("should provide scoped textIn()", function() {
+        expect(subTree.textIn(".abc")).to.eql("ABC");
+      });
+      it("should provide scoped text()", function() {
+        expect(subTree.text()).to.eql("objection! objection! hello ABC");
+      });
+    });
+  });
 });
