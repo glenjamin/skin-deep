@@ -72,6 +72,10 @@ describe("skin-deep", function() {
   });
 
   describe("findNode", function() {
+    var Widget = React.createClass({
+      displayName: 'Widget',
+      render: function() { return 'widget'; }
+    });
     var tree = sd.shallowRender(
       $('div', {},
         $('div', {}, 'objection!'),
@@ -80,7 +84,8 @@ describe("skin-deep", function() {
           $('div', {}, "objection!"),
           $('object', {}, "objection!"),
           'hello',
-          [$('div', {className: "abc", key: "1"}, "ABC")]
+          [$('div', {className: "abc", key: "1"}, "ABC")],
+          $(Widget, {})
         )
       )
     );
@@ -101,6 +106,11 @@ describe("skin-deep", function() {
       var abc = tree.findNode("object");
       expect(abc).to.have.property('type', 'object');
       expect(abc.props).to.have.property('children', 'objection!');
+    });
+
+    it("should find a node in tree by component displayName", function() {
+      var abc = tree.findNode("Widget");
+      expect(abc).to.have.property('type', Widget);
     });
 
     it("should return false when node not found", function() {

@@ -55,8 +55,11 @@ function findNodeIn(shallowRenderer, query) {
   if (query.match(/^\#[\w\-]+$/)) {
     finder = findNodeById(query.substring(1));
   }
-  if (query.match(/^[\w\-]+$/)) {
+  if (query.match(/^[a-z][\w\-]+$/)) { // tagname
     finder = function(n) { return n.type == query; };
+  }
+  if (query.match(/^[A-Z][\w\-]+$/)) { // component displayName
+    finder = function(n) { return n.type && n.type.displayName == query; };
   }
   if (!finder) {
     throw new Error('Invalid node query ' + query);
