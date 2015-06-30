@@ -17,7 +17,9 @@
     "url": "https://github.com/glenjamin/skin-deep/issues"
   },
   "homepage": "https://github.com/glenjamin/skin-deep",
-  "dependencies": {},
+  "dependencies": {
+    "is-subset": "^0.1.1"
+  },
   "devDependencies": {
     "chai": "^2.3.0",
     "coveralls": "^2.11.2",

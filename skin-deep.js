@@ -1,3 +1,5 @@
+var subset = require('is-subset');
+
 var React = require('react/addons');
 var TestUtils = React.addons.TestUtils;
 var ReactContext = require('react/lib/ReactContext');
@@ -47,6 +49,19 @@ function SkinDeep(getCurrentNode) {
 
         node.props.onChange({ target: { value: value } });
       }
+    },
+    findComponent: function(search) {
+      return findNode(getCurrentNode(), function(node) {
+        return node.type == search.type &&
+          subset(node.props, search.props) &&
+          subset(search.props, node.props);
+      });
+    },
+    findComponentLike: function(search) {
+      return findNode(getCurrentNode(), function(node) {
+        return node.type == search.type &&
+          subset(node.props, search.props);
+      });
     },
     getRenderOutput: function() {
       return getCurrentNode();

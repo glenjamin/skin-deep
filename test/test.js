@@ -275,4 +275,109 @@ describe("skin-deep", function() {
       });
     });
   });
+
+  describe("findComponent", function() {
+    var Widget = React.createClass({
+      displayName: 'Widget',
+      render: function() {}
+    });
+    var tree = sd.shallowRender(
+      $('div', {},
+        $('span', {}, "stuff", "and", "nonsense"),
+        $('b', { className: "go"}, "away"),
+        $(Widget, {}),
+        $(Widget, { some: "value", num: 123 }),
+        $(Widget, {}, "kids")
+      )
+    );
+    it("should find a DOM component", function() {
+      var c = tree.findComponent($('span', {}, "stuff", "and", "nonsense"));
+      expect(c).to.have.property('type', 'span');
+      expect(c.props.children).to.eql(["stuff", "and", "nonsense"]);
+    });
+    it("should find a DOM component with props", function() {
+      var c = tree.findComponent($('b', { className: "go" }, "away"));
+      expect(c).to.have.property('type', 'b');
+      expect(c.props).to.eql({ className: "go", children: "away" });
+    });
+    it("should find a component", function() {
+      var c = tree.findComponent($(Widget, {}));
+      expect(c).to.have.property('type', Widget);
+      expect(c.props).to.eql({});
+    });
+    it("should find a component with props", function() {
+      var c = tree.findComponent($(Widget, { some: "value", num: 123 }));
+      expect(c).to.have.property('type', Widget);
+      expect(c.props).to.eql({ some: "value", num: 123 });
+    });
+    it("should find a component with children", function() {
+      var c = tree.findComponent($(Widget, {}, "kids"));
+      expect(c).to.have.property('type', Widget);
+      expect(c.props).to.eql({ children: "kids" });
+    });
+    it("should fail to find a DOM component", function() {
+      expect(tree.findComponent($('span', {}, "real", "stuff")))
+        .to.eql(false);
+    });
+    it("should fail to find a component", function() {
+      expect(tree.findComponent($(Widget, { "other": "value"})))
+        .to.eql(false);
+    });
+    it("should fail to find a component with children", function() {
+      expect(tree.findComponent($(Widget, {}, "adults")))
+        .to.eql(false);
+    });
+  });
+
+  describe("findComponentLike", function() {
+    var Widget = React.createClass({
+      displayName: 'Widget',
+      render: function() {}
+    });
+    var tree = sd.shallowRender(
+      $('div', {},
+        $('span', {}, "stuff", "and", "nonsense"),
+        $('b', { className: "go"}, "away"),
+        $(Widget, {}),
+        $(Widget, { some: "value", num: 123 }),
+        $(Widget, {}, "kids")
+      )
+    );
+    it("should find a DOM component", function() {
+      var c = tree.findComponentLike($('span', {}, "stuff", "and", "nonsense"));
+      expect(c).to.have.property('type', 'span');
+      expect(c.props).to.eql({ children: ["stuff", "and", "nonsense"]});
+    });
+    it("should find a DOM component via partial match", function() {
+      var c = tree.findComponentLike($('b', { className: "go" }));
+      expect(c).to.have.property('type', 'b');
+      expect(c.props).to.have.eql({ className: "go", children: "away" });
+    });
+    it("should find a component", function() {
+      var c = tree.findComponentLike($(Widget, {}));
+      expect(c).to.have.property('type', Widget);
+      expect(c.props).to.eql({});
+    });
+    it("should find a component with partial props", function() {
+      var c = tree.findComponentLike($(Widget, { num: 123 }));
+      expect(c).to.have.property('type', Widget);
+      expect(c.props).to.eql({ some: "value", num: 123 });
+    });
+    it("should fail to find a DOM component", function() {
+      expect(tree.findComponentLike($('span', {}, "real", "stuff")))
+        .to.eql(false);
+    });
+    it("should fail to find a DOM component if doesn't match", function() {
+      expect(tree.findComponentLike($('b', { className: "go", id: "away" })))
+        .to.eql(false);
+    });
+    it("should fail to find a component if doesn't match", function() {
+      expect(tree.findComponentLike($(Widget, { abc: 123 })))
+        .to.eql(false);
+    });
+    it("should fail to find a component if doesn't match", function() {
+      expect(tree.findComponentLike($(Widget, { num: 123, x: "y" })))
+        .to.eql(false);
+    });
+  });
 });
