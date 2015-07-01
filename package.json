@@ -1,6 +1,6 @@
 {
   "name": "skin-deep",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Test assertion helpers for use with React's shallowRender test utils.",
   "main": "skin-deep.js",
   "scripts": {
