@@ -107,6 +107,7 @@ function findNodeById(id) {
 }
 
 function findNode(node, fn) {
+  if (!node) return false;
   if (fn(node)) {
     return node;
   }
