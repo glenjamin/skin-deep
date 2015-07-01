@@ -123,6 +123,46 @@ describe("skin-deep", function() {
         tree.findNode(";huh?");
       }).to.throw(/invalid/i);
     });
+
+    describe("conditionals", function() {
+      var tree = sd.shallowRender(
+        $('div', {},
+          true && $('a', {}, 'A'),
+          false && $('b', {}, 'B'),
+          0 && $('c', {}, 'C'),
+          "" && $('d', {}, 'D'),
+          undefined && $('e', {}, 'E'),
+          null && $('f', {}, 'F'),
+          1 && $('g', {}, 'G'),
+          "abc" && $('h', {}, 'H')
+        )
+      );
+
+      it("should find true && item", function() {
+        expect(tree.findNode('a')).to.have.property('type', 'a');
+      });
+      it("should not find false && item", function() {
+        expect(tree.findNode('b')).to.eql(false);
+      });
+      it("should not find 0 && item", function() {
+        expect(tree.findNode('c')).to.eql(false);
+      });
+      it("should not find '' && item", function() {
+        expect(tree.findNode('d')).to.eql(false);
+      });
+      it("should not find undefined && item", function() {
+        expect(tree.findNode('e')).to.eql(false);
+      });
+      it("should not find null && item", function() {
+        expect(tree.findNode('f')).to.eql(false);
+      });
+      it("should find 1 && item", function() {
+        expect(tree.findNode('g')).to.have.property('type', 'g');
+      });
+      it("should find 'abc' && item", function() {
+        expect(tree.findNode('h')).to.have.property('type', 'h');
+      });
+    });
   });
 
   describe("textIn", function() {
