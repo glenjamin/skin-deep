@@ -169,5 +169,9 @@ function getTextFromNode(node) {
 }
 
 function mapcat(array, fn) {
-  return [].concat.apply([], array.map(fn));
+  var result = [];
+  array.forEach(function(x, i) {
+    result.push.apply(result, fn(x, i));
+  });
+  return result;
 }
