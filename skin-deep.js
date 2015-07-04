@@ -119,27 +119,27 @@ function findNode(node, predicate) {
   return all.length >= 1 && all[0];
 }
 
-function findNodes(node, fn, findOne) {
+function findNodes(node, predicate, findOne) {
   // Falsy stuff can't match or have children
   if (!node) return [];
 
   // Array nodes all get checked
   if (typeof node.filter === 'function') {
     return mapcat(node, function(n) {
-      return findNodes(n, fn, findOne);
+      return findNodes(n, predicate, findOne);
     });
   }
 
   // normal nodes might match
   var found = [];
-  if (fn(node)) {
+  if (predicate(node)) {
     found.push(node);
     if (findOne) return found;
   }
 
   // matching node might have matching children
   if (node.props && node.props.children) {
-    return found.concat(findNodes(node.props.children, fn, findOne));
+    return found.concat(findNodes(node.props.children, predicate, findOne));
   }
 
   return found;
