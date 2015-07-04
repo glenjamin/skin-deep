@@ -26,7 +26,11 @@ function SkinDeep(getCurrentNode) {
   return {
     subTree: function(query) {
       var node = findNodeIn(getCurrentNode(), query);
-      return new SkinDeep(function() { return node; });
+      return skinDeepNode(node);
+    },
+    everySubTree: function(query) {
+      var predicate = createNodePredicate(query);
+      return findNodes(getCurrentNode(), predicate).map(skinDeepNode);
     },
     findNode: function(query) {
       return findNodeIn(getCurrentNode(), query);
@@ -72,24 +76,28 @@ function SkinDeep(getCurrentNode) {
   };
 }
 
-function findNodeIn(node, query) {
-  var finder = null;
+function skinDeepNode(node) {
+  return new SkinDeep(function() { return node; });
+}
+
+function createNodePredicate(query) {
   if (query.match(/^\.[\w\-]+$/)) {
-    finder = findNodeByClass(query.substring(1));
+    return findNodeByClass(query.substring(1));
   }
   if (query.match(/^\#[\w\-]+$/)) {
-    finder = findNodeById(query.substring(1));
+    return findNodeById(query.substring(1));
   }
   if (query.match(/^[a-z][\w\-]*$/)) { // tagname
-    finder = function(n) { return n.type == query; };
+    return function(n) { return n.type == query; };
   }
   if (query.match(/^[A-Z][\w\-]*$/)) { // component displayName
-    finder = function(n) { return n.type && n.type.displayName == query; };
+    return function(n) { return n.type && n.type.displayName == query; };
   }
-  if (!finder) {
-    throw new Error('Invalid node query ' + query);
-  }
-  return findNode(node, finder);
+  throw new Error('Invalid node query ' + query);
+}
+
+function findNodeIn(node, query) {
+  return findNode(node, createNodePredicate(query));
 }
 
 function findNodeByClass(cls) {
@@ -107,22 +115,33 @@ function findNodeById(id) {
 }
 
 function findNode(node, fn) {
-  if (!node) return false;
+  var all = findNodes(node, fn);
+  return all.length >= 1 && all[0];
+}
+
+function findNodes(node, fn) {
+  // Falsy stuff can't match or have children
+  if (!node) return [];
+
+  // Array nodes all get checked
+  if (typeof node.filter === 'function') {
+    return concat(node.map(function(n) {
+      return findNodes(n, fn);
+    }));
+  }
+
+  // normal nodes might match
+  var found = [];
   if (fn(node)) {
-    return node;
+    found.push(node);
   }
-  if (node.some) {
-    var matched = false;
-    node.some(function(n) {
-      matched = findNode(n, fn);
-      return matched;
-    });
-    return matched;
+
+  // matching node might have matching children
+  if (node.props && node.props.children) {
+    return found.concat(findNodes(node.props.children, fn));
   }
-  if (!node.props || !node.props.children) {
-    return false;
-  }
-  return findNode(node.props.children, fn);
+
+  return found;
 }
 
 function getTextFromNode(node) {
@@ -146,4 +165,8 @@ function getTextFromNode(node) {
 
   // Otherwise, stop
   return '';
+}
+
+function concat(arrays) {
+  return [].concat.apply([], arrays);
 }

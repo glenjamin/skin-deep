@@ -125,18 +125,20 @@ describe("skin-deep", function() {
     });
 
     describe("conditionals", function() {
-      var tree = sd.shallowRender(
-        $('div', {},
-          true && $('a', {}, 'A'),
-          false && $('b', {}, 'B'),
-          0 && $('c', {}, 'C'),
-          "" && $('d', {}, 'D'),
-          undefined && $('e', {}, 'E'),
-          null && $('f', {}, 'F'),
-          1 && $('g', {}, 'G'),
-          "abc" && $('h', {}, 'H')
-        )
-      );
+      before(function() {
+        tree = sd.shallowRender(
+          $('div', {},
+            true && $('a', {}, 'A'),
+            false && $('b', {}, 'B'),
+            0 && $('c', {}, 'C'),
+            "" && $('d', {}, 'D'),
+            undefined && $('e', {}, 'E'),
+            null && $('f', {}, 'F'),
+            1 && $('g', {}, 'G'),
+            "abc" && $('h', {}, 'H')
+          )
+        );
+      });
 
       it("should find true && item", function() {
         expect(tree.findNode('a')).to.have.property('type', 'a');
@@ -268,7 +270,6 @@ describe("skin-deep", function() {
   });
 
   describe("subTree", function() {
-    var subTree;
     var tree = sd.shallowRender(
       $('div', {},
         $('div', {id: "def", className: "abc"},
@@ -298,6 +299,7 @@ describe("skin-deep", function() {
         .to.have.property("children", "objection!");
     });
     describe("methods", function() {
+      var subTree;
       beforeEach(function() {
         subTree = tree.subTree('#abc');
       });
@@ -312,6 +314,85 @@ describe("skin-deep", function() {
       });
       it("should provide scoped text()", function() {
         expect(subTree.text()).to.eql("objection! objection! hello ABC");
+      });
+    });
+  });
+
+  describe("everySubTree", function() {
+    var tree, trees;
+    before(function() {
+      tree = sd.shallowRender(
+        $('ul', {},
+          $('li', {className: "abc"}, $('span', {}, 1)),
+          $('li', {className: "abc"}, $('span', {}, 2)),
+          $('li', {className: "abc"}, $('span', {}, 3)),
+          $('li', {className: "abc"}, $('span', {}, 4)),
+          $('li', {className: "abc"}, $('span', {}, 5))
+        )
+      );
+    });
+    describe("using class selector", function() {
+      beforeEach(function() {
+        trees = tree.everySubTree(".abc");
+      });
+      it("should return array", function() {
+        expect(trees).to.be.an('array');
+        expect(trees).to.have.length(5);
+      });
+      it("should have SkinDeep subtrees in array", function() {
+        trees.forEach(function(subTree) {
+          expect(subTree).to.be.an('object');
+          expect(Object.keys(subTree)).to.eql(Object.keys(tree));
+        });
+      });
+      it("should be able to extract text from each", function() {
+        var texts = trees.map(function(st) { return st.text(); });
+        expect(texts).to.eql(["1", "2", "3", "4", "5"]);
+      });
+    });
+    describe("using tag selector", function() {
+      beforeEach(function() {
+        trees = tree.everySubTree("li");
+      });
+      it("should return array", function() {
+        expect(trees).to.be.an('array');
+        expect(trees).to.have.length(5);
+      });
+      it("should have SkinDeep subtrees in array", function() {
+        trees.forEach(function(subTree) {
+          expect(subTree).to.be.an('object');
+          expect(Object.keys(subTree)).to.eql(Object.keys(tree));
+        });
+      });
+      it("should be able to extract text from each", function() {
+        var texts = trees.map(function(st) { return st.text(); });
+        expect(texts).to.eql(["1", "2", "3", "4", "5"]);
+      });
+    });
+    describe("nested matches", function() {
+      before(function() {
+        tree = sd.shallowRender(
+          $('div', {},
+            $('div', {},
+              $('div', {},
+                $('div', {}, "deep")))
+          )
+        );
+        trees = tree.everySubTree("div");
+      });
+      it("should find nodes deeply", function() {
+        expect(trees).to.be.an('array');
+        expect(trees).to.have.length(4);
+      });
+      it("should have SkinDeep subtrees in array", function() {
+        trees.forEach(function(subTree) {
+          expect(subTree).to.be.an('object');
+          expect(Object.keys(subTree)).to.eql(Object.keys(tree));
+        });
+      });
+      it("should be able to extract text from each", function() {
+        var texts = trees.map(function(st) { return st.text(); });
+        expect(texts).to.eql(['deep', 'deep', 'deep', 'deep']);
       });
     });
   });
