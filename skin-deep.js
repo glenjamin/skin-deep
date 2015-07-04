@@ -114,31 +114,32 @@ function findNodeById(id) {
   };
 }
 
-function findNode(node, fn) {
-  var all = findNodes(node, fn);
+function findNode(node, predicate) {
+  var all = findNodes(node, predicate, 'one');
   return all.length >= 1 && all[0];
 }
 
-function findNodes(node, fn) {
+function findNodes(node, fn, findOne) {
   // Falsy stuff can't match or have children
   if (!node) return [];
 
   // Array nodes all get checked
   if (typeof node.filter === 'function') {
-    return concat(node.map(function(n) {
-      return findNodes(n, fn);
-    }));
+    return mapcat(node, function(n) {
+      return findNodes(n, fn, findOne);
+    });
   }
 
   // normal nodes might match
   var found = [];
   if (fn(node)) {
     found.push(node);
+    if (findOne) return found;
   }
 
   // matching node might have matching children
   if (node.props && node.props.children) {
-    return found.concat(findNodes(node.props.children, fn));
+    return found.concat(findNodes(node.props.children, fn, findOne));
   }
 
   return found;
@@ -167,6 +168,6 @@ function getTextFromNode(node) {
   return '';
 }
 
-function concat(arrays) {
-  return [].concat.apply([], arrays);
+function mapcat(array, fn) {
+  return [].concat.apply([], array.map(fn));
 }
