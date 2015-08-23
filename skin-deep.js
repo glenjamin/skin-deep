@@ -139,7 +139,8 @@ function findNodes(node, predicate, findOne) {
 
   // matching node might have matching children
   if (node.props && node.props.children) {
-    return found.concat(findNodes(node.props.children, predicate, findOne));
+    var children = childrenArray(node.props.children);
+    return found.concat(findNodes(children, predicate, findOne));
   }
 
   return found;
@@ -161,11 +162,19 @@ function getTextFromNode(node) {
 
   // Recurse down through children if present
   if (node.props && 'children' in node.props) {
-    return getTextFromNode(node.props.children);
+    return getTextFromNode(childrenArray(node.props.children));
   }
 
   // Otherwise, stop
   return '';
+}
+
+function childrenArray(children) {
+  var array = [];
+  React.Children.forEach(children, function(child) {
+    array.push(child);
+  });
+  return array;
 }
 
 function mapcat(array, fn) {

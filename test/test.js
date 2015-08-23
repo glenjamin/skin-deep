@@ -1,7 +1,7 @@
 var chai = require('chai');
 var expect = chai.expect;
 
-var React = require('react');
+var React = require('react/addons');
 
 var sd = require('../skin-deep');
 
@@ -499,6 +499,60 @@ describe("skin-deep", function() {
     it("should fail to find a component if doesn't match", function() {
       expect(tree.findComponentLike($(Widget, { num: 123, x: "y" })))
         .to.eql(false);
+    });
+  });
+
+  describe("React.Children & Fragments", function() {
+    var WithKids = React.createClass({
+      displayName: 'WithKids',
+      render: function() {
+        return $('ul', {},
+          React.Children.map(
+            this.props.children,
+            function(x) { return x; }
+          )
+        );
+      }
+    });
+    var tree1 = sd.shallowRender(
+      $(WithKids, {},
+        $('li', { id: 'a' }, 'a'),
+        $('li', { id: 'b' }, 'b')
+      )
+    );
+    var tree2 = sd.shallowRender(
+      $('div', {},
+        React.addons.createFragment({
+          left: $('span', { id: 'left' }, 'left'),
+          right: $('span', { id: 'right' }, 'right')
+        })
+      )
+    );
+    describe('findNode', function() {
+      it('should work within Children', function() {
+        expect(tree1.findNode('#a')).to.not.eql(false);
+        expect(tree1.findNode('#b')).to.not.eql(false);
+      });
+      it('should work within fragments', function() {
+        expect(tree2.findNode('#left')).to.not.eql(false);
+        expect(tree2.findNode('#right')).to.not.eql(false);
+      });
+    });
+    describe('text', function() {
+      it('should work within Children', function() {
+        expect(tree1.text()).to.contain('a b');
+      });
+      it('should work within fragments', function() {
+        expect(tree2.text()).to.contain("left right");
+      });
+    });
+    describe('everySubTree', function() {
+      it('should work within Children', function() {
+        expect(tree1.everySubTree('li')).to.have.length(2);
+      });
+      it('should work within fragments', function() {
+        expect(tree2.everySubTree('span')).to.have.length(2);
+      });
     });
   });
 });
