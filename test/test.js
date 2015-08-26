@@ -9,66 +9,86 @@ var $ = React.createElement;
 
 describe("skin-deep", function() {
 
-  it("should render a ReactElement", function() {
-    var tree = sd.shallowRender($('h1', { title: "blah" }, "Heading!"));
-    var vdom = tree.getRenderOutput();
-    expect(vdom).to.have.property('type', 'h1');
-    expect(vdom.props).to.have.property('title', 'blah');
-    expect(vdom.props).to.have.property('children', 'Heading!');
-  });
+  describe("getRenderOutput", function() {
 
-  it("should render a React Component", function() {
-    var Component = React.createClass({
-      render: function() {
+    it("should render a ReactElement", function() {
+      var tree = sd.shallowRender($('h1', { title: "blah" }, "Heading!"));
+      var vdom = tree.getRenderOutput();
+      expect(vdom).to.have.property('type', 'h1');
+      expect(vdom.props).to.have.property('title', 'blah');
+      expect(vdom.props).to.have.property('children', 'Heading!');
+    });
+
+    it("should render a React Component", function() {
+      var Component = React.createClass({
+        render: function() {
+          return $('h1', { title: "blah" }, "Heading!");
+        }
+      });
+      var tree = sd.shallowRender($(Component));
+      var vdom = tree.getRenderOutput();
+      expect(vdom).to.have.property('type', 'h1');
+      expect(vdom.props).to.have.property('title', 'blah');
+      expect(vdom.props).to.have.property('children', 'Heading!');
+    });
+
+    it("should render function returning a ReactElement tree", function() {
+      var tree = sd.shallowRender(function() {
         return $('h1', { title: "blah" }, "Heading!");
-      }
+      });
+      var vdom = tree.getRenderOutput();
+      expect(vdom).to.have.property('type', 'h1');
+      expect(vdom.props).to.have.property('title', 'blah');
+      expect(vdom.props).to.have.property('children', 'Heading!');
     });
-    var tree = sd.shallowRender($(Component));
-    var vdom = tree.getRenderOutput();
-    expect(vdom).to.have.property('type', 'h1');
-    expect(vdom.props).to.have.property('title', 'blah');
-    expect(vdom.props).to.have.property('children', 'Heading!');
+
+    it("should render function building a component", function() {
+      var Component = React.createClass({
+        render: function() {
+          return $('h1', { title: "blah" }, "Heading!");
+        }
+      });
+      var tree = sd.shallowRender(function() {
+        return $(Component);
+      });
+      var vdom = tree.getRenderOutput();
+      expect(vdom).to.have.property('type', 'h1');
+      expect(vdom.props).to.have.property('title', 'blah');
+      expect(vdom.props).to.have.property('children', 'Heading!');
+    });
+
+    it("should render components with context using function", function() {
+      var Component = React.createClass({
+        contextTypes: { title: React.PropTypes.string },
+        render: function() {
+          return $('h1', { title: "blah" }, this.context.title);
+        }
+      });
+      var tree = sd.shallowRender(function() {
+        return $(Component);
+      }, { title: "Heading!" });
+      var vdom = tree.getRenderOutput();
+      expect(vdom).to.have.property('type', 'h1');
+      expect(vdom.props).to.have.property('title', 'blah');
+      expect(vdom.props).to.have.property('children', 'Heading!');
+    });
   });
 
-  it("should render function returning a ReactElement tree", function() {
-    var tree = sd.shallowRender(function() {
-      return $('h1', { title: "blah" }, "Heading!");
-    });
-    var vdom = tree.getRenderOutput();
-    expect(vdom).to.have.property('type', 'h1');
-    expect(vdom.props).to.have.property('title', 'blah');
-    expect(vdom.props).to.have.property('children', 'Heading!');
-  });
+  describe("getMountedInstance", function() {
 
-  it("should render function building a component", function() {
-    var Component = React.createClass({
-      render: function() {
-        return $('h1', { title: "blah" }, "Heading!");
-      }
-    });
-    var tree = sd.shallowRender(function() {
-      return $(Component);
-    });
-    var vdom = tree.getRenderOutput();
-    expect(vdom).to.have.property('type', 'h1');
-    expect(vdom.props).to.have.property('title', 'blah');
-    expect(vdom.props).to.have.property('children', 'Heading!');
-  });
+    it("should provide the React Component instance", function() {
+      var Component = React.createClass({
+        render: function() {
+          return $('h1', { title: "blah" }, "Heading!");
+        },
+        aMethod: function() {}
+      });
+      var tree = sd.shallowRender($(Component));
+      var instance = tree.getMountedInstance();
 
-  it("should render components with context using function", function() {
-    var Component = React.createClass({
-      contextTypes: { title: React.PropTypes.string },
-      render: function() {
-        return $('h1', { title: "blah" }, this.context.title);
-      }
+      expect(instance.aMethod).to.be.a('function');
     });
-    var tree = sd.shallowRender(function() {
-      return $(Component);
-    }, { title: "Heading!" });
-    var vdom = tree.getRenderOutput();
-    expect(vdom).to.have.property('type', 'h1');
-    expect(vdom.props).to.have.property('title', 'blah');
-    expect(vdom.props).to.have.property('children', 'Heading!');
+
   });
 
   describe("findNode", function() {

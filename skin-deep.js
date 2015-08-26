@@ -17,13 +17,22 @@ function shallowRender(elementOrFunction, context) {
 
   shallowRenderer.render(element, context);
 
-  return new SkinDeep(function() {
-    return shallowRenderer.getRenderOutput();
-  });
+  return new SkinDeep(
+    function() {
+      return shallowRenderer.getRenderOutput();
+    },
+    /*eslint-disable no-underscore-dangle */
+    shallowRenderer._instance._instance
+    /*eslint-enable no-underscore-dangle */
+  );
 }
 
-function SkinDeep(getCurrentNode) {
+function SkinDeep(getCurrentNode, instance) {
   return {
+    getMountedInstance: function() {
+      if (instance) return instance;
+      throw new Error('This tree has no mounted instance');
+    },
     subTree: function(query) {
       var node = findNodeIn(getCurrentNode(), query);
       return skinDeepNode(node);
