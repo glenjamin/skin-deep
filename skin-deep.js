@@ -156,6 +156,10 @@ function findNodes(node, predicate, findOne) {
 }
 
 function getTextFromNode(node) {
+  // Ignore null/undefined children
+  if (node === null || node === undefined) {
+    return '';
+  }
   // strings and numbers are just text
   if (typeof node === 'string' || typeof node === 'number') {
     return '' + node;

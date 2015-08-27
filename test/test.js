@@ -537,6 +537,9 @@ describe("skin-deep", function() {
     var tree1 = sd.shallowRender(
       $(WithKids, {},
         $('li', { id: 'a' }, 'a'),
+        null,
+        false,
+        undefined,
         $('li', { id: 'b' }, 'b')
       )
     );
