@@ -432,41 +432,78 @@ describe("skin-deep", function() {
       )
     );
     it("should find a DOM component", function() {
-      var c = tree.findComponent($('span', {}, "stuff", "and", "nonsense"));
+      var c = tree.findComponent('span', {
+        children: ["stuff", "and", "nonsense"]
+      });
       expect(c).to.have.property('type', 'span');
       expect(c.props.children).to.eql(["stuff", "and", "nonsense"]);
     });
     it("should find a DOM component with props", function() {
-      var c = tree.findComponent($('b', { className: "go" }, "away"));
+      var c = tree.findComponent('b', { className: "go", children: "away" });
       expect(c).to.have.property('type', 'b');
       expect(c.props).to.eql({ className: "go", children: "away" });
     });
     it("should find a component", function() {
-      var c = tree.findComponent($(Widget, {}));
+      var c = tree.findComponent('Widget', {});
       expect(c).to.have.property('type', Widget);
       expect(c.props).to.eql({});
     });
     it("should find a component with props", function() {
-      var c = tree.findComponent($(Widget, { some: "value", num: 123 }));
+      var c = tree.findComponent('Widget', { some: "value", num: 123 });
       expect(c).to.have.property('type', Widget);
       expect(c.props).to.eql({ some: "value", num: 123 });
     });
     it("should find a component with children", function() {
-      var c = tree.findComponent($(Widget, {}, "kids"));
+      var c = tree.findComponent('Widget', { children: "kids" });
       expect(c).to.have.property('type', Widget);
       expect(c.props).to.eql({ children: "kids" });
     });
     it("should fail to find a DOM component", function() {
-      expect(tree.findComponent($('span', {}, "real", "stuff")))
+      expect(tree.findComponent('span', { children: ["real", "stuff"]}))
         .to.eql(false);
     });
     it("should fail to find a component", function() {
-      expect(tree.findComponent($(Widget, { "other": "value"})))
+      expect(tree.findComponent('Widget', { "other": "value"}))
         .to.eql(false);
     });
     it("should fail to find a component with children", function() {
-      expect(tree.findComponent($(Widget, {}, "adults")))
+      expect(tree.findComponent('Widget', { children: "adults" }))
         .to.eql(false);
+    });
+    describe("back-compat with a warning", function() {
+      var originalWarn = console.warn;
+      var warning;
+      beforeEach(function() {
+        warning = null;
+        console.warn = function(msg) { warning = msg; };
+      });
+      afterEach(function() {
+        console.warn = originalWarn;
+      });
+      it("should find a DOM component", function() {
+        var c = tree.findComponent($('span', {}, "stuff", "and", "nonsense"));
+        expect(c).to.have.property('type', 'span');
+        expect(c.props.children).to.eql(["stuff", "and", "nonsense"]);
+        expect(warning).to.match(/deprecated/);
+      });
+      it("should find a DOM component with props", function() {
+        var c = tree.findComponent($('b', { className: "go" }, "away"));
+        expect(c).to.have.property('type', 'b');
+        expect(c.props).to.eql({ className: "go", children: "away" });
+        expect(warning).to.match(/deprecated/);
+      });
+      it("should find a component", function() {
+        var c = tree.findComponent($(Widget, {}));
+        expect(c).to.have.property('type', Widget);
+        expect(c.props).to.eql({});
+        expect(warning).to.match(/deprecated/);
+      });
+      it("should find a component with props", function() {
+        var c = tree.findComponent($(Widget, { some: "value", num: 123 }));
+        expect(c).to.have.property('type', Widget);
+        expect(c.props).to.eql({ some: "value", num: 123 });
+        expect(warning).to.match(/deprecated/);
+      });
     });
   });
 
@@ -477,7 +514,7 @@ describe("skin-deep", function() {
     });
     var tree = sd.shallowRender(
       $('div', {},
-        $('span', {}, "stuff", "and", "nonsense"),
+        $('span', {}, "stuff", "&", "nonsense"),
         $('b', { className: "go"}, "away"),
         $(Widget, {}),
         $(Widget, { some: "value", num: 123 }),
@@ -485,40 +522,77 @@ describe("skin-deep", function() {
       )
     );
     it("should find a DOM component", function() {
-      var c = tree.findComponentLike($('span', {}, "stuff", "and", "nonsense"));
+      var c = tree.findComponentLike('span',
+        { children: ["stuff", "&", "nonsense"] }
+      );
       expect(c).to.have.property('type', 'span');
-      expect(c.props).to.eql({ children: ["stuff", "and", "nonsense"]});
+      expect(c.props).to.eql({ children: ["stuff", "&", "nonsense"]});
     });
     it("should find a DOM component via partial match", function() {
-      var c = tree.findComponentLike($('b', { className: "go" }));
+      var c = tree.findComponentLike('b', { className: "go" });
       expect(c).to.have.property('type', 'b');
       expect(c.props).to.have.eql({ className: "go", children: "away" });
     });
     it("should find a component", function() {
-      var c = tree.findComponentLike($(Widget, {}));
+      var c = tree.findComponentLike('Widget', {});
       expect(c).to.have.property('type', Widget);
       expect(c.props).to.eql({});
     });
     it("should find a component with partial props", function() {
-      var c = tree.findComponentLike($(Widget, { num: 123 }));
+      var c = tree.findComponentLike('Widget', { num: 123 });
       expect(c).to.have.property('type', Widget);
       expect(c.props).to.eql({ some: "value", num: 123 });
     });
     it("should fail to find a DOM component", function() {
-      expect(tree.findComponentLike($('span', {}, "real", "stuff")))
+      expect(tree.findComponentLike('span', { children: ["real", "stuff"] }))
         .to.eql(false);
     });
     it("should fail to find a DOM component if doesn't match", function() {
-      expect(tree.findComponentLike($('b', { className: "go", id: "away" })))
+      expect(tree.findComponentLike('b', { className: "go", id: "away" }))
         .to.eql(false);
     });
     it("should fail to find a component if doesn't match", function() {
-      expect(tree.findComponentLike($(Widget, { abc: 123 })))
+      expect(tree.findComponentLike('Widget', { abc: 123 }))
         .to.eql(false);
     });
     it("should fail to find a component if doesn't match", function() {
-      expect(tree.findComponentLike($(Widget, { num: 123, x: "y" })))
+      expect(tree.findComponentLike('Widget', { num: 123, x: "y" }))
         .to.eql(false);
+    });
+    describe("back-compat with a warning", function() {
+      var originalWarn = console.warn;
+      var warning;
+      beforeEach(function() {
+        warning = null;
+        console.warn = function(msg) { warning = msg; };
+      });
+      afterEach(function() {
+        console.warn = originalWarn;
+      });
+      it("should find a DOM component", function() {
+        var c = tree.findComponentLike($('span', {}, "stuff", "&", "nonsense"));
+        expect(c).to.have.property('type', 'span');
+        expect(c.props).to.eql({ children: ["stuff", "&", "nonsense"]});
+        expect(warning).to.match(/deprecated/);
+      });
+      it("should find a DOM component via partial match", function() {
+        var c = tree.findComponentLike($('b', { className: "go" }));
+        expect(c).to.have.property('type', 'b');
+        expect(c.props).to.have.eql({ className: "go", children: "away" });
+        expect(warning).to.match(/deprecated/);
+      });
+      it("should find a component", function() {
+        var c = tree.findComponentLike($(Widget, {}));
+        expect(c).to.have.property('type', Widget);
+        expect(c.props).to.eql({});
+        expect(warning).to.match(/deprecated/);
+      });
+      it("should find a component with partial props", function() {
+        var c = tree.findComponentLike($(Widget, { num: 123 }));
+        expect(c).to.have.property('type', Widget);
+        expect(c.props).to.eql({ some: "value", num: 123 });
+        expect(warning).to.match(/deprecated/);
+      });
     });
   });
 

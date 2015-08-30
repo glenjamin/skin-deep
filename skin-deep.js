@@ -63,17 +63,36 @@ function SkinDeep(getCurrentNode, instance) {
         node.props.onChange({ target: { value: value } });
       }
     },
-    findComponent: function(search) {
+    findComponent: function(type, props) {
+      if (arguments.length == 1) {
+        console.warn(
+          "Using a component in findComponent is deprecated. " +
+          "Pass name and props as separate arguments instead"
+        );
+        var search = type;
+        type = search.type.displayName || search.type;
+        props = search.props;
+      }
       return findNode(getCurrentNode(), function(node) {
-        return node.type == search.type &&
-          subset(node.props, search.props) &&
-          subset(search.props, node.props);
+        return matchComponentType(type, node) &&
+          subset(node.props, props) &&
+          subset(props, node.props);
       });
     },
-    findComponentLike: function(search) {
+    findComponentLike: function(type, props) {
+      if (arguments.length == 1) {
+        console.warn(
+          "Using a component in findComponent is deprecated. " +
+          "Pass name and props as separate arguments instead"
+        );
+        var search = type;
+        type = search.type.displayName || search.type;
+        props = search.props;
+      }
+      props = props || {};
       return findNode(getCurrentNode(), function(node) {
-        return node.type == search.type &&
-          subset(node.props, search.props);
+        return matchComponentType(type, node) &&
+          subset(node.props, props);
       });
     },
     getRenderOutput: function() {
@@ -87,6 +106,13 @@ function SkinDeep(getCurrentNode, instance) {
 
 function skinDeepNode(node) {
   return new SkinDeep(function() { return node; });
+}
+
+function matchComponentType(type, node) {
+  if (!type || !node) return false;
+  if (!node.type) return false;
+  if (typeof node.type === 'string') return node.type == type;
+  return node.type.displayName == type;
 }
 
 function createNodePredicate(query) {
