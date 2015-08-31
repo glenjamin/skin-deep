@@ -97,6 +97,13 @@ describe("skin-deep", function() {
       expect(instance.aMethod).to.be.a('function');
     });
 
+    it("shouldn't work on non-component renders", function() {
+      var tree = sd.shallowRender($('h1', {}));
+      expect(function() {
+        tree.getMountedInstance();
+      }).to.throw();
+    });
+
   });
 
   describe("findNode", function() {
