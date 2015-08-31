@@ -3,7 +3,7 @@ chai.use(require('../chai'));
 var expect = chai.expect;
 var assert = chai.assert;
 
-var React = require('react/addons');
+var React = require('react');
 
 var sd = require('../skin-deep');
 
