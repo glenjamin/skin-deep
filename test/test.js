@@ -1,7 +1,15 @@
 var chai = require('chai');
 var expect = chai.expect;
 
-var React = require('react/addons');
+var React = require('react');
+var React013 = (React.version.substring(0, 4) == '0.13');
+
+var createFragment;
+if (React013) {
+  createFragment = require('react/addons').addons.createFragment;
+} else {
+  createFragment = require('react-addons-create-fragment');
+}
 
 var sd = require('../skin-deep');
 
@@ -87,6 +95,13 @@ describe("skin-deep", function() {
       var instance = tree.getMountedInstance();
 
       expect(instance.aMethod).to.be.a('function');
+    });
+
+    it("shouldn't work on non-component renders", function() {
+      var tree = sd.shallowRender($('h1', {}));
+      expect(function() {
+        tree.getMountedInstance();
+      }).to.throw();
     });
 
   });
@@ -619,7 +634,7 @@ describe("skin-deep", function() {
     );
     var tree2 = sd.shallowRender(
       $('div', {},
-        React.addons.createFragment({
+        createFragment({
           left: $('span', { id: 'left' }, 'left'),
           right: $('span', { id: 'right' }, 'right')
         })
