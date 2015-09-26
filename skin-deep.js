@@ -98,7 +98,7 @@ function SkinDeep(getCurrentNode, instance) {
           "Pass name and props as separate arguments instead"
         );
         var search = type;
-        type = search.type.displayName || search.type;
+        type = getComponentName(search.type) || search.type;
         props = search.props;
       }
       return findNode(getCurrentNode(), function(node) {
@@ -114,7 +114,7 @@ function SkinDeep(getCurrentNode, instance) {
           "Pass name and props as separate arguments instead"
         );
         var search = type;
-        type = search.type.displayName || search.type;
+        type = getComponentName(search.type) || search.type;
         props = search.props;
       }
       props = props || {};
@@ -136,11 +136,15 @@ function skinDeepNode(node) {
   return new SkinDeep(function() { return node; });
 }
 
+function getComponentName(type) {
+  return type.displayName || type.name;
+}
+
 function matchComponentType(type, node) {
   if (!type || !node) return false;
   if (!node.type) return false;
   if (typeof node.type === 'string') return node.type == type;
-  return node.type.displayName == type;
+  return getComponentName(node.type) == type;
 }
 
 function createNodePredicate(query) {
@@ -154,7 +158,7 @@ function createNodePredicate(query) {
     return function(n) { return n.type == query; };
   }
   if (query.match(/^[A-Z][\w\-]*$/)) { // component displayName
-    return function(n) { return n.type && n.type.displayName == query; };
+    return function(n) { return n.type && getComponentName(n.type) == query; };
   }
   throw new Error('Invalid node query ' + query);
 }
@@ -224,7 +228,7 @@ function getTextFromNode(node) {
   }
   // Non-dom components are a black box
   if (TestUtils.isElement(node) && typeof node.type !== 'string') {
-    return '<' + node.type.displayName + ' />';
+    return '<' + getComponentName(node.type) + ' />';
   }
 
   // Recurse down through children if present
