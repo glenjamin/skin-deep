@@ -18,13 +18,13 @@
   },
   "homepage": "https://github.com/glenjamin/skin-deep",
   "dependencies": {
-    "is-subset": "^0.1.1"
+    "is-subset": "0.1.1"
   },
   "devDependencies": {
-    "chai": "^2.3.0",
-    "coveralls": "^2.11.2",
-    "istanbul": "^0.3.14",
-    "mocha": "^2.2.5",
-    "react": "^0.13.3"
+    "chai": "2.3.0",
+    "coveralls": "2.11.4",
+    "istanbul": "0.3.21",
+    "mocha": "2.3.3",
+    "react": "0.13.3"
   }
 }
