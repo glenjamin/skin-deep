@@ -1,5 +1,5 @@
 var subset = require('is-subset');
-
+var objectAssign = require('object-assign');
 var React = require('react');
 var versionNumber = Number(React.version.substring(0, 4));
 var TestUtils;
@@ -129,17 +129,10 @@ function SkinDeep(getCurrentNode, instance) {
     },
     findComponentWithoutChildren: function(type, props) {
       if (arguments.length === 1) {
-        console.warn(
-          "Using a component in findComponent is deprecated. " +
-          "Pass name and props as separate arguments instead"
-        );
-        var search = type;
-        type = getComponentName(search.type) || search.type;
-        props = search.props;
+        return this.findComponentsWithoutChildren(type)[0] || false;
       }
-      return this.findComponentsWithoutChildren(type,props)[0] || false;
+      return this.findComponentsWithoutChildren(type, props)[0] || false;
     },
-
     findComponentsWithoutChildren: function(type, props) {
       if (arguments.length === 1) {
         console.warn(
@@ -151,21 +144,9 @@ function SkinDeep(getCurrentNode, instance) {
         props = search.props;
       }
       return findNodes(getCurrentNode(), function(node) {
-        if (node && node.props && props) {
-
-          var props1 = clone(node.props);
-          var props2 = clone(props);
-          delete props1['children'];
-          delete props2['children'];
-
           return matchComponentType(type, node) &&
-            subset(props1, props2) &&
-            subset(props2, props1);
-        } else{
-          return matchComponentType(type, node) &&
-            subset(node.props, props) &&
-            subset(props, node.props);
-        }
+            subset(objectAssign({}, node.props, {children: ''}), objectAssign({}, props, {children: ''})) &&
+            subset(objectAssign({}, props, {children: ''}), objectAssign({}, node.props, {children: ''}));
       }, false);
     },
     getRenderOutput: function() {
