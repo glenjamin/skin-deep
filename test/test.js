@@ -3,7 +3,6 @@ var expect = chai.expect;
 
 var React = require('react');
 var versionNumber = Number(React.version.substring(0, 4));
-console.log('version number ...............', versionNumber);
 var TestUtils;
 if (versionNumber>=0.13) {
   createFragment = require('react/addons').addons.createFragment;
@@ -605,6 +604,115 @@ describe("skin-deep", function() {
         expect(c).to.have.property('type', Widget);
         expect(c.props).to.eql({ some: "value", num: 123 });
         expect(warning).to.match(/deprecated/);
+      });
+    });
+  });
+
+  describe("findComponentsWithoutChildren", function() {
+    var Widget = React.createClass({
+      displayName: 'Widget',
+      render: function() {}
+    });
+    var tree = sd.shallowRender(
+      $('div', {},
+        $('span', {}, "stuff", "and", "nonsense"),
+        $('span', {}, "stuff", "and", "nonsense"),
+        $('b', { className: "go"}, "away"),
+        $('b', { className: "go"}, "away"),
+        $(Widget, { some: "value", num: 123 }),
+        $(Widget, { some: "value", num: 123 }),
+        $(Widget, {}, "kids"),
+        $(Widget, {}, "kids")
+      )
+    );
+    it("should find DOM components ccccccc", function() {
+      var c = tree.findComponentsWithoutChildren('span', {});
+      expect(c).to.have.length(2);
+      c.forEach( function(i) {
+        expect(i).to.have.property('type', 'span');
+        expect(i.props.children).to.eql(["stuff", "and", "nonsense"]);
+      });
+    });
+    it("should find DOM components with props", function() {
+      var c = tree.findComponentsWithoutChildren('b', { className: "go" });
+      expect(c).to.have.length(2);
+      c.forEach( function(i) {
+        expect(i).to.have.property('type', 'b');
+        expect(i.props).to.eql({ className: "go", children: "away" });
+      });
+    });
+    it("should find components",   function() {
+      var c = tree.findComponentsWithoutChildren('Widget', {});
+      expect(c).to.have.length(2);
+      c.forEach(function(i) {
+        expect(i).to.have.property('type', Widget);
+        expect(i.props).to.eql({ children: "kids" });
+      });
+    });
+    it("should find components with props", function() {
+      var c = tree.findComponentsWithoutChildren('Widget', { some: "value", num: 123 });
+      expect(c).to.have.length(2);
+      c.forEach(function(i) {
+        expect(i).to.have.property('type', Widget);
+        expect(i.props).to.eql({ some: "value", num: 123 });
+      });
+    });
+    it("should find components disregarding children in query", function() {
+      var c = tree.findComponentsWithoutChildren('Widget', { children: "not kids" });
+      expect(c).to.have.length(2);
+      c.forEach(function(i) {
+        expect(i).to.have.property('type', Widget);
+        expect(i.props).to.eql({ children: "kids" });
+      });
+    });
+    it("should fail to find components", function() {
+      expect(tree.findComponentsWithoutChildren('Widget', { "other": "value"}))
+        .to.have.length(0);
+    });
+    describe("back-compat with a warning", function() {
+      var originalWarn = console.warn;
+      var warning;
+      beforeEach(function() {
+        warning = null;
+        console.warn = function(msg) { warning = msg; };
+      });
+      afterEach(function() {
+        console.warn = originalWarn;
+      });
+      it("should find DOM components", function() {
+        var c = tree.findComponentsWithoutChildren($('span', {}, "stuff", "and", "nonsense"));
+        expect(c).to.have.length(2);
+        c.forEach(function(i) {
+          expect(i).to.have.property('type', 'span');
+          expect(warning).to.match(/deprecated/);
+        });
+      });
+      it("should find DOM components with props", function() {
+        var c = tree.findComponentsWithoutChildren($('b', { className: "go" }, "away"));
+        expect(c).to.have.length(2);
+        c.forEach(function(i) {
+          expect(i).to.have.property('type', 'b');
+          expect(i.props).to.eql({ className: "go", children: "away" });
+          expect(warning).to.match(/deprecated/);
+        });
+      });
+      it("should find components", function() {
+        var c = tree.findComponentsWithoutChildren($(Widget, {}));
+        expect(c).to.have.length(2);
+        c.forEach(function(i) {
+          expect(i).to.have.property('type', Widget);
+          expect(i.props).to.eql({ children: 'kids' });
+          expect(warning).to.match(/deprecated/);
+        });
+      });
+      it("should find components with props", function() {
+        var c = tree.findComponentsWithoutChildren($(Widget, { some: "value", num: 123 }));
+        expect(c).to.have.length(2);
+        c.forEach(function(i) {
+          expect(i).to.have.property('type', Widget);
+          expect(i.props).to.eql({ some: "value", num: 123 });
+          expect(warning).to.match(/deprecated/);
+        });
       });
     });
   });

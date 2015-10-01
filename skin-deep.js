@@ -2,7 +2,6 @@ var subset = require('is-subset');
 
 var React = require('react');
 var versionNumber = Number(React.version.substring(0, 4));
-console.log('version number ...............', versionNumber);
 var TestUtils;
 if (versionNumber >= 0.13) {
  TestUtils = require('react/addons').addons.TestUtils;
@@ -153,6 +152,7 @@ function SkinDeep(getCurrentNode, instance) {
       }
       return findNodes(getCurrentNode(), function(node) {
         if (node && node.props && props) {
+
           var props1 = clone(node.props);
           var props2 = clone(props);
           delete props1['children'];
