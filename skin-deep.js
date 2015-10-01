@@ -1,14 +1,16 @@
 var subset = require('is-subset');
 
 var React = require('react');
-var React013 = (React.version.substring(0, 4) == '0.13');
+var React013 = (React.version.substring(0, 4) === '0.13');
 
 var TestUtils;
-if (React013) {
-  TestUtils = require('react/addons').addons.TestUtils;
-} else {
-  TestUtils = require('react-addons-test-utils');
-}
+//if (React013) {
+//  TestUtils = require('react/addons').addons.TestUtils;
+//} else {
+//  TestUtils = require('react-addons-test-utils');
+//}
+TestUtils = require('react/addons').addons.TestUtils;
+
 
 function renderToStaticMarkup(element) {
   if (React013) {
@@ -106,6 +108,35 @@ function SkinDeep(getCurrentNode, instance) {
           subset(node.props, props) &&
           subset(props, node.props);
       });
+    },
+    findComponentWithoutChildren: function(type, props) {
+      return this.findComponentsWithoutChildren[0] || false;
+    },
+    findComponentsWithoutChildren: function(type, props) {
+      if (arguments.length == 1) {
+        console.warn(
+          "Using a component in findComponent is deprecated. " +
+          "Pass name and props as separate arguments instead"
+        );
+        var search = type;
+        type = getComponentName(search.type) || search.type;
+        props = search.props;
+      }
+      return findNodes(getCurrentNode(), function(node) {
+        if (node && node.props && node.props.children) {
+          var props1 = clone(node.props);
+          var props2 = clone(props);
+          delete props1['children'];
+
+          return matchComponentType(type, node) &&
+            subset(props1, props2) &&
+            subset(props2, props1);
+        } else{
+          return matchComponentType(type, node) &&
+            subset(node.props, props) &&
+            subset(props, node.props);
+        }
+      }, false);
     },
     findComponentLike: function(type, props) {
       if (arguments.length == 1) {
@@ -255,3 +286,13 @@ function mapcat(array, fn) {
   });
   return result;
 }
+
+function clone(obj) {
+  if (null == obj || "object" != typeof obj) return obj;
+  var copy = obj.constructor();
+  for (var attr in obj) {
+    if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+  }
+  return copy;
+}
+
