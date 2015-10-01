@@ -2,10 +2,10 @@ var chai = require('chai');
 var expect = chai.expect;
 
 var React = require('react');
-var React013 = (React.version.substring(0, 4) == '0.13');
-
-var createFragment;
-if (React013) {
+var versionNumber = Number(React.version.substring(0, 4));
+console.log('version number ...............', versionNumber);
+var TestUtils;
+if (versionNumber>=0.13) {
   createFragment = require('react/addons').addons.createFragment;
 } else {
   createFragment = require('react-addons-create-fragment');
@@ -524,6 +524,84 @@ describe("skin-deep", function() {
       });
       it("should find a component with props", function() {
         var c = tree.findComponent($(Widget, { some: "value", num: 123 }));
+        expect(c).to.have.property('type', Widget);
+        expect(c.props).to.eql({ some: "value", num: 123 });
+        expect(warning).to.match(/deprecated/);
+      });
+    });
+  });
+
+  describe("findComponentWithoutChildren", function() {
+    var Widget = React.createClass({
+      displayName: 'Widget',
+      render: function() {}
+    });
+    var tree = sd.shallowRender(
+      $('div', {},
+        $('span', {}, "stuff", "and", "nonsense"),
+        $('b', { className: "go"}, "away"),
+        $(Widget, { some: "value", num: 123 }),
+        $(Widget, {}, "kids")
+      )
+    );
+    it("should find a DOM component", function() {
+      var c = tree.findComponentWithoutChildren('span', {});
+      expect(c).to.have.property('type', 'span');
+      expect(c.props.children).to.eql(["stuff", "and", "nonsense"]);
+    });
+    it("should find a DOM component with props", function() {
+      var c = tree.findComponentWithoutChildren('b', { className: "go" });
+      expect(c).to.have.property('type', 'b');
+      expect(c.props).to.eql({ className: "go", children: "away" });
+    });
+    it("should find a component", function() {
+      var c = tree.findComponentWithoutChildren('Widget', {});
+      expect(c).to.have.property('type', Widget);
+      expect(c.props).to.eql({ children: "kids" });
+    });
+    it("should find a component with props", function() {
+      var c = tree.findComponentWithoutChildren('Widget', { some: "value", num: 123 });
+      expect(c).to.have.property('type', Widget);
+      expect(c.props).to.eql({ some: "value", num: 123 });
+    });
+    it("should find a component disregarding children in query", function() {
+      var c = tree.findComponentWithoutChildren('Widget', { children: "not kids" });
+      expect(c).to.have.property('type', Widget);
+      expect(c.props).to.eql({ children: "kids" });
+    });
+    it("should fail to find a component", function() {
+      expect(tree.findComponentWithoutChildren('Widget', { "other": "value"}))
+        .to.eql(false);
+    });
+    describe("back-compat with a warning", function() {
+      var originalWarn = console.warn;
+      var warning;
+      beforeEach(function() {
+        warning = null;
+        console.warn = function(msg) { warning = msg; };
+      });
+      afterEach(function() {
+        console.warn = originalWarn;
+      });
+      it("should find a DOM component", function() {
+        var c = tree.findComponentWithoutChildren($('span', {}, "stuff", "and", "nonsense"));
+        expect(c).to.have.property('type', 'span');
+        expect(warning).to.match(/deprecated/);
+      });
+      it("should find a DOM component with props", function() {
+        var c = tree.findComponentWithoutChildren($('b', { className: "go" }, "away"));
+        expect(c).to.have.property('type', 'b');
+        expect(c.props).to.eql({ className: "go", children: "away" });
+        expect(warning).to.match(/deprecated/);
+      });
+      it("should find a component", function() {
+        var c = tree.findComponentWithoutChildren($(Widget, {}));
+        expect(c).to.have.property('type', Widget);
+        expect(c.props).to.eql({ children: 'kids' });
+        expect(warning).to.match(/deprecated/);
+      });
+      it("should find a component with props", function() {
+        var c = tree.findComponentWithoutChildren($(Widget, { some: "value", num: 123 }));
         expect(c).to.have.property('type', Widget);
         expect(c.props).to.eql({ some: "value", num: 123 });
         expect(warning).to.match(/deprecated/);

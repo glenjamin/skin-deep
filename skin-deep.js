@@ -1,19 +1,17 @@
 var subset = require('is-subset');
 
 var React = require('react');
-var React013 = (React.version.substring(0, 4) === '0.13');
-
+var versionNumber = Number(React.version.substring(0, 4));
+console.log('version number ...............', versionNumber);
 var TestUtils;
-//if (React013) {
-//  TestUtils = require('react/addons').addons.TestUtils;
-//} else {
-//  TestUtils = require('react-addons-test-utils');
-//}
-TestUtils = require('react/addons').addons.TestUtils;
-
+if (versionNumber >= 0.13) {
+ TestUtils = require('react/addons').addons.TestUtils;
+} else {
+ TestUtils = require('react-addons-test-utils');
+}
 
 function renderToStaticMarkup(element) {
-  if (React013) {
+  if (versionNumber >= 0.13) {
     return React.renderToStaticMarkup(element);
   }
 
@@ -21,9 +19,14 @@ function renderToStaticMarkup(element) {
 }
 
 function withContext(context, fn) {
-  if (!React013) return fn();
+  if (versionNumber < 0.13) return fn();
 
-  var ReactContext = require('react/lib/ReactContext');
+  var ReactContext;
+  if (versionNumber === 0.13) {
+    ReactContext = require('react/lib/ReactContext');
+  } else {
+    ReactContext = require('react');
+  }
   ReactContext.current = context;
   var result = fn();
   ReactContext.current = {};
@@ -94,7 +97,7 @@ function SkinDeep(getCurrentNode, instance) {
       }
     },
     findComponent: function(type, props) {
-      if (arguments.length == 1) {
+      if (arguments.length === 1) {
         console.warn(
           "Using a component in findComponent is deprecated. " +
           "Pass name and props as separate arguments instead"
@@ -109,37 +112,8 @@ function SkinDeep(getCurrentNode, instance) {
           subset(props, node.props);
       });
     },
-    findComponentWithoutChildren: function(type, props) {
-      return this.findComponentsWithoutChildren[0] || false;
-    },
-    findComponentsWithoutChildren: function(type, props) {
-      if (arguments.length == 1) {
-        console.warn(
-          "Using a component in findComponent is deprecated. " +
-          "Pass name and props as separate arguments instead"
-        );
-        var search = type;
-        type = getComponentName(search.type) || search.type;
-        props = search.props;
-      }
-      return findNodes(getCurrentNode(), function(node) {
-        if (node && node.props && node.props.children) {
-          var props1 = clone(node.props);
-          var props2 = clone(props);
-          delete props1['children'];
-
-          return matchComponentType(type, node) &&
-            subset(props1, props2) &&
-            subset(props2, props1);
-        } else{
-          return matchComponentType(type, node) &&
-            subset(node.props, props) &&
-            subset(props, node.props);
-        }
-      }, false);
-    },
     findComponentLike: function(type, props) {
-      if (arguments.length == 1) {
+      if (arguments.length === 1) {
         console.warn(
           "Using a component in findComponent is deprecated. " +
           "Pass name and props as separate arguments instead"
@@ -153,6 +127,46 @@ function SkinDeep(getCurrentNode, instance) {
         return matchComponentType(type, node) &&
           subset(node.props, props);
       });
+    },
+    findComponentWithoutChildren: function(type, props) {
+      if (arguments.length === 1) {
+        console.warn(
+          "Using a component in findComponent is deprecated. " +
+          "Pass name and props as separate arguments instead"
+        );
+        var search = type;
+        type = getComponentName(search.type) || search.type;
+        props = search.props;
+      }
+      return this.findComponentsWithoutChildren(type,props)[0] || false;
+    },
+
+    findComponentsWithoutChildren: function(type, props) {
+      if (arguments.length === 1) {
+        console.warn(
+          "Using a component in findComponent is deprecated. " +
+          "Pass name and props as separate arguments instead"
+        );
+        var search = type;
+        type = getComponentName(search.type) || search.type;
+        props = search.props;
+      }
+      return findNodes(getCurrentNode(), function(node) {
+        if (node && node.props && props) {
+          var props1 = clone(node.props);
+          var props2 = clone(props);
+          delete props1['children'];
+          delete props2['children'];
+
+          return matchComponentType(type, node) &&
+            subset(props1, props2) &&
+            subset(props2, props1);
+        } else{
+          return matchComponentType(type, node) &&
+            subset(node.props, props) &&
+            subset(props, node.props);
+        }
+      }, false);
     },
     getRenderOutput: function() {
       return getCurrentNode();
@@ -295,4 +309,3 @@ function clone(obj) {
   }
   return copy;
 }
-
