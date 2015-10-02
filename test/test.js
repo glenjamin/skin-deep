@@ -2,9 +2,10 @@ var chai = require('chai');
 var expect = chai.expect;
 
 var React = require('react');
-var versionNumber = Number(React.version.substring(0, 4));
-var TestUtils;
-if (versionNumber>=0.13) {
+var React013 = (React.version.substring(0, 4) == '0.13');
+
+var createFragment;
+if (React013) {
   createFragment = require('react/addons').addons.createFragment;
 } else {
   createFragment = require('react-addons-create-fragment');

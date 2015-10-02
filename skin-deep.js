@@ -1,16 +1,18 @@
 var subset = require('is-subset');
 var objectAssign = require('object-assign');
+
 var React = require('react');
-var versionNumber = Number(React.version.substring(0, 4));
+var React013 = (React.version.substring(0, 4) == '0.13');
+
 var TestUtils;
-if (versionNumber >= 0.13) {
- TestUtils = require('react/addons').addons.TestUtils;
+if (React013) {
+  TestUtils = require('react/addons').addons.TestUtils;
 } else {
- TestUtils = require('react-addons-test-utils');
+  TestUtils = require('react-addons-test-utils');
 }
 
 function renderToStaticMarkup(element) {
-  if (versionNumber >= 0.13) {
+  if (React013) {
     return React.renderToStaticMarkup(element);
   }
 
@@ -18,14 +20,9 @@ function renderToStaticMarkup(element) {
 }
 
 function withContext(context, fn) {
-  if (versionNumber < 0.13) return fn();
+  if (!React013) return fn();
 
-  var ReactContext;
-  if (versionNumber === 0.13) {
-    ReactContext = require('react/lib/ReactContext');
-  } else {
-    ReactContext = require('react');
-  }
+  var ReactContext = require('react/lib/ReactContext');
   ReactContext.current = context;
   var result = fn();
   ReactContext.current = {};
@@ -96,7 +93,7 @@ function SkinDeep(getCurrentNode, instance) {
       }
     },
     findComponent: function(type, props) {
-      if (arguments.length === 1) {
+      if (arguments.length == 1) {
         console.warn(
           "Using a component in findComponent is deprecated. " +
           "Pass name and props as separate arguments instead"
@@ -112,7 +109,7 @@ function SkinDeep(getCurrentNode, instance) {
       });
     },
     findComponentLike: function(type, props) {
-      if (arguments.length === 1) {
+      if (arguments.length == 1) {
         console.warn(
           "Using a component in findComponent is deprecated. " +
           "Pass name and props as separate arguments instead"
@@ -280,13 +277,4 @@ function mapcat(array, fn) {
     result.push.apply(result, fn(x, i));
   });
   return result;
-}
-
-function clone(obj) {
-  if (null == obj || "object" != typeof obj) return obj;
-  var copy = obj.constructor();
-  for (var attr in obj) {
-    if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
-  }
-  return copy;
 }
