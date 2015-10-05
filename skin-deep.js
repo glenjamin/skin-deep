@@ -40,7 +40,7 @@ function shallowRender(elementOrFunction, context) {
   });
 
   if (typeof element.type == 'string') {
-    return new SkinDeep(function() { return element; });
+    return new SkinDeep(function() { return element; }, shallowRenderer);
   }
 
   shallowRenderer.render(element, context);
@@ -49,14 +49,19 @@ function shallowRender(elementOrFunction, context) {
     function() {
       return shallowRenderer.getRenderOutput();
     },
+    shallowRenderer,
     /*eslint-disable no-underscore-dangle */
     shallowRenderer._instance._instance
     /*eslint-enable no-underscore-dangle */
   );
 }
 
-function SkinDeep(getCurrentNode, instance) {
+function SkinDeep(getCurrentNode, renderer, instance) {
   return {
+    reRender: function(element) {
+      if (renderer) return renderer.render(element);
+      throw new Error('This tree has no renderer');
+    },
     getMountedInstance: function() {
       if (instance) return instance;
       throw new Error('This tree has no mounted instance');

@@ -82,6 +82,25 @@ describe("skin-deep", function() {
     });
   });
 
+  describe("reRender", function() {
+    it("should reRender a React Component", function() {
+      var Component = React.createClass({
+        render: function() {
+          return $('h1', {}, this.props.thing);
+        }
+      });
+      var tree = sd.shallowRender($(Component, {thing: 'A'}));
+      var vdom1 = tree.getRenderOutput();
+      expect(vdom1).to.have.property('type', 'h1');
+      expect(vdom1.props).to.have.property('children', 'A');
+
+      tree.reRender($(Component, {thing: 'B'}));
+      var vdom2 = tree.getRenderOutput();
+      expect(vdom2).to.have.property('type', 'h1');
+      expect(vdom2.props).to.have.property('children', 'B');
+    });
+  })
+
   describe("getMountedInstance", function() {
 
     it("should provide the React Component instance", function() {
