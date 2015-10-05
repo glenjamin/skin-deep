@@ -4,6 +4,7 @@ node_js:
   - "0.10"
   - "0.12"
   - "iojs"
+  - "4"
 script: "npm run travis"
 after_script: "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
 env:
