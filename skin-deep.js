@@ -33,6 +33,7 @@ function shallowRender(elementOrFunction, context) {
   context = context || {};
 
   var shallowRenderer = TestUtils.createRenderer();
+  shallowRenderer.context = context;
 
   var element = withContext(context, function() {
     return TestUtils.isElement(elementOrFunction) ?
@@ -58,8 +59,17 @@ function shallowRender(elementOrFunction, context) {
 
 function SkinDeep(getCurrentNode, renderer, instance) {
   return {
-    reRender: function(element) {
-      if (renderer) return renderer.render(element);
+    reRender: function(elementOrFunction, context) {
+      if (renderer) {
+        context = context || renderer.context;
+
+        var element = withContext(context, function() {
+          return TestUtils.isElement(elementOrFunction) ?
+            elementOrFunction : elementOrFunction();
+        });
+        return renderer.render(element, context);
+      }
+
       throw new Error('This tree has no renderer');
     },
     getMountedInstance: function() {

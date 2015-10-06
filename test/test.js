@@ -83,7 +83,7 @@ describe("skin-deep", function() {
   });
 
   describe("reRender", function() {
-    it("should reRender a React Component", function() {
+    it("should reRender a React Component without context", function() {
       var Component = React.createClass({
         render: function() {
           return $('h1', {}, this.props.thing);
@@ -99,7 +99,30 @@ describe("skin-deep", function() {
       expect(vdom2).to.have.property('type', 'h1');
       expect(vdom2.props).to.have.property('children', 'B');
     });
-  })
+
+    it("should reRender a React Component with context", function() {
+      var Component = React.createClass({
+        contextTypes: { checkMe: React.PropTypes.string },
+        render: function() {
+          return $('h1', {}, this.props.thing, this.context.checkMe);
+        }
+      });
+      var tree = sd.shallowRender(
+        function() { return $(Component, {thing: 'A'}); }
+      , { checkMe: 'Context!'});
+      var vdom1 = tree.getRenderOutput();
+
+      expect(vdom1).to.have.property('type', 'h1');
+      expect(vdom1.props.children).to.eql(['A', 'Context!']);
+
+      tree.reRender(function() {
+        return $(Component, {thing: 'B'}); },
+      { checkMe: 'Context!'});
+      var vdom2 = tree.getRenderOutput();
+      expect(vdom2).to.have.property('type', 'h1');
+      expect(vdom2.props.children).to.eql(['B', 'Context!']);
+    });
+  });
 
   describe("getMountedInstance", function() {
 
