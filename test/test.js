@@ -204,12 +204,6 @@ describe("skin-deep", function() {
       expect(tree.findNode("#abc")).to.eql(false);
     });
 
-    it("should throw on invalid selector", function() {
-      expect(function() {
-        tree.findNode(";huh?");
-      }).to.throw(/invalid/i);
-    });
-
     describe("conditionals", function() {
       before(function() {
         tree = sd.shallowRender(
