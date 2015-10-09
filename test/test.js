@@ -153,6 +153,11 @@ describe("skin-deep", function() {
       displayName: 'Widget',
       render: function() { return 'widget'; }
     });
+
+    var ReduxWidget = React.createClass({
+      displayName: 'Connect(Widget)',
+      render: function() { return 'redux-widget'; }
+    });
     function Widget2() {}
     Widget2.prototype = Object.create(React.Component);
     Widget2.prototype.render = function() { return 'widget'; };
@@ -166,7 +171,8 @@ describe("skin-deep", function() {
           'hello',
           [$('div', {className: "abc", key: "1"}, "ABC")],
           $(Widget, {}),
-          $(Widget2, {})
+          $(Widget2, {}),
+          $(ReduxWidget, {})
         )
       )
     );
@@ -192,6 +198,9 @@ describe("skin-deep", function() {
     it("should find a node in tree by component displayName", function() {
       var abc = tree.findNode("Widget");
       expect(abc).to.have.property('type', Widget);
+
+      var xyz = tree.findNode("Connect(Widget)");
+      expect(xyz).to.have.property('type', ReduxWidget);
     });
 
     it("should find a node in tree by component class name", function() {
@@ -202,12 +211,6 @@ describe("skin-deep", function() {
     it("should return false when node not found", function() {
       expect(tree.findNode(".def")).to.eql(false);
       expect(tree.findNode("#abc")).to.eql(false);
-    });
-
-    it("should throw on invalid selector", function() {
-      expect(function() {
-        tree.findNode(";huh?");
-      }).to.throw(/invalid/i);
     });
 
     describe("conditionals", function() {

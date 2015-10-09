@@ -172,10 +172,8 @@ function createNodePredicate(query) {
   if (query.match(/^[a-z][\w\-]*$/)) { // tagname
     return function(n) { return n.type == query; };
   }
-  if (query.match(/^[A-Z][\w\-]*$/)) { // component displayName
-    return function(n) { return n.type && getComponentName(n.type) == query; };
-  }
-  throw new Error('Invalid node query ' + query);
+  // component displayName
+  return function(n) { return n.type && getComponentName(n.type) == query; };  
 }
 
 function findNodeIn(node, query) {
