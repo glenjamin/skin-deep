@@ -198,9 +198,11 @@ describe("skin-deep", function() {
     it("should find a node in tree by component displayName", function() {
       var abc = tree.findNode("Widget");
       expect(abc).to.have.property('type', Widget);
+    });
 
-      var xyz = tree.findNode("Connect(Widget)");
-      expect(xyz).to.have.property('type', ReduxWidget);
+    it("should find a node in tree by fancy displayName", function() {
+      var abc = tree.findNode("Connect(Widget)");
+      expect(abc).to.have.property('type', ReduxWidget);
     });
 
     it("should find a node in tree by component class name", function() {
