@@ -195,6 +195,10 @@ describe("skin-deep", function() {
       expect(abc.props).to.have.property('children', 'ABC');
     });
 
+    it("should not find a node in tree by attr & unmatched value", function() {
+      expect(tree.findNode("[data-attr=\"boo\"]")).to.eql(false);
+    });
+
     it("should find a node in tree by id", function() {
       var abc = tree.findNode("#def");
       expect(abc).to.have.property('type', 'div');
