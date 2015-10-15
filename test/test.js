@@ -336,6 +336,13 @@ describe("skin-deep", function() {
     });
   });
 
+  describe("props", function() {
+    it("should expose props", function() {
+      var tree = sd.shallowRender($('h1', { title: "blah" }, "Heading!"));
+      expect(tree.props).to.eql({title: "blah", children: "Heading!"});
+    });
+  });
+
   describe("text", function() {
     var Widget = React.createClass({
       displayName: 'Widget',
@@ -454,6 +461,11 @@ describe("skin-deep", function() {
       });
       it("should provide scoped text()", function() {
         expect(subTree.text()).to.eql("objection! objection! hello ABC");
+      });
+      it("should expose .props", function() {
+        expect(tree.subTree('#wut').props).to.eql({
+          id: 'wut', prop: 'val'
+        })
       });
     });
   });

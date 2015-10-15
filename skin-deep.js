@@ -58,7 +58,7 @@ function shallowRender(elementOrFunction, context) {
 }
 
 function SkinDeep(getCurrentNode, renderer, instance) {
-  return {
+  var api = {
     reRender: function(elementOrFunction, context) {
       if (renderer) {
         context = context || renderer.context;
@@ -141,6 +141,10 @@ function SkinDeep(getCurrentNode, renderer, instance) {
       return renderToStaticMarkup(getCurrentNode());
     }
   };
+  Object.defineProperty(api, 'props', {
+    get: function() { return getCurrentNode().props; }
+  })
+  return api;
 }
 
 function skinDeepNode(node) {
