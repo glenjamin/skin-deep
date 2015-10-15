@@ -11,6 +11,16 @@
     "type": "git",
     "url": "https://github.com/glenjamin/skin-deep.git"
   },
+  "keywords": [
+    "react",
+    "reactjs",
+    "test",
+    "testing",
+    "test utils",
+    "assertion helpers",
+    "shallow render",
+    "shallowRender"
+  ],
   "author": "Glen Mailer <glen@stainlessed.co.uk>",
   "license": "MIT",
   "bugs": {
