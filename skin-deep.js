@@ -51,9 +51,9 @@ function shallowRender(elementOrFunction, context) {
       return shallowRenderer.getRenderOutput();
     },
     shallowRenderer,
-    /*eslint-disable no-underscore-dangle */
+    /* eslint-disable no-underscore-dangle */
     shallowRenderer._instance._instance
-    /*eslint-enable no-underscore-dangle */
+    /* eslint-enable no-underscore-dangle */
   );
 }
 
@@ -76,26 +76,26 @@ function SkinDeep(getCurrentNode, renderer, instance) {
       if (instance) return instance;
       throw new Error('This tree has no mounted instance');
     },
-    subTree: function(query) {
-      var node = findNodeIn(getCurrentNode(), query);
-      return skinDeepNode(node);
+    subTree: function(query, predicate) {
+      var node = findNode(getCurrentNode(), createFinder(query, predicate));
+      return node && skinDeepNode(node);
     },
-    everySubTree: function(query) {
+    everySubTree: function(query, predicate) {
       var predicate = createNodePredicate(query);
       return findNodes(getCurrentNode(), predicate).map(skinDeepNode);
     },
     findNode: function(query) {
-      return findNodeIn(getCurrentNode(), query);
+      return findNode(getCurrentNode(), createNodePredicate(query));
     },
     textIn: function(query) {
-      var node = findNodeIn(getCurrentNode(), query);
+      var node = findNode(getCurrentNode(), createNodePredicate(query));
       return getTextFromNode(node);
     },
     text: function() {
       return getTextFromNode(getCurrentNode());
     },
     fillField: function(query, value) {
-      var node = findNodeIn(getCurrentNode(), query);
+      var node = findNode(getCurrentNode(), createNodePredicate(query));
       if (!node || !node.props) throw new Error('Unknown field ' + query);
 
       if (node.props.onChange) {
@@ -116,11 +116,7 @@ function SkinDeep(getCurrentNode, renderer, instance) {
         type = getComponentName(search.type) || search.type;
         props = search.props;
       }
-      return findNode(getCurrentNode(), function(node) {
-        return matchComponentType(type, node) &&
-          subset(node.props, props) &&
-          subset(props, node.props);
-      });
+      return findNode(getCurrentNode(), createFinder(type, props));
     },
     findComponentLike: function(type, props) {
       if (arguments.length == 1) {
@@ -173,11 +169,21 @@ function createNodePredicate(query) {
     return function(n) { return n.type == query; };
   }
   // component displayName
-  return function(n) { return n.type && getComponentName(n.type) == query; };  
+  return function(n) { return n.type && getComponentName(n.type) == query; };
 }
 
-function findNodeIn(node, query) {
-  return findNode(node, createNodePredicate(query));
+function createFinder(selector, predicate) {
+  var nodeMatcher = createNodePredicate(selector);
+  var otherMatcher = alwaysTrue;
+  if (typeof predicate === 'object') {
+    // predicate is a props object to match
+    otherMatcher = function(node) {
+      return subset(node.props, predicate) && subset(predicate, node.props);
+    }
+  }
+  return function(node) {
+    return nodeMatcher(node) && otherMatcher(node);
+  }
 }
 
 function findNodeByClass(cls) {
@@ -267,4 +273,8 @@ function mapcat(array, fn) {
     result.push.apply(result, fn(x, i));
   });
   return result;
+}
+
+function alwaysTrue() {
+  return true;
 }

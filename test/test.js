@@ -361,6 +361,10 @@ describe("skin-deep", function() {
   });
 
   describe("subTree", function() {
+    var Widget = React.createClass({
+      displayName: 'Widget',
+      render: function() {}
+    });
     var tree = sd.shallowRender(
       $('div', {},
         $('div', {id: "def", className: "abc"},
@@ -370,24 +374,69 @@ describe("skin-deep", function() {
           $('object', {}, "objection!"),
           'hello',
           [$('div', {id: "abc2", className: "abc", key: "1"}, "ABC")]
-        )
+        ),
+        $('div', { id: 'wut', prop: 'val' }),
+        $('div', { className: 'yup', prop: 'val' }),
+        $(Widget, {}, "stuff")
       )
     );
+    it("should return false when not found", function() {
+      var abc = tree.subTree("#blah");
+      expect(abc).to.eql(false);
+    });
     it("should grab a subtree by id selector", function() {
       var abc = tree.subTree("#abc");
       expect(abc).to.be.an('object');
       expect(abc.getRenderOutput().props).to.have.property("id", "abc");
+    });
+    it("should grab a subtree by id selector + props", function() {
+      var wut = tree.subTree("#wut", { id: 'wut', prop: "foo" });
+      expect(wut).to.eql(false);
+
+      var wut = tree.subTree("#wut", { id: 'wut', prop: "val" });
+      expect(wut).to.be.an('object');
+      expect(wut.getRenderOutput().props).to.have.property("id", "wut");
     });
     it("should grab a subtree by class selector", function() {
       var abc = tree.subTree(".abc");
       expect(abc).to.be.an('object');
       expect(abc.getRenderOutput().props).to.have.property("className", "abc");
     });
+    it("should grab a subtree by class selector + props", function() {
+      var yup = tree.subTree(".yup", { className: 'yup', prop: "foo" });
+      expect(yup).to.eql(false);
+
+      var yup = tree.subTree(".yup", { className: 'yup', prop: "val" });
+      expect(yup).to.be.an('object');
+      expect(yup.getRenderOutput().props).to.have.property("className", "yup");
+    });
     it("should grab a subtree by tag selector", function() {
       var abc = tree.subTree("object");
       expect(abc).to.be.an('object');
       expect(abc.getRenderOutput().props)
         .to.have.property("children", "objection!");
+    });
+    it("should grab a subtree by tag selector + props", function() {
+      var subtree = tree.subTree("object", { children: 'not objection!' });
+      expect(subtree).to.eql(false);
+
+      var subtree = tree.subTree("object", { children: 'objection!' });
+      expect(subtree).to.be.an('object');
+      expect(subtree.getRenderOutput().type).to.eql('object');
+    });
+    it("should grab a subtree by component name", function() {
+      var abc = tree.subTree("Widget");
+      expect(abc).to.be.an('object');
+      expect(abc.getRenderOutput().props)
+        .to.have.property("children", "stuff");
+    });
+    it("should grab a subtree by component + props", function() {
+      var subtree = tree.subTree("Widget", { children: 'not stuff' });
+      expect(subtree).to.eql(false);
+
+      var subtree = tree.subTree("Widget", { children: 'stuff' });
+      expect(subtree).to.be.an('object');
+      expect(subtree.getRenderOutput().type).to.eql(Widget);
     });
     describe("methods", function() {
       var subTree;
