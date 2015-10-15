@@ -2,6 +2,7 @@ var subset = require('is-subset');
 
 var React = require('react');
 var React013 = (React.version.substring(0, 4) == '0.13');
+var ATTR_REGEX = /^[\[]([a-z0-9\-]+)([=]["]([a-z0-9\-]+)["])?[\]]$/;
 
 var TestUtils;
 if (React013) {
@@ -168,6 +169,9 @@ function createNodePredicate(query) {
   if (query.match(/^[a-z][\w\-]*$/)) { // tagname
     return function(n) { return n.type == query; };
   }
+  if (query.match(ATTR_REGEX)) { // [attr="val"]
+    return findNodeByAttrWithValue(query);
+  }
   // component displayName
   return function(n) { return n.type && getComponentName(n.type) == query; };
 }
@@ -192,6 +196,19 @@ function findNodeByClass(cls) {
   return function(n) {
     return n.props && String(n.props.className).match(regex);
   };
+}
+
+function findNodeByAttrWithValue(query) {
+  var groups = ATTR_REGEX.exec(query);
+  var attr = groups[1];
+  var value = groups[3];
+  return (value || value === "")
+    ? function(n) {
+        return n.props && String(n.props[attr]) === value;
+      }
+    : function(n) {
+        return n.props && attr in n.props;
+      };
 }
 
 function findNodeById(id) {

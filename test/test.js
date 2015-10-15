@@ -169,7 +169,7 @@ describe("skin-deep", function() {
           $('div', {}, "objection!"),
           $('object', {}, "objection!"),
           'hello',
-          [$('div', {className: "abc", key: "1"}, "ABC")],
+          [$('div', {className: "abc", key: "1", "data-attr": "yay"}, "ABC")],
           $(Widget, {}),
           $(Widget2, {}),
           $(ReduxWidget, {})
@@ -181,6 +181,22 @@ describe("skin-deep", function() {
       var abc = tree.findNode(".abc");
       expect(abc).to.have.property('type', 'div');
       expect(abc.props).to.have.property('children', 'ABC');
+    });
+
+    it("should find a node in tree by attr only", function() {
+      var abc = tree.findNode("[data-attr]");
+      expect(abc).to.have.property('type', 'div');
+      expect(abc.props).to.have.property('children', 'ABC');
+    });
+
+    it("should find a node in tree by attr & value", function() {
+      var abc = tree.findNode("[data-attr=\"yay\"]");
+      expect(abc).to.have.property('type', 'div');
+      expect(abc.props).to.have.property('children', 'ABC');
+    });
+
+    it("should not find a node in tree by attr & unmatched value", function() {
+      expect(tree.findNode("[data-attr=\"boo\"]")).to.eql(false);
     });
 
     it("should find a node in tree by id", function() {
