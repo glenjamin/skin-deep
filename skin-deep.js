@@ -81,8 +81,8 @@ function SkinDeep(getCurrentNode, renderer, instance) {
       return node && skinDeepNode(node);
     },
     everySubTree: function(query, predicate) {
-      var predicate = createNodePredicate(query);
-      return findNodes(getCurrentNode(), predicate).map(skinDeepNode);
+      var finder = createFinder(query, predicate);
+      return findNodes(getCurrentNode(), finder).map(skinDeepNode);
     },
     findNode: function(query) {
       return findNode(getCurrentNode(), createNodePredicate(query));

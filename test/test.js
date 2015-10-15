@@ -509,6 +509,21 @@ describe("skin-deep", function() {
         expect(texts).to.eql(["1", "2", "3", "4", "5"]);
       });
     });
+    describe("using tag selector with props", function() {
+      beforeEach(function() {
+        trees = tree.everySubTree("span", { children: 1 });
+      });
+      it("should return array", function() {
+        expect(trees).to.be.an('array');
+        expect(trees).to.have.length(1);
+      });
+      it("should have SkinDeep subtrees in array", function() {
+        trees.forEach(function(subTree) {
+          expect(subTree).to.be.an('object');
+          expect(Object.keys(subTree)).to.eql(Object.keys(tree));
+        });
+      });
+    });
     describe("nested matches", function() {
       before(function() {
         tree = sd.shallowRender(
