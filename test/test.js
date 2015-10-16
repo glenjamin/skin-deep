@@ -391,6 +391,11 @@ describe("skin-deep", function() {
       var abc = tree.subTree("#blah");
       expect(abc).to.eql(false);
     });
+    it("should grab a subtree by * selector + props", function() {
+      var wut = tree.subTree("*", { id: 'wut', prop: "val" });
+      expect(wut).to.be.an('object');
+      expect(wut.getRenderOutput().props).to.have.property("id", "wut");
+    });
     it("should grab a subtree by id selector", function() {
       var abc = tree.subTree("#abc");
       expect(abc).to.be.an('object');
@@ -524,6 +529,21 @@ describe("skin-deep", function() {
     describe("using tag selector with props", function() {
       beforeEach(function() {
         trees = tree.everySubTree("span", { children: 1 });
+      });
+      it("should return array", function() {
+        expect(trees).to.be.an('array');
+        expect(trees).to.have.length(1);
+      });
+      it("should have SkinDeep subtrees in array", function() {
+        trees.forEach(function(subTree) {
+          expect(subTree).to.be.an('object');
+          expect(Object.keys(subTree)).to.eql(Object.keys(tree));
+        });
+      });
+    });
+    describe("using * selector with props", function() {
+      beforeEach(function() {
+        trees = tree.everySubTree("*", { children: 1 });
       });
       it("should return array", function() {
         expect(trees).to.be.an('array');

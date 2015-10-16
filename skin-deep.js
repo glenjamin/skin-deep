@@ -163,6 +163,9 @@ function matchComponentType(type, node) {
 }
 
 function createNodePredicate(query) {
+  if (query == '*') {
+    return alwaysTrue;
+  }
   if (query.match(/^\.[\w\-]+$/)) {
     return findNodeByClass(query.substring(1));
   }
