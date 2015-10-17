@@ -33,7 +33,7 @@
   "devDependencies": {
     "chai": "3.3.0",
     "coveralls": "^2.11.2",
-    "istanbul": "^0.3.14",
+    "istanbul": "^0.4.0",
     "mocha": "^2.2.5",
     "react": "^0.14.0",
     "react-addons-create-fragment": "^0.14.0",
