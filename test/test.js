@@ -396,6 +396,11 @@ describe("skin-deep", function() {
       expect(wut).to.be.an('object');
       expect(wut.getRenderOutput().props).to.have.property("id", "wut");
     });
+    it("should grab a subtree by * selector + sub-set of props", function() {
+      var wut = tree.subTree("*", { id: 'abc2' });
+      expect(wut).to.be.an('object');
+      expect(wut.getRenderOutput()).to.have.property("key", "1");
+    });
     it("should grab a subtree by id selector", function() {
       var abc = tree.subTree("#abc");
       expect(abc).to.be.an('object');
@@ -482,9 +487,9 @@ describe("skin-deep", function() {
         $('ul', {},
           $('li', {className: "abc"}, $('span', {}, 1)),
           $('li', {className: "abc"}, $('span', {}, 2)),
-          $('li', {className: "abc"}, $('span', {}, 3)),
+          $('li', {className: "abc"}, $('span', {prop: 'val', key: '3'}, 3)),
           $('li', {className: "abc"}, $('span', {}, 4)),
-          $('li', {className: "abc"}, $('span', {}, 5))
+          $('li', {className: "abc"}, $('span', {prop: 'val', id: 'wut'}, 5))
         )
       );
     });
@@ -554,6 +559,15 @@ describe("skin-deep", function() {
           expect(subTree).to.be.an('object');
           expect(Object.keys(subTree)).to.eql(Object.keys(tree));
         });
+      });
+    });
+    describe("using * selector with sub-set of props", function() {
+      beforeEach(function() {
+        trees = tree.everySubTree("*", { prop: 'val' });
+      });
+      it("should return array", function() {
+        expect(trees).to.be.an('array');
+        expect(trees).to.have.length(2);
       });
     });
     describe("nested matches", function() {

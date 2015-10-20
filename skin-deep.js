@@ -185,7 +185,7 @@ function createFinder(selector, predicate) {
   if (typeof predicate === 'object') {
     // predicate is a props object to match
     otherMatcher = function(node) {
-      return subset(node.props, predicate) && subset(predicate, node.props);
+      return subset(node.props, predicate);
     }
   }
   return function(node) {
