@@ -697,6 +697,134 @@ describe("skin-deep", function() {
     });
   });
 
+  describe("everySubTreeLike", function() {
+    var tree, trees, classTrees, tagTrees;
+    before(function() {
+      tree = sd.shallowRender(
+        $('ul', {},
+          $('li', {className: "abc", idx: 1, more: 'li1'},
+            $('span', { prop: 'val', idx: 1, more: '1' }, 1)),
+          $('li', {className: "abc", idx: 2, more: 'li2'},
+            $('span', { prop: 'val', idx: 2, more: '2' }, 2)),
+          $('li', {className: "abc"}, 3),
+          $('li', {className: "abc"},
+            $('span', { prop: 'val', idx: 4, more: '4' }, 4)),
+          $('li', {className: "abc"}, 5)
+        )
+      );
+    });
+    describe("functionaly == everySubTree when used without props", function() {
+      beforeEach(function() {
+        classTrees = tree.everySubTreeLike(".abc");
+        tagTrees = tree.everySubTreeLike("span");
+      });
+      it("should return array", function() {
+        expect(classTrees).to.be.an('array');
+        expect(classTrees).to.have.length(5);
+        expect(tagTrees).to.be.an('array');
+        expect(tagTrees).to.have.length(3);
+      });
+      it("should have SkinDeep subtrees in array", function() {
+        classTrees.forEach(function(subTree) {
+          expect(subTree).to.be.an('object');
+          expect(Object.keys(subTree)).to.eql(Object.keys(tree));
+        });
+        tagTrees.forEach(function(subTree) {
+          expect(subTree).to.be.an('object');
+          expect(Object.keys(subTree)).to.eql(Object.keys(tree));
+        });
+      });
+      it("should be able to extract text from each", function() {
+        var classTText = classTrees.map(function(st) { return st.text(); });
+        expect(classTText).to.eql(["1", "2", "3", "4", "5"]);
+        var tagTTrees = tagTrees.map(function(st) { return st.text(); });
+        expect(tagTTrees).to.eql(["1", "2", "4"]);
+      });
+    });
+    describe("using class selector + partial props", function() {
+      beforeEach(function() {
+        trees = tree.everySubTreeLike(".abc", {idx: 2});
+      });
+      it("should return array", function() {
+        expect(trees).to.be.an('array');
+        expect(trees).to.have.length(1);
+        expect(trees[0].getRenderOutput().props).to.have.property('more', 'li2');
+      });
+      it("should have SkinDeep subtrees in array", function() {
+        trees.forEach(function(subTree) {
+          expect(subTree).to.be.an('object');
+          expect(Object.keys(subTree)).to.eql(Object.keys(tree));
+        });
+      });
+    });
+    describe("using tag selector + partial props", function() {
+      beforeEach(function() {
+        trees = tree.everySubTreeLike("span", { prop: 'val' });
+      });
+      it("should return array", function() {
+        expect(trees).to.be.an('array');
+        expect(trees).to.have.length(3);
+      });
+      it("should have SkinDeep subtrees in array", function() {
+        trees.forEach(function(subTree) {
+          expect(subTree).to.be.an('object');
+          expect(Object.keys(subTree)).to.eql(Object.keys(tree));
+        });
+      });
+      it("should return subtree's in order", function() {
+        expect(trees[0].getRenderOutput().props).to.have.property('idx', 1);
+        expect(trees[1].getRenderOutput().props).to.have.property('idx', 2);
+        expect(trees[2].getRenderOutput().props).to.have.property('idx', 4);
+      });
+    });
+    describe("using * selector + partial props", function() {
+      beforeEach(function() {
+        trees = tree.everySubTreeLike("*", { idx: 4, prop: 'val' });
+      });
+      it("should return array", function() {
+        expect(trees).to.be.an('array');
+        expect(trees).to.have.length(1);
+        expect(trees[0].getRenderOutput().props).to.have.property('more', '4');
+      });
+      it("should have SkinDeep subtrees in array", function() {
+        trees.forEach(function(subTree) {
+          expect(subTree).to.be.an('object');
+          expect(Object.keys(subTree)).to.eql(Object.keys(tree));
+        });
+      });
+    });
+    describe("nested matches + partial props", function() {
+      before(function() {
+        tree = sd.shallowRender(
+          $('div', {idx: '1', prop: 'val', more: false},
+            $('div', {idx: '2', prop: 'val', more: true}, "deep",
+              $('div', {idx: '3', prop: 'val', more: false},
+                $('div', {idx: '4', prop: 'val', more: true}, "deep")))
+          )
+        );
+        trees = tree.everySubTreeLike("div", {prop: 'val', more: true});
+      });
+      it("should find nodes deeply", function() {
+        expect(trees).to.be.an('array');
+        expect(trees).to.have.length(2);
+      });
+      it("should have SkinDeep subtrees in array", function() {
+        trees.forEach(function(subTree) {
+          expect(subTree).to.be.an('object');
+          expect(Object.keys(subTree)).to.eql(Object.keys(tree));
+        });
+      });
+      it("should be able to extract text from each", function() {
+        var texts = trees.map(function(st) { return st.text(); });
+        expect(texts).to.eql(['deep deep', 'deep']);
+      });
+      it("should return subtree's in order", function() {
+        expect(trees[0].getRenderOutput().props).to.have.property('idx', '2');
+        expect(trees[1].getRenderOutput().props).to.have.property('idx', '4');
+      });
+    });
+  });
+
   describe("findComponent", function() {
     var Widget = React.createClass({
       displayName: 'Widget',
