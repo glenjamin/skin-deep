@@ -80,8 +80,18 @@ function SkinDeep(getCurrentNode, renderer, instance) {
       var node = findNode(getCurrentNode(), createFinder(query, predicate));
       return node && skinDeepNode(node);
     },
+    subTreeLike: function(query, predicate) {
+      var node = findNode(
+        getCurrentNode(), createFinder(query, predicate, 'isLike')
+      );
+      return node && skinDeepNode(node);
+    },
     everySubTree: function(query, predicate) {
       var finder = createFinder(query, predicate);
+      return findNodes(getCurrentNode(), finder).map(skinDeepNode);
+    },
+    everySubTreeLike: function(query, predicate) {
+      var finder = createFinder(query, predicate, 'isLike');
       return findNodes(getCurrentNode(), finder).map(skinDeepNode);
     },
     findNode: function(query) {
@@ -179,13 +189,15 @@ function createNodePredicate(query) {
   return function(n) { return n.type && getComponentName(n.type) == query; };
 }
 
-function createFinder(selector, predicate) {
+function createFinder(selector, predicate, isLike) {
   var nodeMatcher = createNodePredicate(selector);
   var otherMatcher = alwaysTrue;
   if (typeof predicate === 'object') {
     // predicate is a props object to match
     otherMatcher = function(node) {
-      return subset(node.props, predicate) && subset(predicate, node.props);
+      return isLike
+        ? subset(node.props, predicate)
+        : subset(node.props, predicate) && subset(predicate, node.props);
     }
   }
   return function(node) {
