@@ -16,8 +16,39 @@ npm install skin-deep
 
 For now, see [the tests](test/test.js).
 
+## Troubleshooting
+
+### Errors when bundling
+
+This lib currently supports both React 0.13 and React 0.14. If you are using a bundling tool for your test suite this will cause problems. You will need to add config to ignore the React internals for the version you are not using:
+
+####
+
+```js
+// React 0.14 & Webpack
+plugins: [
+  new webpack.IgnorePlugin(/ReactContext/),
+]
+
+// React 0.13 & Webpack
+plugins: [
+  new webpack.IgnorePlugin(/react-addons|react-dom/),
+]
+
+// React 0.14 & Browserify
+bundle.exclude('react/lib/ReactContext');
+
+// React 0.13 & Browserify
+bundle.exclude('react-dom/server');
+bundle.exclude('react-addons-test-utils');
+```
+
 # Docs
 
 > TODO
 
 For now, see [the tests](test/test.js).
+
+See https://github.com/glenjamin/skin-deep/issues/9 for a dicussion of what the new API will be consolidated to.
+
+The short version is that you should prefer the methods with `subTree` in the name.
