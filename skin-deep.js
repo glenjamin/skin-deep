@@ -94,6 +94,20 @@ function SkinDeep(getCurrentNode, renderer, instance) {
       var finder = createFinder(query, predicate, 'isLike');
       return findNodes(getCurrentNode(), finder).map(skinDeepNode);
     },
+    dive: function(paths, context) {
+      var tree = api;
+      while (paths.length) {
+        var path = paths.shift();
+        var rawTree = tree.subTree(path);
+        if (!rawTree) throw new Error(path + ' not found in tree');
+        var node = rawTree.getRenderOutput();
+        tree = shallowRender(
+          function () {return React.createElement(node.type, node.props)},
+          context
+        );
+      }
+      return tree;
+    },
     findNode: function(query) {
       return findNode(getCurrentNode(), createNodePredicate(query));
     },

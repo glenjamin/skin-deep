@@ -1060,4 +1060,69 @@ describe("skin-deep", function() {
       });
     });
   });
+  describe('dive', function() {
+    var GreatGranny = React.createClass({
+      displayName: 'GreatGranny',
+      render: function() {
+        return $(Granny, {onions: this.props.cheese}); 
+      }
+    });
+    var Granny = React.createClass({
+      displayName: 'Granny',
+      render: function() {
+        return $(Mum, {sheep: this.props.onions}, $('h1', {}));
+      }
+    });
+    var Mum = React.createClass({
+      displayName: 'Mum',
+      contextTypes: {name: React.PropTypes.string.isRequired},
+      render: function() {
+        return $('div', {contextName: this.context.name},
+          $(Baby, {goats: this.props.sheep}),
+          $(Baby, {goats: 'bye'})
+        );
+      }
+    });
+    var Baby = React.createClass({
+      displayName: 'Baby',
+      render: function() {
+        return $('div', {id: this.props.goats});
+      }
+    });
+    var greatTree = sd.shallowRender($(GreatGranny, {cheese: 'hello'}));
+    var context = {name: 'Jane'};
+
+    it('should create instance of first component in path', function() {
+      var result = greatTree.dive(['Granny', 'Mum', 'Baby'], context);
+      var babyTrees = [
+        sd.shallowRender($(Baby, {goats: 'hello'})),
+        sd.shallowRender($(Baby, {goats: 'bye'}))
+      ]
+      expect(result.getRenderOutput()).to.eql(
+        babyTrees[0].getRenderOutput()
+      );
+    });
+    it('should pass through the props', function() {
+      var result = greatTree.dive(['Granny', 'Mum', 'Baby'], context);
+      expect(result.props.id).to.eql('hello');
+    });
+    it('should pass through the context', function() {
+      var result = greatTree.dive(['Granny', 'Mum'], context);
+      expect(result.getRenderOutput().props.contextName).to.eql('Jane');
+    });
+    it('should work with children that are html elements', function() {
+      var other = greatTree.dive(['Granny', 'h1']);
+      expect(other.toString()).to.eql('<h1></h1>');
+    });
+    it('should only traverse the given path', function() {
+      var result = greatTree.dive(['Granny', 'Mum'], context);
+      var other = greatTree.dive(['Granny', 'h1']);
+      expect(result.getRenderOutput()).to.not.eql(other.getRenderOutput());
+    });
+    it('should throw if element not found', function() {
+      expect(function() {
+        return greatTree.dive(['Granny', 'Mum', 'h4'], context);
+      }).to.throw('h4 not found in tree');
+    });
+  });
 });
