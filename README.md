@@ -203,11 +203,11 @@ For now, see [the tests](test/test.js).
 
 ### tree.getMountedInstance()
 
-### tree.subTree()
+### tree.subTree(selector [, matcher])
 
-### tree.everySubTree()
+### tree.everySubTree(selector [, matcher])
 
-### tree.dive()
+### tree.dive(path)
 
 ### .exact(props)
 
