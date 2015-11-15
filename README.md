@@ -187,6 +187,32 @@ As we use tend to use `chai`, there's a `chai` plugin bundled inside this packag
 
 For now, see [the tests](test/test.js).
 
+### .shallowRender(element [, context])
+
+### tree.reRender(element [, context])
+
+### tree.type
+
+### tree.props
+
+### tree.text()
+
+### tree.toString()
+
+### tree.getRenderOutput()
+
+### tree.getMountedInstance()
+
+### tree.subTree()
+
+### tree.everySubTree()
+
+### tree.dive()
+
+### .exact(props)
+
+### .any
+
 ## Troubleshooting
 
 ### Errors when bundling
