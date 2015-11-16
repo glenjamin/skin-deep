@@ -1,4 +1,5 @@
 var subset = require('is-subset');
+var objectAssign = require('object-assign');
 
 var React = require('react');
 var React013 = (React.version.substring(0, 4) == '0.13');
@@ -157,6 +158,28 @@ function SkinDeep(getCurrentNode, renderer, instance) {
         return matchComponentType(type, node) &&
           subset(node.props, props);
       });
+    },
+    findComponentWithoutChildren: function(type, props) {
+      if (arguments.length === 1) {
+        return this.findComponentsWithoutChildren(type)[0] || false;
+      }
+      return this.findComponentsWithoutChildren(type, props)[0] || false;
+    },
+    findComponentsWithoutChildren: function(type, props) {
+      if (arguments.length === 1) {
+        console.warn(
+          "Using a component in findComponent is deprecated. " +
+          "Pass name and props as separate arguments instead"
+        );
+        var search = type;
+        type = getComponentName(search.type) || search.type;
+        props = search.props;
+      }
+      return findNodes(getCurrentNode(), function(node) {
+          return matchComponentType(type, node) &&
+            subset(objectAssign({}, node.props, {children: ''}), objectAssign({}, props, {children: ''})) &&
+            subset(objectAssign({}, props, {children: ''}), objectAssign({}, node.props, {children: ''}));
+      }, false);
     },
     getRenderOutput: function() {
       return getCurrentNode();
