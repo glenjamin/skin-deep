@@ -258,6 +258,29 @@ describe("skin-deep", function() {
     });
   });
 
+  describe("findNodes", function() {
+    var Widget = React.createClass({
+      displayName: 'Widget',
+      render: function() { return 'widget'; }
+    });
+
+    var tree = sd.shallowRender(
+      $('div', {},
+        $(Widget, {}),
+        $(Widget, {})
+      )
+    );
+
+    it("should find two nodes in tree by component displayName", function() {
+      var widgets = tree.findNodes("Widget");
+      expect(widgets).to.be.an('array');
+      expect(widgets).to.have.length(2);
+      expect(widgets[0]).to.have.property('type', Widget);
+      expect(widgets[1]).to.have.property('type', Widget);
+    });
+
+  });
+
   describe("textIn", function() {
     var tree = sd.shallowRender(
       $('div', {},
