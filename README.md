@@ -196,35 +196,119 @@ As we use tend to use `chai`, there's a `chai` plugin bundled inside this packag
 
 ## API Docs
 
-> TODO
-
-For now, see [the tests](test/test.js).
-
 ### .shallowRender(element [, context])
+
+Get a tree instance by shallow-rendering a renderable [ReactElement](http://facebook.github.io/react/docs/glossary.html#react-elements).
+
+* `element {ReactElement}` - element to render
+* `context {object}` - _optional_ [context](http://facebook.github.io/react/docs/context.html)
+
+Returns [`tree`](#tree)
 
 ### tree.reRender(element [, context])
 
-### tree.type
+Re-render a new element into the same tree as previously. Usually used to re-render an element with new props.
 
-### tree.props
+* `element {ReactElement}` - element to render
+* `context {object}` - _optional_ [context](http://facebook.github.io/react/docs/context.html)
 
-### tree.text()
+Returns `null`
 
-### tree.toString()
+### tree
 
-### tree.getRenderOutput()
+#### tree.type
 
-### tree.getMountedInstance()
+Access the type of the rendered root element.
 
-### tree.subTree(selector [, matcher])
+Returns [`ReactComponent class`](http://facebook.github.io/react/docs/glossary.html#react-components) or `string`.
 
-### tree.everySubTree(selector [, matcher])
+#### tree.props
 
-### tree.dive(path)
+Access the props of the rendered root element.
+
+Returns `object`
+
+#### tree.text()
+
+Access the textual content of the rendered root element including any text of its children. This method doesn't understand CSS, or really anything about HTML rendering, so might include text which wouldn't be displayed to the user.
+
+Returns `string`
+
+#### tree.toString()
+
+Produce a friendly JSX-esque representation of the tree
+
+Returns `string`
+
+#### tree.getRenderOutput()
+
+Access the rendered component tree. This is the same result you would get using shallow rendering without skin-deep.
+
+Returns [`ReactElement`](http://facebook.github.io/react/docs/glossary.html#react-elements)
+
+#### tree.getMountedInstance()
+
+Access the mounted instance of the component.
+
+Returns `object`
+
+#### tree.subTree(selector [, matcher])
+
+Extract a portion of the rendered component tree. If multiple nodes match the selector, will return the first.
+
+* `selector {`[`Selector`](#using-selectors)`}` - how to find trees
+* `matcher {`[`Matcher`](#using-matchers)`}` - _optional_ additional conditions
+
+Returns [`tree`](#tree) or `false`
+
+#### tree.everySubTree(selector [, matcher])
+
+Extract multiple portions of the rendered component tree.
+
+* `selector {`[`Selector`](#using-selectors)`}` - how to find trees
+* `matcher {`[`Matcher`](#using-matchers)`}` - _optional_ additional conditions
+
+Returns `array` of [`tree`](#tree)s
+
+#### tree.dive(path)
+
+"Dive" into the rendered component tree, rendering the next level down as it goes. See [Going Deeper](#going-deeper) for an example.
+
+* `path {array of `[`Selector`](#using-selectors)`s}`
+
+### Using Selectors
+
+> TODO
+
+### Using Matchers
+
+> TODO
 
 ### .exact(props)
 
+Create a matcher which only accepts nodes that have exactly those `props` passed in - no extra props.
+
+* `props {object}` - to match against
+
+Returns `function`
+
 ### .any
+
+A magic value which can be used in a prop matcher that will allow any value to be matched. It will still fail if the key doesn't exist
+
+eg.
+```jsx
+{ abc: sd.any }
+
+// Will match each of the following
+<Component abc="1" />
+<Component abc={100} />
+<Component abc={function(){}} />
+
+// but not
+<Component />
+<Component def="1" />
+```
 
 ## Troubleshooting
 
