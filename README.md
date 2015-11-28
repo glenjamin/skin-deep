@@ -19,15 +19,18 @@ Testing helpers for use with React's shallowRender test utils.
 - [API Docs](#api-docs)
   - [.shallowRender(element [, context])](#shallowrenderelement--context)
   - [tree.reRender(element [, context])](#treererenderelement--context)
-  - [tree.type](#treetype)
-  - [tree.props](#treeprops)
-  - [tree.text()](#treetext)
-  - [tree.toString()](#treetostring)
-  - [tree.getRenderOutput()](#treegetrenderoutput)
-  - [tree.getMountedInstance()](#treegetmountedinstance)
-  - [tree.subTree(selector [, matcher])](#treesubtreeselector--matcher)
-  - [tree.everySubTree(selector [, matcher])](#treeeverysubtreeselector--matcher)
-  - [tree.dive(path)](#treedivepath)
+  - [tree](#tree)
+    - [tree.type](#treetype)
+    - [tree.props](#treeprops)
+    - [tree.text()](#treetext)
+    - [tree.toString()](#treetostring)
+    - [tree.getRenderOutput()](#treegetrenderoutput)
+    - [tree.getMountedInstance()](#treegetmountedinstance)
+    - [tree.subTree(selector [, matcher])](#treesubtreeselector--matcher)
+    - [tree.everySubTree(selector [, matcher])](#treeeverysubtreeselector--matcher)
+    - [tree.dive(path)](#treedivepath)
+  - [Using Selectors](#using-selectors)
+  - [Using Matchers](#using-matchers)
   - [.exact(props)](#exactprops)
   - [.any](#any)
 - [Troubleshooting](#troubleshooting)
@@ -275,6 +278,9 @@ Returns `array` of [`tree`](#tree)s
 "Dive" into the rendered component tree, rendering the next level down as it goes. See [Going Deeper](#going-deeper) for an example.
 
 * `path {array of `[`Selector`](#using-selectors)`s}`
+
+Returns `tree`
+Throws if the path cannot be found.
 
 ### Using Selectors
 

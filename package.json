@@ -5,7 +5,8 @@
   "main": "skin-deep.js",
   "scripts": {
     "test": "mocha",
-    "travis": "istanbul cover _mocha --"
+    "travis": "istanbul cover _mocha --",
+    "doc": "doctoc README.md"
   },
   "repository": {
     "type": "git",
