@@ -16,6 +16,8 @@ npm install skin-deep
 
 For now, see [the tests](test/test.js).
 
+Someone was helpful enough to [write a blog post about skin-deep](http://willcodefor.beer/react-testing-with-shallow-rendering-and-skin-deep/) - you might also find it useful to get going.
+
 ## Troubleshooting
 
 ### Errors when bundling
