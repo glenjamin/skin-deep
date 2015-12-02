@@ -166,8 +166,13 @@ function SkinDeep(getCurrentNode, renderer, instance) {
     }
   };
   Object.defineProperty(api, 'props', {
+    enumerable: true,
     get: function() { return getCurrentNode().props; }
-  })
+  });
+  Object.defineProperty(api, 'type', {
+    enumerable: true,
+    get: function() { throw new Error('NotImplementedYet'); }
+  });
   return api;
 }
 

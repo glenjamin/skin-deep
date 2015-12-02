@@ -9,7 +9,7 @@ var sd = require('../skin-deep');
 
 var $ = React.createElement;
 
-describe("skin-deep", function() {
+describe("skin-deep chai plugin", function() {
 
   describe("inRenderedOutput", function() {
     var tree = sd.shallowRender($('h1', { title: "blah" }, "Heading!"));
