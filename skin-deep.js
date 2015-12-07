@@ -39,6 +39,7 @@ function shallowRender(elementOrFunction, context) {
     return TestUtils.isElement(elementOrFunction) ?
       elementOrFunction : elementOrFunction();
   });
+  shallowRenderer.element = element;
 
   if (typeof element.type == 'string') {
     return new SkinDeep(function() { return element; }, shallowRenderer);
@@ -57,20 +58,25 @@ function shallowRender(elementOrFunction, context) {
   );
 }
 
+var facebookIssues = 'https://github.com/facebook/react/issues/';
+
 function SkinDeep(getCurrentNode, renderer, instance) {
   var api = {
     reRender: function(elementOrFunction, context) {
-      if (renderer) {
-        context = context || renderer.context;
+      context = context || renderer.context;
 
-        var element = withContext(context, function() {
-          return TestUtils.isElement(elementOrFunction) ?
-            elementOrFunction : elementOrFunction();
-        });
-        return renderer.render(element, context);
+      var element = withContext(context, function() {
+        return TestUtils.isElement(elementOrFunction) ?
+          elementOrFunction : elementOrFunction();
+      });
+      if (element.type !== renderer.element.type) {
+        var bug = facebookIssues + '3760#issuecomment-162697611';
+        throw new Error(
+          'Cannot re-render with a different component, see ' + bug
+        );
       }
-
-      throw new Error('This tree has no renderer');
+      renderer.element = element;
+      return renderer.render(element, context);
     },
     getMountedInstance: function() {
       if (instance) return instance;
@@ -171,7 +177,7 @@ function SkinDeep(getCurrentNode, renderer, instance) {
   });
   Object.defineProperty(api, 'type', {
     enumerable: true,
-    get: function() { throw new Error('NotImplementedYet'); }
+    get: function() { return getCurrentNode().type; }
   });
   return api;
 }
