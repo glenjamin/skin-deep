@@ -293,7 +293,7 @@ describe("skin-deep", function() {
       });
       beforeEach(function() {
         tree = sd.shallowRender(
-          $(ContextComponent, { thing: 'A' }),
+          function() { return $(ContextComponent, { thing: 'A' }) },
           { beep: false }
         );
       });
@@ -304,7 +304,17 @@ describe("skin-deep", function() {
       })
       it('should allow replacing context', function() {
         expect(tree.props).to.eql({ children: [ 'A', false ]});
-        tree.reRender($(ContextComponent, { thing: 'X' }), { beep: true });
+        tree.reRender(
+          function() { return $(ContextComponent, { thing: 'X' }); },
+          { beep: true }
+        );
+        expect(tree.props).to.eql({ children: [ 'X', true ]});
+      });
+      it('should allow replacing context with 0.14+ context', function() {
+        if (React013) this.skip();
+
+        expect(tree.props).to.eql({ children: [ 'A', false ]});
+        tree.reRender($(ContextComponent, { thing: 'X' }), { beep: true } );
         expect(tree.props).to.eql({ children: [ 'X', true ]});
       });
     });
