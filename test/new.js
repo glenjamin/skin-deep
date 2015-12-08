@@ -4,15 +4,18 @@ var expect = chai.expect;
 var React = require('react');
 var React013 = (React.version.substring(0, 4) == '0.13');
 
-if (React013) {
-  console.warn = function(msg) {
-    throw new Error(msg);
-  }
-} else {
-  console.error = function(msg) {
-    throw new Error(msg);
-  }
+
+var consoleWarn = console.warn, consoleError = console.error;
+function throwError(msg) {
+  throw new Error(msg);
 }
+function hardFailConsole() {
+  console[React013 ? 'warn' : 'error'] = throwError;
+}
+function resetConsole() {
+  console.warn = consoleWarn; console.error = consoleError;
+}
+
 
 // var createFragment;
 // if (React013) {
@@ -26,6 +29,9 @@ var sd = require('../skin-deep');
 var $ = React.createElement;
 
 describe("skin-deep", function() {
+
+  beforeEach(hardFailConsole);
+  beforeEach(resetConsole);
 
   describe('shallowRender + getRenderOutput()', function() {
     var Component = React.createClass({
