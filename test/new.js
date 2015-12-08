@@ -299,7 +299,9 @@ describe("skin-deep", function() {
       });
       it('should keep previous context', function() {
         expect(tree.props).to.eql({ children: [ 'A', false ]});
-        tree.reRender($(ContextComponent, { thing: 'X' }));
+        tree.reRender(
+          function() { return $(ContextComponent, { thing: 'X' }); }
+        );
         expect(tree.props).to.eql({ children: [ 'X', false ]});
       })
       it('should allow replacing context', function() {
@@ -310,12 +312,22 @@ describe("skin-deep", function() {
         );
         expect(tree.props).to.eql({ children: [ 'X', true ]});
       });
-      it('should allow replacing context with 0.14+ context', function() {
-        if (React013) this.skip();
+      describe("0.14+ Parent context", function() {
+        if (React013) {
+          it("doesn't apply");
+          return;
+        }
 
-        expect(tree.props).to.eql({ children: [ 'A', false ]});
-        tree.reRender($(ContextComponent, { thing: 'X' }), { beep: true } );
-        expect(tree.props).to.eql({ children: [ 'X', true ]});
+        it('should keep previous context', function() {
+          expect(tree.props).to.eql({ children: [ 'A', false ]});
+          tree.reRender($(ContextComponent, { thing: 'X' }));
+          expect(tree.props).to.eql({ children: [ 'X', false ]});
+        })
+        it('should allow replacing context', function() {
+          expect(tree.props).to.eql({ children: [ 'A', false ]});
+          tree.reRender($(ContextComponent, { thing: 'X' }), { beep: true });
+          expect(tree.props).to.eql({ children: [ 'X', true ]});
+        });
       });
     });
   });
