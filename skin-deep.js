@@ -272,11 +272,11 @@ function getTextFromNode(node) {
   }
   // strings and numbers are just text
   if (typeof node === 'string' || typeof node === 'number') {
-    return '' + node;
+    return normaliseSpaces('' + node);
   }
   // Iterables get combined with spaces
   if (typeof node.map === 'function') {
-    return node.map(getTextFromNode).join(' ').replace(/\s+/, ' ');
+    return normaliseSpaces(node.map(getTextFromNode).join(''));
   }
   // Non-dom components are a black box
   if (TestUtils.isElement(node) && typeof node.type !== 'string') {
@@ -298,6 +298,10 @@ function childrenArray(children) {
     array.push(child);
   });
   return array;
+}
+
+function normaliseSpaces(str) {
+  return str.replace(/\s+/g, ' ');
 }
 
 function mapcat(array, fn) {
