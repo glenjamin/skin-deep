@@ -350,16 +350,16 @@ describe("skin-deep", function() {
     });
     it("should give a textual representation of the tree", function() {
       var tree = sd.shallowRender($('h1', { title: "blah" },
-        "Heading!",
+        "Heading! ",
         $('div', { title: "blah" },
           123, $('hr'),
-          'Some text.',
-          'More text.',
+          ' Some text. ',
+          'More text. ',
           [ React.createElement(Widget, { key: 1 }),
             React.createElement(Widget, { key: 2 }) ])
       ));
       expect(tree.text())
-        .to.eql('Heading! 123 Some text. More text. <Widget /> <Widget />');
+        .to.eql('Heading! 123 Some text. More text. <Widget /><Widget />');
     });
     it("Should render a single zero child correctly", function() {
       var tree = sd.shallowRender($('h1', {}, 0));
@@ -465,7 +465,7 @@ describe("skin-deep", function() {
         expect(subTree.textIn(".abc")).to.eql("ABC");
       });
       it("should provide scoped text()", function() {
-        expect(subTree.text()).to.eql("objection! objection! hello ABC");
+        expect(subTree.text()).to.eql("objection!objection!helloABC");
       });
       it("should expose .props", function() {
         expect(tree.subTree('#wut').props).to.eql({
@@ -578,7 +578,7 @@ describe("skin-deep", function() {
         expect(subTreeLike.textIn(".abc")).to.eql("ABC");
       });
       it("should provide scoped text()", function() {
-        expect(subTreeLike.text()).to.eql("objection! objection! hello ABC");
+        expect(subTreeLike.text()).to.eql("objection!objection!helloABC");
       });
       it("should expose .props", function() {
         expect(tree.subTreeLike('#wut').props).to.eql({
@@ -797,7 +797,7 @@ describe("skin-deep", function() {
       before(function() {
         tree = sd.shallowRender(
           $('div', {idx: '1', prop: 'val', more: false},
-            $('div', {idx: '2', prop: 'val', more: true}, "deep",
+            $('div', {idx: '2', prop: 'val', more: true}, "deep ",
               $('div', {idx: '3', prop: 'val', more: false},
                 $('div', {idx: '4', prop: 'val', more: true}, "deep")))
           )
@@ -1018,7 +1018,7 @@ describe("skin-deep", function() {
     });
     var tree1 = sd.shallowRender(
       $(WithKids, {},
-        $('li', { id: 'a' }, 'a'),
+        $('li', { id: 'a' }, 'a '),
         null,
         false,
         undefined,
@@ -1028,7 +1028,7 @@ describe("skin-deep", function() {
     var tree2 = sd.shallowRender(
       $('div', {},
         createFragment({
-          left: $('span', { id: 'left' }, 'left'),
+          left: $('span', { id: 'left' }, 'left '),
           right: $('span', { id: 'right' }, 'right')
         })
       )
@@ -1064,7 +1064,7 @@ describe("skin-deep", function() {
     var GreatGranny = React.createClass({
       displayName: 'GreatGranny',
       render: function() {
-        return $(Granny, {onions: this.props.cheese}); 
+        return $(Granny, {onions: this.props.cheese});
       }
     });
     var Granny = React.createClass({

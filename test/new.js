@@ -234,7 +234,7 @@ describe("skin-deep", function() {
     });
   });
 
-  describe('reRender', function() {
+  describe('reRender()', function() {
     var tree;
     var Component = React.createClass({
       render: function() {
@@ -332,9 +332,32 @@ describe("skin-deep", function() {
     });
   });
 
+  describe('text()', function() {
+    var Component = React.createClass({
+      render: function() {
+        return $('h1', {}, this.props.thing);
+      }
+    });
+    it('should read primitive ReactElement', function() {
+      var tree = sd.shallowRender($('h1', { not: 'this' }, 'Textually'));
+      expect(tree.text()).to.eql('Textually');
+    });
+    it('should read ReactElement and children', function() {
+      var tree = sd.shallowRender(
+        $('ul', { not: 'this' },
+          $('li', { nor: 'this' }, 'One'), ' ',
+          $('li', { nor: 'this' }, 'Two'), ' ',
+          $('li', { nor: 'this either' }, 'Three')
+        )
+      );
+      expect(tree.text()).to.eql('One Two Three');
+    });
+  });
+
 });
 
 function isTree(obj) {
-  expect(obj).to.contain.all.keys(['reRender', 'type', 'props']);
+  expect(obj).to.contain.all.keys(['reRender', 'type', 'props', 'text']);
+  expect(obj.props).to.be.an('object');
   return true;
 }
