@@ -21,7 +21,7 @@ Some people have been helpful enough to write some blog posts about skin deep, w
  * [Unit Testing React components without a DOM](http://simonsmith.io/unit-testing-react-components-without-a-dom/)
  * [React Testing with Shallow Rendering and Skin Deep](http://willcodefor.beer/react-testing-with-shallow-rendering-and-skin-deep/)
 
-You can also consult the [documentation for the upcoming Version 1.0](https://github.com/glenjamin/skin-deep/tree/one-point-oh#readme), which is mostly accuruate for the current version.
+You can also consult the [documentation for the upcoming Version 1.0](https://github.com/glenjamin/skin-deep/tree/one-point-oh#readme), which is mostly accurate for the current version.
 
 ## Troubleshooting
 
@@ -56,4 +56,4 @@ bundle.exclude('react-addons-test-utils');
 
 For now, see [the tests](test/test.js).
 
-You can also consult the [documentation for the upcoming Version 1.0](https://github.com/glenjamin/skin-deep/tree/one-point-oh#readme), which is mostly accuruate for the current version.
+You can also consult the [documentation for the upcoming Version 1.0](https://github.com/glenjamin/skin-deep/tree/one-point-oh#readme), which is mostly accurate for the current version.
