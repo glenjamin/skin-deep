@@ -16,7 +16,12 @@ npm install skin-deep
 
 For now, see [the tests](test/test.js).
 
-Someone was helpful enough to [write a blog post about skin-deep](http://willcodefor.beer/react-testing-with-shallow-rendering-and-skin-deep/) - you might also find it useful to get going.
+Some people have been helpful enough to write some blog posts about skin deep, which you may find useful.
+
+ * [Unit Testing React components without a DOM](http://simonsmith.io/unit-testing-react-components-without-a-dom/)
+ * [React Testing with Shallow Rendering and Skin Deep](http://willcodefor.beer/react-testing-with-shallow-rendering-and-skin-deep/)
+
+You can also consult the [documentation for the upcoming Version 1.0](https://github.com/glenjamin/skin-deep/tree/one-point-oh#readme), which is mostly accuruate for the current version.
 
 ## Troubleshooting
 
@@ -51,6 +56,4 @@ bundle.exclude('react-addons-test-utils');
 
 For now, see [the tests](test/test.js).
 
-See https://github.com/glenjamin/skin-deep/issues/9 for a dicussion of what the new API will be consolidated to.
-
-The short version is that you should prefer the methods with `subTree` in the name.
+You can also consult the [documentation for the upcoming Version 1.0](https://github.com/glenjamin/skin-deep/tree/one-point-oh#readme), which is mostly accuruate for the current version.
