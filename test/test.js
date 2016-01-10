@@ -169,6 +169,7 @@ describe("skin-deep", function() {
           $('div', {}, "objection!"),
           $('object', {}, "objection!"),
           'hello',
+          $('div', {className: "abc-123"}, "ABC 123"),
           [$('div', {className: "abc", key: "1"}, "ABC")],
           $(Widget, {}),
           $(Widget2, {}),
@@ -1064,7 +1065,7 @@ describe("skin-deep", function() {
     var GreatGranny = React.createClass({
       displayName: 'GreatGranny',
       render: function() {
-        return $(Granny, {onions: this.props.cheese}); 
+        return $(Granny, {onions: this.props.cheese});
       }
     });
     var Granny = React.createClass({
