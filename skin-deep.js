@@ -102,7 +102,7 @@ function SkinDeep(getCurrentNode, renderer, instance) {
         if (!rawTree) throw new Error(path + ' not found in tree');
         var node = rawTree.getRenderOutput();
         tree = shallowRender(
-          function () {return React.createElement(node.type, node.props)},
+          function() {return React.createElement(node.type, node.props)},
           context
         );
       }
@@ -190,13 +190,13 @@ function createNodePredicate(query) {
   if (query == '*') {
     return alwaysTrue;
   }
-  if (query.match(/^\.[\w\-]+$/)) {
+  if (query.match(/^\.[\S]+$/)) {
     return findNodeByClass(query.substring(1));
   }
-  if (query.match(/^\#[\w\-]+$/)) {
+  if (query.match(/^\#[\S]+$/)) {
     return findNodeById(query.substring(1));
   }
-  if (query.match(/^[a-z][\w\-]*$/)) { // tagname
+  if (query.match(/^[a-z][\w\-]*$/)) { // tagnames begin with lowercase
     return function(n) { return n.type == query; };
   }
   // component displayName
@@ -220,7 +220,7 @@ function createFinder(selector, predicate, isLike) {
 }
 
 function findNodeByClass(cls) {
-  var regex = new RegExp('\\b' + cls + '\\b');
+  var regex = new RegExp('(?:^|\s)' + cls + '(?:\s|$)');
 
   return function(n) {
     return n.props && String(n.props.className).match(regex);
