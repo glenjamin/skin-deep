@@ -220,7 +220,7 @@ function createFinder(selector, predicate, isLike) {
 }
 
 function findNodeByClass(cls) {
-  var regex = new RegExp('(?:^|\s)' + cls + '(?:\s|$)');
+  var regex = new RegExp('(?:^|\\s)' + cls + '(?:\\s|$)');
 
   return function(n) {
     return n.props && String(n.props.className).match(regex);
