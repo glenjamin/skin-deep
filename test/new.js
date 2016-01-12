@@ -333,11 +333,11 @@ describe("skin-deep", function() {
   });
 
   describe('text()', function() {
-    var Component = React.createClass({
-      render: function() {
-        return $('h1', {}, this.props.thing);
-      }
-    });
+    // var Component = React.createClass({
+    //   render: function() {
+    //     return $('h1', {}, this.props.thing);
+    //   }
+    // });
     it('should read primitive ReactElement', function() {
       var tree = sd.shallowRender($('h1', { not: 'this' }, 'Textually'));
       expect(tree.text()).to.eql('Textually');
