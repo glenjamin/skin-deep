@@ -186,7 +186,7 @@ describe("skin-deep", function() {
       expect(abc.props).to.have.property('children', 'ABC');
     });
 
-    it("should find a node in tree by className when there are multiple classes", function() {
+    it("should find a node with multiple classes by className", function() {
       var spaceAfter = tree.findNode(".space-after");
       expect(spaceAfter).to.have.property('type', 'div');
       expect(spaceAfter.props).to.have.property('children', 'Second ABC 123');
@@ -611,7 +611,7 @@ describe("skin-deep", function() {
           $('li', {className: "abc"}, $('span', {}, 3)),
           $('li', {className: "abc"}, $('span', {}, 4)),
           $('li', {className: "abc"}, $('span', {}, 5)),
-          $('li', {className: "first-class abc additonal-class"}, $('span', {}, 6))
+          $('li', {className: "first-class abc more-class"}, $('span', {}, 6))
         )
       );
     });
@@ -762,7 +762,7 @@ describe("skin-deep", function() {
       it("should return array", function() {
         expect(trees).to.be.an('array');
         expect(trees).to.have.length(1);
-        expect(trees[0].getRenderOutput().props).to.have.property('more', 'li2');
+        expect(trees[0].props).to.have.property('more', 'li2');
       });
       it("should have SkinDeep subtrees in array", function() {
         trees.forEach(function(subTree) {
@@ -1075,16 +1075,10 @@ describe("skin-deep", function() {
     });
   });
   describe('dive', function() {
-    var GreatGranny = React.createClass({
-      displayName: 'GreatGranny',
+    var Baby = React.createClass({
+      displayName: 'Baby',
       render: function() {
-        return $(Granny, {onions: this.props.cheese});
-      }
-    });
-    var Granny = React.createClass({
-      displayName: 'Granny',
-      render: function() {
-        return $(Mum, {sheep: this.props.onions}, $('h1', {}));
+        return $('div', {id: this.props.goats});
       }
     });
     var Mum = React.createClass({
@@ -1097,12 +1091,19 @@ describe("skin-deep", function() {
         );
       }
     });
-    var Baby = React.createClass({
-      displayName: 'Baby',
+    var Granny = React.createClass({
+      displayName: 'Granny',
       render: function() {
-        return $('div', {id: this.props.goats});
+        return $(Mum, {sheep: this.props.onions}, $('h1', {}));
       }
     });
+    var GreatGranny = React.createClass({
+      displayName: 'GreatGranny',
+      render: function() {
+        return $(Granny, {onions: this.props.cheese});
+      }
+    });
+
     var greatTree = sd.shallowRender($(GreatGranny, {cheese: 'hello'}));
     var context = {name: 'Jane'};
 
