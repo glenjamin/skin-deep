@@ -10,6 +10,12 @@ Test assertion helpers for use with React's shallowRender test utils.
 npm install skin-deep
 ```
 
+## Important Changes
+
+### 0.14
+
+Breaking Change: Prior to version 0.14, text() normalisation incorrectly added spaces between children. This was technically a bug, but upgrading will break any tests which relied on the old behaviour.
+
 ## Usage
 
 > TODO
