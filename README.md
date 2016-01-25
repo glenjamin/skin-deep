@@ -56,6 +56,15 @@ bundle.exclude('react-dom/server');
 bundle.exclude('react-addons-test-utils');
 ```
 
+```sh
+// React 0.14 & jspm
+jspm install npm:skin-deep -o "{map: {'react/lib/ReactContext': '@empty'}}"
+
+// React 0.13 & jspm
+jspm install npm:skin-deep -o "{map: {'react-dom/server': '@empty'
+                                      'react-addons-test-utils': '@empty'}}"
+```
+
 # Docs
 
 > TODO
