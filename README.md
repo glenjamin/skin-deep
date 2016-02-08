@@ -78,7 +78,7 @@ assert.equal(homeLink.text(), 'Home');
 
 The goal of skin-deep is to provide higher level functionality built on top of the Shallow Rendering test utilities provided by React 0.13+.
 
-By default, shallow rendering gives you a way to see what a component would render without continuing along into rendering it's children. This is a very powerful baseline, but in my opinion it isn't enough to create good UI tests. You either have to assert on the whole rendered component, or manually traverse the tree like this:
+By default, shallow rendering gives you a way to see what a component would render without continuing along into rendering its children. This is a very powerful baseline, but in my opinion it isn't enough to create good UI tests. You either have to assert on the whole rendered component, or manually traverse the tree like this:
 
 ```js
 assert(rendered.props.children[1].props.children[2].children, 'Click Here');
@@ -96,7 +96,7 @@ var sd = require('skin-deep');
 var tree = sd.shallowRender(<MyComponent />);
 ```
 
-You can now inspect the the tree to see it's contents
+You can now inspect the the tree to see its contents
 
 ```js
 tree.getRenderOutput();
@@ -109,7 +109,7 @@ tree.props;
 // -> The props of the root element
 ```
 
-The real benefit's of skin deep come from the ability to extract small portions of the tree with a jQuery-esque API. You can then assert only on these sub-trees.
+The real benefits of skin deep come from the ability to extract small portions of the tree with a jQuery-esque API. You can then assert only on these sub-trees.
 
 ### Extracting portions of the result
 
