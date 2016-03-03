@@ -4,6 +4,10 @@ Test assertion helpers for use with React's shallowRender test utils.
 
 [![npm version](https://img.shields.io/npm/v/skin-deep.svg)](https://www.npmjs.com/package/skin-deep) [![Build Status](https://img.shields.io/travis/glenjamin/skin-deep/master.svg)](https://travis-ci.org/glenjamin/skin-deep) [![Coverage Status](https://coveralls.io/repos/glenjamin/skin-deep/badge.svg?branch=master)](https://coveralls.io/r/glenjamin/skin-deep?branch=master) ![MIT Licensed](https://img.shields.io/npm/l/skin-deep.svg)
 
+### React Version
+
+This lib works on both React 0.13 and React 0.14. Because it uses some tools that changed between these versions, it cannot depend on them directly via `package.json`. When using React 0.14, you'll need to add `react-addons-test-utils` into your project's dependencies yourself.
+
 ## Install
 
 ```sh
