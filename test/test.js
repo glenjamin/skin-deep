@@ -463,6 +463,13 @@ describe("skin-deep", function() {
       expect(subtree).to.be.an('object');
       expect(subtree.getRenderOutput().type).to.eql(Widget);
     });
+    it("should grab first subtree when using function matcher", function() {
+      var subtree = tree.subTree('*', function(node) {
+        return node.key == "1";
+      });
+      expect(subtree).to.be.an('object');
+      expect(subtree.props.id).to.eql('abc2');
+    });
     describe("methods", function() {
       var subTree;
       beforeEach(function() {
