@@ -224,6 +224,8 @@ function createFinder(selector, predicate, isLike) {
         ? subset(node.props, predicate)
         : subset(node.props, predicate) && subset(predicate, node.props);
     }
+  } else if (typeof predicate === 'function') {
+    otherMatcher = predicate;
   }
   return function(node) {
     return nodeMatcher(node) && otherMatcher(node);
