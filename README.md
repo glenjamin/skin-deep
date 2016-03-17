@@ -136,8 +136,8 @@ tree.subTree('Button', { type: 'submit' });
 tree.subTree('*', { type: 'button' });
 // -> All components / elements with type=button
 
-tree.subTree('*', function(size) { return size > 20; });
-// -> All components / elements with size above 20
+tree.subTree('*', function(node) { return node.props.size > 20; });
+// -> All components / elements with size prop above 20
 ```
 
 ### Triggering events
