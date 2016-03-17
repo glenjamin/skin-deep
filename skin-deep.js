@@ -299,7 +299,6 @@ function getCurrentNodeRef(node, ref) {
   // Falsy stuff can't match or have children
   if (!node) return false;
 
-  // Array nodes all get checked
   if (Array.isArray(node)) {
     var result = findRefAmongArrayEntries(node, ref)
     if (result) return result
@@ -309,12 +308,6 @@ function getCurrentNodeRef(node, ref) {
     return node;
   }
 
-  /*
-   * Unfortunately, I didn't find a way to consider the refs
-   * passed as children to a childReactComponent. Only direct
-   * children of the root of the tree and the subsequent children of DOM
-   * element only will be considered
-   */
   if (!isAReactComponent(node)) {
     return findRefAmongChildren(node, ref)
   }
