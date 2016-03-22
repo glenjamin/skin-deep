@@ -201,6 +201,10 @@ function createNodePredicate(query) {
   if (query == '*') {
     return alwaysTrue;
   }
+  // React Component itself
+  if (typeof query !== 'string') {
+    return function(n) { return n.type == query };
+  }
   if (query.match(/^\.[\S]+$/)) {
     return findNodeByClass(query.substring(1));
   }
