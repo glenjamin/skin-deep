@@ -166,8 +166,13 @@ function SkinDeep(getCurrentNode, renderer, instance) {
     }
   };
   Object.defineProperty(api, 'props', {
+    enumerable: true,
     get: function() { return getCurrentNode().props; }
-  })
+  });
+  Object.defineProperty(api, 'type', {
+    enumerable: true,
+    get: function() { return getCurrentNode().type; }
+  });
   return api;
 }
 
@@ -189,6 +194,10 @@ function matchComponentType(type, node) {
 function createNodePredicate(query) {
   if (query == '*') {
     return alwaysTrue;
+  }
+  // React Component itself
+  if (typeof query !== 'string') {
+    return function(n) { return n.type == query };
   }
   if (query.match(/^\.[\S]+$/)) {
     return findNodeByClass(query.substring(1));

@@ -455,6 +455,11 @@ describe("skin-deep", function() {
       expect(abc.getRenderOutput().props)
         .to.have.property("children", "stuff");
     });
+    it("should grab a subtree by component type", function() {
+      var abc = tree.subTree(Widget);
+      expect(abc).to.be.an('object');
+      expect(abc.props).to.have.property("children", "stuff");
+    });
     it("should grab a subtree by component + props", function() {
       var subtree = tree.subTree("Widget", { children: 'not stuff' });
       expect(subtree).to.eql(false);
@@ -462,6 +467,14 @@ describe("skin-deep", function() {
       var subtree = tree.subTree("Widget", { children: 'stuff' });
       expect(subtree).to.be.an('object');
       expect(subtree.getRenderOutput().type).to.eql(Widget);
+    });
+    it("should grab a subtree by component + props", function() {
+      var subtree = tree.subTree(Widget, { children: 'not stuff' });
+      expect(subtree).to.eql(false);
+
+      var subtree = tree.subTree(Widget, { children: 'stuff' });
+      expect(subtree).to.be.an('object');
+      expect(subtree.type).to.eql(Widget);
     });
     it("should grab first subtree when using function matcher", function() {
       var subtree = tree.subTree('*', function(node) {
