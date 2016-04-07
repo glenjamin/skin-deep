@@ -39,7 +39,7 @@
     "mocha": "^2.2.5",
     "react": "^0.14.0",
     "react-addons-create-fragment": "^0.14.0",
-    "react-addons-test-utils": "^0.14.0",
+    "react-addons-test-utils": "^15.0.0",
     "react-dom": "^0.14.0"
   }
 }
