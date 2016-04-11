@@ -44,7 +44,7 @@ Testing helpers for use with React's shallowRender test utils.
 npm install skin-deep
 ```
 
-This lib works on both React 0.13 and React 0.14. Because it uses some tools that changed between these versions, it cannot depend on them directly via `package.json`. When using React 0.14, you'll need to add `react-addons-test-utils` into your project's dependencies yourself.
+This lib works on both React 0.13 and React 0.14+. Because it uses some tools that changed between these versions, it cannot depend on them directly via `package.json`. When using React 0.14, you'll need to add `react-addons-test-utils` into your project's dependencies yourself.
 
 ## Quick Start
 
@@ -322,21 +322,22 @@ eg.
 
 ### Errors when bundling
 
-This lib currently supports both React 0.13 and React 0.14. If you are using a bundling tool for your test suite this will cause problems. You will need to add config to ignore the React internals for the version you are not using:
+This lib currently supports both React 0.13 and React 0.14+. If you are using a bundling tool for your test suite this will cause problems. You will need to add config to ignore the React internals for the version you are not using:
 
 ```js
-// React 0.14 & Webpack
+// React 0.14+ & Webpack
 plugins: [
-  new webpack.IgnorePlugin(/ReactContext/),
+  new webpack.IgnorePlugin(/ReactContext|react\/addons/),
 ]
 
-// React 0.13 & Webpack
+// React 0.13+ & Webpack
 plugins: [
   new webpack.IgnorePlugin(/react-addons|react-dom/),
 ]
 
 // React 0.14 & Browserify
 bundle.exclude('react/lib/ReactContext');
+bundle.exclude('react/addons');
 
 // React 0.13 & Browserify
 bundle.exclude('react-dom/server');
@@ -345,9 +346,10 @@ bundle.exclude('react-addons-test-utils');
 
 ```sh
 // React 0.14 & jspm
-jspm install npm:skin-deep -o "{map: {'react/lib/ReactContext': '@empty'}}"
+jspm install npm:skin-deep -o "{map: {'react/lib/ReactContext': '@empty',
+                                      'react/addons': '@empty'}}"
 
 // React 0.13 & jspm
-jspm install npm:skin-deep -o "{map: {'react-dom/server': '@empty'
+jspm install npm:skin-deep -o "{map: {'react-dom/server': '@empty',
                                       'react-addons-test-utils': '@empty'}}"
 ```

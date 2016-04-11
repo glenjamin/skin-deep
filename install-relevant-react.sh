@@ -11,4 +11,7 @@ if [ "$REACT" = "0.13" ]; then
 fi
 
 npm prune
-npm install
+npm install react@$REACT \
+            react-dom@$REACT \
+            react-addons-test-utils@$REACT \
+            react-addons-create-fragment@$REACT
