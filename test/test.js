@@ -169,6 +169,9 @@ describe("skin-deep", function() {
           $('div', {}, "objection!"),
           $('object', {}, "objection!"),
           'hello',
+          $('div', {className: "abc-123"}, "ABC 123"),
+          $('div', {className: "space-after abc-123"}, "Second ABC 123"),
+          $('div', {className: "abc-123 space-before"}, "Third ABC 123"),
           [$('div', {className: "abc", key: "1"}, "ABC")],
           $(Widget, {}),
           $(Widget2, {}),
@@ -181,6 +184,16 @@ describe("skin-deep", function() {
       var abc = tree.findNode(".abc");
       expect(abc).to.have.property('type', 'div');
       expect(abc.props).to.have.property('children', 'ABC');
+    });
+
+    it("should find a node in tree by className when there are multiple classes", function() {
+      var spaceAfter = tree.findNode(".space-after");
+      expect(spaceAfter).to.have.property('type', 'div');
+      expect(spaceAfter.props).to.have.property('children', 'Second ABC 123');
+
+      var spaceBefore = tree.findNode(".space-before");
+      expect(spaceBefore).to.have.property('type', 'div');
+      expect(spaceBefore.props).to.have.property('children', 'Third ABC 123');
     });
 
     it("should find a node in tree by id", function() {
@@ -597,7 +610,8 @@ describe("skin-deep", function() {
           $('li', {className: "abc"}, $('span', {}, 2)),
           $('li', {className: "abc"}, $('span', {}, 3)),
           $('li', {className: "abc"}, $('span', {}, 4)),
-          $('li', {className: "abc"}, $('span', {}, 5))
+          $('li', {className: "abc"}, $('span', {}, 5)),
+          $('li', {className: "first-class abc additonal-class"}, $('span', {}, 6))
         )
       );
     });
@@ -607,7 +621,7 @@ describe("skin-deep", function() {
       });
       it("should return array", function() {
         expect(trees).to.be.an('array');
-        expect(trees).to.have.length(5);
+        expect(trees).to.have.length(6);
       });
       it("should have SkinDeep subtrees in array", function() {
         trees.forEach(function(subTree) {
@@ -617,7 +631,7 @@ describe("skin-deep", function() {
       });
       it("should be able to extract text from each", function() {
         var texts = trees.map(function(st) { return st.text(); });
-        expect(texts).to.eql(["1", "2", "3", "4", "5"]);
+        expect(texts).to.eql(["1", "2", "3", "4", "5", "6"]);
       });
     });
     describe("using tag selector", function() {
@@ -626,7 +640,7 @@ describe("skin-deep", function() {
       });
       it("should return array", function() {
         expect(trees).to.be.an('array');
-        expect(trees).to.have.length(5);
+        expect(trees).to.have.length(6);
       });
       it("should have SkinDeep subtrees in array", function() {
         trees.forEach(function(subTree) {
@@ -636,7 +650,7 @@ describe("skin-deep", function() {
       });
       it("should be able to extract text from each", function() {
         var texts = trees.map(function(st) { return st.text(); });
-        expect(texts).to.eql(["1", "2", "3", "4", "5"]);
+        expect(texts).to.eql(["1", "2", "3", "4", "5", "6"]);
       });
     });
     describe("using tag selector with props", function() {
