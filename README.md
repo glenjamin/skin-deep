@@ -76,6 +76,21 @@ assert.equal(homeLink.props.href, '/');
 assert.equal(homeLink.text(), 'Home');
 ```
 
+## Breaking Changes in 1.0
+
+> TODO: actually make these changes
+
+ * `subTreeLike` has been renamed to `subTree`
+ * `everySubTreeLike` has been renamed to `everySubTree`
+ * The original `subTree` has been removed, `exact` can be used to get this behaviour back, but I don't recommend you do.
+ * The original `subTreeLike` has been removed, `exact` can be used to get this behaviour back, but I don't recommend you do.
+ * removed `findNode`, use `subTree` instead
+ * removed `textIn`, use `subTree().text()` instead
+ * removed `fillField`, use `subTree().props.onChange` instead
+ * removed `findComponent`, use `subTree()` instead
+ * removed `findComponentLike`, use `subTree()` instead
+ * `toString()` no-longer expands child components
+
 ## Usage
 
 The goal of skin-deep is to provide higher level functionality built on top of the Shallow Rendering test utilities provided by React 0.13+.
@@ -317,6 +332,10 @@ eg.
 <Component />
 <Component def="1" />
 ```
+
+### .hasClass(node, className)
+
+Helper function to check if a node has the HTML class specified. Exported in case you want to use this in a custom matcher.
 
 ## Troubleshooting
 
