@@ -107,7 +107,7 @@ function SkinDeep(getCurrentNode, renderer, instance) {
         var rawTree = tree.subTree(path);
         if (!rawTree) throw new Error(path + ' not found in tree');
         var node = rawTree.getRenderOutput();
-        tree = shallowRender(constantly(node), context);
+        tree = shallowRender(reContext(node), context);
       }
       return tree;
     },
@@ -183,6 +183,17 @@ function SkinDeep(getCurrentNode, renderer, instance) {
 
 function skinDeepNode(node) {
   return new SkinDeep(function() { return node; });
+}
+
+/**
+ * Re-create node as a new react element wrapped in a function
+ *
+ * This is to ensure context is reapplied in React 0.13
+ */
+function reContext(node) {
+  return function() {
+    return React.createElement(node.type, node.props);
+  };
 }
 
 function getComponentName(type) {
@@ -318,10 +329,6 @@ function childrenArray(children) {
 
 function normaliseSpaces(str) {
   return str.replace(/\s+/g, ' ');
-}
-
-function constantly(x) {
-  return function() { return x; };
 }
 
 function mapcat(array, fn) {
