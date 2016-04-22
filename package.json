@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha",
     "lint": "eslint . --max-warnings 0",
-    "travis": "npm run lint && istanbul cover _mocha --",
+    "coverage": "istanbul cover _mocha --",
     "doc": "doctoc README.md"
   },
   "repository": {
@@ -33,9 +33,10 @@
     "is-subset": "^0.1.1"
   },
   "devDependencies": {
+    "@glenjamin/eslint-config": "^1.1.0",
     "chai": "^3.4.0",
     "coveralls": "^2.11.2",
-    "eslint": "^1.10.3",
+    "eslint": "2.4.0",
     "istanbul": "^0.4.0",
     "mocha": "^2.2.5",
     "react": "^0.14.0",

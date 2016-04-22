@@ -107,10 +107,7 @@ function SkinDeep(getCurrentNode, renderer, instance) {
         var rawTree = tree.subTree(path);
         if (!rawTree) throw new Error(path + ' not found in tree');
         var node = rawTree.getRenderOutput();
-        tree = shallowRender(
-          function() {return React.createElement(node.type, node.props)},
-          context
-        );
+        tree = shallowRender(constantly(node), context);
       }
       return tree;
     },
@@ -138,6 +135,7 @@ function SkinDeep(getCurrentNode, renderer, instance) {
     },
     findComponent: function(type, props) {
       if (arguments.length == 1) {
+        // eslint-disable-next-line no-console
         console.warn(
           "Using a component in findComponent is deprecated. " +
           "Pass name and props as separate arguments instead"
@@ -150,6 +148,7 @@ function SkinDeep(getCurrentNode, renderer, instance) {
     },
     findComponentLike: function(type, props) {
       if (arguments.length == 1) {
+        // eslint-disable-next-line no-console
         console.warn(
           "Using a component in findComponent is deprecated. " +
           "Pass name and props as separate arguments instead"
@@ -203,7 +202,7 @@ function createNodePredicate(query) {
   }
   // React Component itself
   if (typeof query !== 'string') {
-    return function(n) { return n.type == query };
+    return function(n) { return n.type == query; };
   }
   if (query.match(/^\.[\S]+$/)) {
     return findNodeByClass(query.substring(1));
@@ -227,13 +226,13 @@ function createFinder(selector, predicate, isLike) {
       return isLike
         ? subset(node.props, predicate)
         : subset(node.props, predicate) && subset(predicate, node.props);
-    }
+    };
   } else if (typeof predicate === 'function') {
     otherMatcher = predicate;
   }
   return function(node) {
     return nodeMatcher(node) && otherMatcher(node);
-  }
+  };
 }
 
 function findNodeByClass(cls) {
@@ -319,6 +318,10 @@ function childrenArray(children) {
 
 function normaliseSpaces(str) {
   return str.replace(/\s+/g, ' ');
+}
+
+function constantly(x) {
+  return function() { return x; };
 }
 
 function mapcat(array, fn) {

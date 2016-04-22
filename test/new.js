@@ -5,6 +5,7 @@ var React = require('react');
 var React013 = (React.version.substring(0, 4) == '0.13');
 
 
+/* eslint-disable no-console */
 var consoleWarn = console.warn, consoleError = console.error;
 function throwError(msg) {
   throw new Error(msg);
@@ -15,6 +16,7 @@ function hardFailConsole() {
 function resetConsole() {
   console.warn = consoleWarn; console.error = consoleError;
 }
+/* eslint-enable no-console */
 
 
 // var createFragment;
@@ -293,7 +295,7 @@ describe("skin-deep", function() {
       });
       beforeEach(function() {
         tree = sd.shallowRender(
-          function() { return $(ContextComponent, { thing: 'A' }) },
+          function() { return $(ContextComponent, { thing: 'A' }); },
           { beep: false }
         );
       });
@@ -303,7 +305,7 @@ describe("skin-deep", function() {
           function() { return $(ContextComponent, { thing: 'X' }); }
         );
         expect(tree.props).to.eql({ children: [ 'X', false ]});
-      })
+      });
       it('should allow replacing context', function() {
         expect(tree.props).to.eql({ children: [ 'A', false ]});
         tree.reRender(
@@ -322,7 +324,7 @@ describe("skin-deep", function() {
           expect(tree.props).to.eql({ children: [ 'A', false ]});
           tree.reRender($(ContextComponent, { thing: 'X' }));
           expect(tree.props).to.eql({ children: [ 'X', false ]});
-        })
+        });
         it('should allow replacing context', function() {
           expect(tree.props).to.eql({ children: [ 'A', false ]});
           tree.reRender($(ContextComponent, { thing: 'X' }), { beep: true });

@@ -418,9 +418,9 @@ describe("skin-deep", function() {
       var wut = tree.subTree("#wut", { id: 'wut', prop: "foo" });
       expect(wut).to.eql(false);
 
-      var wut = tree.subTree("#wut", { id: 'wut', prop: "val" });
-      expect(wut).to.be.an('object');
-      expect(wut.getRenderOutput().props).to.have.property("id", "wut");
+      var wut2 = tree.subTree("#wut", { id: 'wut', prop: "val" });
+      expect(wut2).to.be.an('object');
+      expect(wut2.getRenderOutput().props).to.have.property("id", "wut");
     });
     it("should grab a subtree by class selector", function() {
       var abc = tree.subTree(".abc");
@@ -431,9 +431,9 @@ describe("skin-deep", function() {
       var yup = tree.subTree(".yup", { className: 'yup', prop: "foo" });
       expect(yup).to.eql(false);
 
-      var yup = tree.subTree(".yup", { className: 'yup', prop: "val" });
-      expect(yup).to.be.an('object');
-      expect(yup.getRenderOutput().props).to.have.property("className", "yup");
+      var yup2 = tree.subTree(".yup", { className: 'yup', prop: "val" });
+      expect(yup2).to.be.an('object');
+      expect(yup2.getRenderOutput().props).to.have.property("className", "yup");
     });
     it("should grab a subtree by tag selector", function() {
       var abc = tree.subTree("object");
@@ -445,9 +445,9 @@ describe("skin-deep", function() {
       var subtree = tree.subTree("object", { children: 'not objection!' });
       expect(subtree).to.eql(false);
 
-      var subtree = tree.subTree("object", { children: 'objection!' });
-      expect(subtree).to.be.an('object');
-      expect(subtree.getRenderOutput().type).to.eql('object');
+      var subtree2 = tree.subTree("object", { children: 'objection!' });
+      expect(subtree2).to.be.an('object');
+      expect(subtree2.getRenderOutput().type).to.eql('object');
     });
     it("should grab a subtree by component name", function() {
       var abc = tree.subTree("Widget");
@@ -464,17 +464,17 @@ describe("skin-deep", function() {
       var subtree = tree.subTree("Widget", { children: 'not stuff' });
       expect(subtree).to.eql(false);
 
-      var subtree = tree.subTree("Widget", { children: 'stuff' });
-      expect(subtree).to.be.an('object');
-      expect(subtree.getRenderOutput().type).to.eql(Widget);
+      var subtree2 = tree.subTree("Widget", { children: 'stuff' });
+      expect(subtree2).to.be.an('object');
+      expect(subtree2.getRenderOutput().type).to.eql(Widget);
     });
     it("should grab a subtree by component + props", function() {
       var subtree = tree.subTree(Widget, { children: 'not stuff' });
       expect(subtree).to.eql(false);
 
-      var subtree = tree.subTree(Widget, { children: 'stuff' });
-      expect(subtree).to.be.an('object');
-      expect(subtree.type).to.eql(Widget);
+      var subtree2 = tree.subTree(Widget, { children: 'stuff' });
+      expect(subtree2).to.be.an('object');
+      expect(subtree2.type).to.eql(Widget);
     });
     it("should grab first subtree when using function matcher", function() {
       var subtree = tree.subTree('*', function(node) {
@@ -503,7 +503,7 @@ describe("skin-deep", function() {
       it("should expose .props", function() {
         expect(tree.subTree('#wut').props).to.eql({
           id: 'wut', prop: 'val'
-        })
+        });
       });
     });
   });
@@ -546,9 +546,9 @@ describe("skin-deep", function() {
       var wut = tree.subTreeLike("#wut", { id: 'wut', prop: "foo" });
       expect(wut).to.eql(false);
 
-      var wut = tree.subTreeLike("#wut", { prop: "val" });
-      expect(wut).to.be.an('object');
-      expect(wut.getRenderOutput().props).to.have.property("id", "wut");
+      var wut2 = tree.subTreeLike("#wut", { prop: "val" });
+      expect(wut2).to.be.an('object');
+      expect(wut2.getRenderOutput().props).to.have.property("id", "wut");
     });
     it("should grab a subtree by class selector", function() {
       var abc = tree.subTreeLike(".abc");
@@ -559,9 +559,9 @@ describe("skin-deep", function() {
       var yup = tree.subTreeLike(".yup", { className: 'yup', prop: "foo" });
       expect(yup).to.eql(false);
 
-      var yup = tree.subTreeLike(".yup", { prop: "val" });
-      expect(yup).to.be.an('object');
-      expect(yup.getRenderOutput().props).to.have.property("className", "yup");
+      var yup2 = tree.subTreeLike(".yup", { prop: "val" });
+      expect(yup2).to.be.an('object');
+      expect(yup2.getRenderOutput().props).to.have.property("className", "yup");
     });
     it("should grab a subtree by tag selector", function() {
       var abc = tree.subTreeLike("object");
@@ -573,9 +573,9 @@ describe("skin-deep", function() {
       var subtree = tree.subTreeLike("object", { children: 'not objection!' });
       expect(subtree).to.eql(false);
 
-      var subtree = tree.subTreeLike("object", { children: 'objection!' });
-      expect(subtree).to.be.an('object');
-      expect(subtree.getRenderOutput().props).to.have.property('id', 'bob');
+      var subtree2 = tree.subTreeLike("object", { children: 'objection!' });
+      expect(subtree2).to.be.an('object');
+      expect(subtree2.getRenderOutput().props).to.have.property('id', 'bob');
     });
     it("should grab a subtree by component name", function() {
       var abc = tree.subTreeLike("Widget");
@@ -587,9 +587,9 @@ describe("skin-deep", function() {
       var subtree = tree.subTreeLike("Widget", { children: 'not stuff' });
       expect(subtree).to.eql(false);
 
-      var subtree = tree.subTreeLike("Widget", { more: true });
-      expect(subtree).to.be.an('object');
-      expect(subtree.getRenderOutput().props).to.have.property('test', 'abc');
+      var subtree2 = tree.subTreeLike("Widget", { more: true });
+      expect(subtree2).to.be.an('object');
+      expect(subtree2.getRenderOutput().props).to.have.property('test', 'abc');
     });
     it("should grab first subtree by * selector + partial props", function() {
       var subtree = tree.subTreeLike("*", { prop: 'val' });
@@ -616,7 +616,7 @@ describe("skin-deep", function() {
       it("should expose .props", function() {
         expect(tree.subTreeLike('#wut').props).to.eql({
           id: 'wut', prop: 'val'
-        })
+        });
       });
     });
   });
@@ -913,6 +913,7 @@ describe("skin-deep", function() {
         .to.eql(false);
     });
     describe("back-compat with a warning", function() {
+      /* eslint-disable no-console */
       var originalWarn = console.warn;
       var warning;
       beforeEach(function() {
@@ -922,6 +923,7 @@ describe("skin-deep", function() {
       afterEach(function() {
         console.warn = originalWarn;
       });
+      /* eslint-enable no-console */
       it("should find a DOM component", function() {
         var c = tree.findComponent($('span', {}, "stuff", "and", "nonsense"));
         expect(c).to.have.property('type', 'span');
@@ -1002,6 +1004,7 @@ describe("skin-deep", function() {
         .to.eql(false);
     });
     describe("back-compat with a warning", function() {
+      /* eslint-disable no-console */
       var originalWarn = console.warn;
       var warning;
       beforeEach(function() {
@@ -1011,6 +1014,7 @@ describe("skin-deep", function() {
       afterEach(function() {
         console.warn = originalWarn;
       });
+      /* eslint-enable no-console */
       it("should find a DOM component", function() {
         var c = tree.findComponentLike($('span', {}, "stuff", "&", "nonsense"));
         expect(c).to.have.property('type', 'span');
@@ -1132,7 +1136,7 @@ describe("skin-deep", function() {
       var babyTrees = [
         sd.shallowRender($(Baby, {goats: 'hello'})),
         sd.shallowRender($(Baby, {goats: 'bye'}))
-      ]
+      ];
       expect(result.getRenderOutput()).to.eql(
         babyTrees[0].getRenderOutput()
       );
