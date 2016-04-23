@@ -82,7 +82,7 @@ describe("skin-deep", function() {
     });
   });
 
-  describe("reRender", function() {
+  describe.skip("reRender", function() {
     it("should reRender a React Component without context", function() {
       var Component = React.createClass({
         render: function() {

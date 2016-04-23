@@ -39,7 +39,7 @@ function shallowRender(elementOrFunction, context) {
     return TestUtils.isElement(elementOrFunction) ?
       elementOrFunction : elementOrFunction();
   });
-  shallowRenderer.element = element;
+  shallowRenderer.originalType = element.type;
 
   if (typeof element.type == 'string') {
     return new SkinDeep(
@@ -61,24 +61,15 @@ function shallowRender(elementOrFunction, context) {
   );
 }
 
-var facebookIssues = 'https://github.com/facebook/react/issues/';
-
 function SkinDeep(getCurrentNode, renderer, instance) {
   var api = {
-    reRender: function(elementOrFunction, context) {
+    reRender: function(props, context) {
       context = context || renderer.context;
 
       var element = withContext(context, function() {
-        return TestUtils.isElement(elementOrFunction) ?
-          elementOrFunction : elementOrFunction();
+        return React.createElement(renderer.originalType, props);
       });
-      if (element.type !== renderer.element.type) {
-        var bug = facebookIssues + '3760#issuecomment-162697611';
-        throw new Error(
-          'Cannot re-render with a different component, see ' + bug
-        );
-      }
-      renderer.element = element;
+
       return renderer.render(element, context);
     },
     getMountedInstance: function() {

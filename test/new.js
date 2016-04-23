@@ -244,47 +244,31 @@ describe("skin-deep", function() {
         return $(this.props.tag || 'h1', {}, this.props.thing);
       }
     });
-    var Component2 = React.createClass({
-      render: function() { return $('h1', {}, 'A'); }
-    });
     beforeEach(function() {
       tree = sd.shallowRender($(Component, { thing: 'A' }));
     });
-    it('should reRender with new type', function() {
-      expect(tree.type).to.equal('h1');
-      tree.reRender($(Component, { tag: 'h6' }));
-      expect(tree.type).to.equal('h6');
-    });
     it('should reRender with new props', function() {
       expect(tree.props).to.eql({ children: 'A' });
-      tree.reRender($(Component, { thing: 'B' }));
+      tree.reRender({ thing: 'B' });
       expect(tree.props).to.eql({ children: 'B' });
     });
-    context('entirely different component', function() {
-      it('should throw an error', function() {
-        expect(function() {
-          tree.reRender($(Component2, {}));
-        }).to.throw(Error, /different/);
-      });
+    it('should reRender with new and different props', function() {
+      expect(tree.type).to.equal('h1');
+      expect(tree.props).to.eql({ children: 'A' });
+      tree.reRender({ tag: 'h6', thing: 'B' });
+      expect(tree.type).to.equal('h6');
+      expect(tree.props).to.eql({ children: 'B' });
     });
+
     context('multiple re-renders', function() {
       it('should overwrite multiple times', function() {
         expect(tree.props).to.eql({ children: 'A' });
-        tree.reRender($(Component, { thing: 'X' }));
+        tree.reRender({ thing: 'X' });
         expect(tree.props).to.eql({ children: 'X' });
-        tree.reRender($(Component, { thing: 123 }));
+        tree.reRender({ thing: 123 });
         expect(tree.props).to.eql({ children: 123 });
-        tree.reRender($(Component, { thing: false }));
+        tree.reRender({ thing: false });
         expect(tree.props).to.eql({ children: false });
-      });
-      it('should still error if using a different component', function() {
-        tree.reRender($(Component, { thing: 'X' }));
-        tree.reRender($(Component, { thing: 123 }));
-        tree.reRender($(Component, { thing: false }));
-
-        expect(function() {
-          tree.reRender($(Component2, {}));
-        }).to.throw(Error, /different/);
       });
     });
     context('with context', function() {
@@ -302,35 +286,13 @@ describe("skin-deep", function() {
       });
       it('should keep previous context', function() {
         expect(tree.props).to.eql({ children: ['A', false] });
-        tree.reRender(
-          function() { return $(ContextComponent, { thing: 'X' }); }
-        );
+        tree.reRender({ thing: 'X' });
         expect(tree.props).to.eql({ children: ['X', false] });
       });
       it('should allow replacing context', function() {
         expect(tree.props).to.eql({ children: ['A', false] });
-        tree.reRender(
-          function() { return $(ContextComponent, { thing: 'X' }); },
-          { beep: true }
-        );
+        tree.reRender({ thing: 'X' }, { beep: true });
         expect(tree.props).to.eql({ children: ['X', true] });
-      });
-      describe("0.14+ Parent context", function() {
-        if (React013) {
-          it("doesn't apply");
-          return;
-        }
-
-        it('should keep previous context', function() {
-          expect(tree.props).to.eql({ children: ['A', false] });
-          tree.reRender($(ContextComponent, { thing: 'X' }));
-          expect(tree.props).to.eql({ children: ['X', false] });
-        });
-        it('should allow replacing context', function() {
-          expect(tree.props).to.eql({ children: ['A', false] });
-          tree.reRender($(ContextComponent, { thing: 'X' }), { beep: true });
-          expect(tree.props).to.eql({ children: ['X', true] });
-        });
       });
     });
   });
