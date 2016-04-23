@@ -90,6 +90,7 @@ assert.equal(homeLink.text(), 'Home');
  * removed `findComponent`, use `subTree()` instead
  * removed `findComponentLike`, use `subTree()` instead
  * `toString()` no-longer expands child components
+ * `reRender()` now takes props instead of a ReactElement.
 
 ## Usage
 
@@ -225,15 +226,6 @@ Get a tree instance by shallow-rendering a renderable [ReactElement](http://face
 
 Returns [`tree`](#tree)
 
-### tree.reRender(element [, context])
-
-Re-render a new element into the same tree as previously. Usually used to re-render an element with new props.
-
-* `element {ReactElement}` - element to render
-* `context {object}` - _optional_ [context](http://facebook.github.io/react/docs/context.html)
-
-Returns `null`
-
 ### tree
 
 #### tree.type
@@ -247,6 +239,15 @@ Returns [`ReactComponent class`](http://facebook.github.io/react/docs/glossary.h
 Access the props of the rendered root element.
 
 Returns `object`
+
+### tree.reRender(props [, context])
+
+Re-render the element with new props into the same tree as the previous render. Useful for testing how a component changes over time in response to new props from its parent.
+
+* `props {object}` - the new props, which will replace the previous ones
+* `context {object}` - _optional_ [context](http://facebook.github.io/react/docs/context.html)
+
+Returns `null`
 
 #### tree.text()
 
