@@ -42,7 +42,10 @@ function shallowRender(elementOrFunction, context) {
   shallowRenderer.element = element;
 
   if (typeof element.type == 'string') {
-    return new SkinDeep(function() { return element; }, shallowRenderer);
+    return new SkinDeep(
+      function() { return element; },
+      shallowRenderer
+    );
   }
 
   shallowRenderer.render(element, context);
@@ -182,7 +185,7 @@ function SkinDeep(getCurrentNode, renderer, instance) {
 }
 
 function skinDeepNode(node) {
-  return new SkinDeep(function() { return node; });
+  return new SkinDeep(constantly(node));
 }
 
 /**
@@ -211,18 +214,15 @@ function createNodePredicate(query) {
   if (query == '*') {
     return alwaysTrue;
   }
-  // React Component itself
-  if (typeof query !== 'string') {
-    return function(n) { return n.type == query; };
+  // React Component itself or tag name
+  if (typeof query !== 'string' || query.match(/^[a-z][\w\-]*$/)) {
+    return findNodeByType(query);
   }
   if (query.match(/^\.[\S]+$/)) {
     return findNodeByClass(query.substring(1));
   }
-  if (query.match(/^\#[\S]+$/)) {
+  if (query.match(/^#[\S]+$/)) {
     return findNodeById(query.substring(1));
-  }
-  if (query.match(/^[a-z][\w\-]*$/)) { // tagnames begin with lowercase
-    return function(n) { return n.type == query; };
   }
   // component displayName
   return function(n) { return n.type && getComponentName(n.type) == query; };
@@ -243,6 +243,12 @@ function createFinder(selector, predicate, isLike) {
   }
   return function(node) {
     return nodeMatcher(node) && otherMatcher(node);
+  };
+}
+
+function findNodeByType(type) {
+  return function(n) {
+    return n.type == type;
   };
 }
 
@@ -299,7 +305,7 @@ function getTextFromNode(node) {
   }
   // strings and numbers are just text
   if (typeof node === 'string' || typeof node === 'number') {
-    return normaliseSpaces('' + node);
+    return normaliseSpaces(String(node));
   }
   // Iterables get combined with spaces
   if (typeof node.map === 'function') {
@@ -337,6 +343,12 @@ function mapcat(array, fn) {
     result.push.apply(result, fn(x, i));
   });
   return result;
+}
+
+function constantly(x) {
+  return function() {
+    return x;
+  };
 }
 
 function alwaysTrue() {

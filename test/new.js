@@ -14,7 +14,8 @@ function hardFailConsole() {
   console[React013 ? 'warn' : 'error'] = throwError;
 }
 function resetConsole() {
-  console.warn = consoleWarn; console.error = consoleError;
+  console.warn = consoleWarn;
+  console.error = consoleError;
 }
 /* eslint-enable no-console */
 
@@ -300,19 +301,19 @@ describe("skin-deep", function() {
         );
       });
       it('should keep previous context', function() {
-        expect(tree.props).to.eql({ children: [ 'A', false ]});
+        expect(tree.props).to.eql({ children: ['A', false] });
         tree.reRender(
           function() { return $(ContextComponent, { thing: 'X' }); }
         );
-        expect(tree.props).to.eql({ children: [ 'X', false ]});
+        expect(tree.props).to.eql({ children: ['X', false] });
       });
       it('should allow replacing context', function() {
-        expect(tree.props).to.eql({ children: [ 'A', false ]});
+        expect(tree.props).to.eql({ children: ['A', false] });
         tree.reRender(
           function() { return $(ContextComponent, { thing: 'X' }); },
           { beep: true }
         );
-        expect(tree.props).to.eql({ children: [ 'X', true ]});
+        expect(tree.props).to.eql({ children: ['X', true] });
       });
       describe("0.14+ Parent context", function() {
         if (React013) {
@@ -321,14 +322,14 @@ describe("skin-deep", function() {
         }
 
         it('should keep previous context', function() {
-          expect(tree.props).to.eql({ children: [ 'A', false ]});
+          expect(tree.props).to.eql({ children: ['A', false] });
           tree.reRender($(ContextComponent, { thing: 'X' }));
-          expect(tree.props).to.eql({ children: [ 'X', false ]});
+          expect(tree.props).to.eql({ children: ['X', false] });
         });
         it('should allow replacing context', function() {
-          expect(tree.props).to.eql({ children: [ 'A', false ]});
+          expect(tree.props).to.eql({ children: ['A', false] });
           tree.reRender($(ContextComponent, { thing: 'X' }), { beep: true });
-          expect(tree.props).to.eql({ children: [ 'X', true ]});
+          expect(tree.props).to.eql({ children: ['X', true] });
         });
       });
     });

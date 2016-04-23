@@ -89,12 +89,12 @@ describe("skin-deep", function() {
           return $('h1', {}, this.props.thing);
         }
       });
-      var tree = sd.shallowRender($(Component, {thing: 'A'}));
+      var tree = sd.shallowRender($(Component, { thing: 'A' }));
       var vdom1 = tree.getRenderOutput();
       expect(vdom1).to.have.property('type', 'h1');
       expect(vdom1.props).to.have.property('children', 'A');
 
-      tree.reRender($(Component, {thing: 'B'}));
+      tree.reRender($(Component, { thing: 'B' }));
       var vdom2 = tree.getRenderOutput();
       expect(vdom2).to.have.property('type', 'h1');
       expect(vdom2.props).to.have.property('children', 'B');
@@ -108,16 +108,17 @@ describe("skin-deep", function() {
         }
       });
       var tree = sd.shallowRender(
-        function() { return $(Component, {thing: 'A'}); }
-      , { checkMe: 'Context!'});
+        function() { return $(Component, { thing: 'A' }); }
+      , { checkMe: 'Context!' });
       var vdom1 = tree.getRenderOutput();
 
       expect(vdom1).to.have.property('type', 'h1');
       expect(vdom1.props.children).to.eql(['A', 'Context!']);
 
-      tree.reRender(function() {
-        return $(Component, {thing: 'B'}); },
-      { checkMe: 'Context!'});
+      tree.reRender(
+        function() { return $(Component, { thing: 'B' }); },
+        { checkMe: 'Context!' }
+      );
       var vdom2 = tree.getRenderOutput();
       expect(vdom2).to.have.property('type', 'h1');
       expect(vdom2.props.children).to.eql(['B', 'Context!']);
@@ -131,12 +132,13 @@ describe("skin-deep", function() {
         render: function() {
           return $('h1', { title: "blah" }, "Heading!");
         },
-        aMethod: function() {}
+        aMethod: function() { return 1; }
       });
       var tree = sd.shallowRender($(Component));
       var instance = tree.getMountedInstance();
 
       expect(instance.aMethod).to.be.a('function');
+      expect(instance.aMethod()).to.eql(1);
     });
 
     it("shouldn't work on non-component renders", function() {
@@ -158,21 +160,21 @@ describe("skin-deep", function() {
       displayName: 'Connect(Widget)',
       render: function() { return 'redux-widget'; }
     });
-    function Widget2() {}
+    function Widget2() { this.state = {}; }
     Widget2.prototype = Object.create(React.Component);
     Widget2.prototype.render = function() { return 'widget'; };
     var tree = sd.shallowRender(
       $('div', {},
         $('div', {}, 'objection!'),
-        $('div', {id: "def"}, "DEF"),
+        $('div', { id: "def" }, "DEF"),
         $('div', {},
           $('div', {}, "objection!"),
           $('object', {}, "objection!"),
           'hello',
-          $('div', {className: "abc-123"}, "ABC 123"),
-          $('div', {className: "space-after abc-123"}, "Second ABC 123"),
-          $('div', {className: "abc-123 space-before"}, "Third ABC 123"),
-          [$('div', {className: "abc", key: "1"}, "ABC")],
+          $('div', { className: "abc-123" }, "ABC 123"),
+          $('div', { className: "space-after abc-123" }, "Second ABC 123"),
+          $('div', { className: "abc-123 space-before" }, "Third ABC 123"),
+          [$('div', { className: "abc", key: "1" }, "ABC")],
           $(Widget, {}),
           $(Widget2, {}),
           $(ReduxWidget, {})
@@ -274,8 +276,8 @@ describe("skin-deep", function() {
   describe("textIn", function() {
     var tree = sd.shallowRender(
       $('div', {},
-        $('div', {className: "abc"}, "ABC"),
-        $('div', {id: "def"}, "DEF"),
+        $('div', { className: "abc" }, "ABC"),
+        $('div', { id: "def" }, "DEF"),
         $('object', {}, "objection!")
       )
     );
@@ -300,7 +302,7 @@ describe("skin-deep", function() {
           $('input', {
             type: "text", id: "username",
             value: this.state.username, onChange: function(event) {
-              this.setState({"username": event.target.value});
+              this.setState({ "username": event.target.value });
             }.bind(this)
           }),
           $('input', {
@@ -324,11 +326,11 @@ describe("skin-deep", function() {
     });
 
     it("should no-op on field without change handler", function() {
-      var before = tree.findNode(".nickname");
+      var field = tree.findNode(".nickname");
 
       tree.fillField(".nickname", "glenjamin");
 
-      expect(tree.findNode(".nickname")).to.eql(before);
+      expect(tree.findNode(".nickname")).to.eql(field);
     });
 
     it.skip("should set value of uncontrolled text field", function() {
@@ -345,14 +347,14 @@ describe("skin-deep", function() {
   describe("toString", function() {
     it("should give HTML", function() {
       var tree = sd.shallowRender($('h1', { title: "blah" }, "Heading!"));
-      expect('' + tree).to.eql('<h1 title="blah">Heading!</h1>');
+      expect(String(tree)).to.eql('<h1 title="blah">Heading!</h1>');
     });
   });
 
   describe("props", function() {
     it("should expose props", function() {
       var tree = sd.shallowRender($('h1', { title: "blah" }, "Heading!"));
-      expect(tree.props).to.eql({title: "blah", children: "Heading!"});
+      expect(tree.props).to.eql({ title: "blah", children: "Heading!" });
     });
   });
 
@@ -365,14 +367,14 @@ describe("skin-deep", function() {
       var tree = sd.shallowRender($('h1', { title: "blah" },
         "Heading! ",
         $('div', { title: "blah" },
-          123, $('hr'),
+          5, $('hr'),
           ' Some text. ',
           'More text. ',
-          [ React.createElement(Widget, { key: 1 }),
-            React.createElement(Widget, { key: 2 }) ])
+          [React.createElement(Widget, { key: 1 }),
+            React.createElement(Widget, { key: 2 })])
       ));
       expect(tree.text())
-        .to.eql('Heading! 123 Some text. More text. <Widget /><Widget />');
+        .to.eql('Heading! 5 Some text. More text. <Widget /><Widget />');
     });
     it("Should render a single zero child correctly", function() {
       var tree = sd.shallowRender($('h1', {}, 0));
@@ -383,17 +385,17 @@ describe("skin-deep", function() {
   describe("subTree", function() {
     var Widget = React.createClass({
       displayName: 'Widget',
-      render: function() {}
+      render: function() { return null; }
     });
     var tree = sd.shallowRender(
       $('div', {},
-        $('div', {id: "def", className: "abc"},
+        $('div', { id: "def", className: "abc" },
           "DEF", $('hr')),
-        $('div', {id: "abc"},
+        $('div', { id: "abc" },
           $('div', {}, "objection!"),
           $('object', {}, "objection!"),
           'hello',
-          [$('div', {id: "abc2", className: "abc", key: "1"}, "ABC")]
+          [$('div', { id: "abc2", className: "abc", key: "1" }, "ABC")]
         ),
         $('div', { id: 'wut', prop: 'val' }),
         $('div', { className: 'yup', prop: 'val' }),
@@ -511,21 +513,21 @@ describe("skin-deep", function() {
   describe("subTreeLike", function() {
     var Widget = React.createClass({
       displayName: 'Widget',
-      render: function() {}
+      render: function() { return null; }
     });
     var tree = sd.shallowRender(
       $('div', {},
-        $('div', {id: "def", className: "abc"},
+        $('div', { id: "def", className: "abc" },
           "DEF", $('hr', {})),
-        $('div', {id: "abc", more: false},
+        $('div', { id: "abc", more: false },
           $('div', {}, "objection!"),
-          $('object', {id: "bob", prop: 'val'}, "objection!"),
+          $('object', { id: "bob", prop: 'val' }, "objection!"),
           'hello',
-          [$('div', {id: "abc2", className: "abc", key: "1"}, "ABC")]
+          [$('div', { id: "abc2", className: "abc", key: "1" }, "ABC")]
         ),
         $('div', { id: 'wut', prop: 'val' }),
         $('div', { className: 'yup', prop: 'val' }),
-        $(Widget, {test: 'abc', prop: 'val', more: true}, "stuff")
+        $(Widget, { test: 'abc', prop: 'val', more: true }, "stuff")
       )
     );
     it("should return false when not found", function() {
@@ -626,12 +628,11 @@ describe("skin-deep", function() {
     before(function() {
       tree = sd.shallowRender(
         $('ul', {},
-          $('li', {className: "abc"}, $('span', {}, 1)),
-          $('li', {className: "abc"}, $('span', {}, 2)),
-          $('li', {className: "abc"}, $('span', {}, 3)),
-          $('li', {className: "abc"}, $('span', {}, 4)),
-          $('li', {className: "abc"}, $('span', {}, 5)),
-          $('li', {className: "first-class abc more-class"}, $('span', {}, 6))
+          $('li', { className: "abc" }, $('span', {}, 1)),
+          $('li', { className: "abc" }, $('span', {}, 2)),
+          $('li', { className: "abc" }, $('span', {}, 3)),
+          $('li', { className: "abc" }, $('span', {}, 4)),
+          $('li', { className: "first-class abc more-class" }, $('span', {}, 5))
         )
       );
     });
@@ -641,7 +642,7 @@ describe("skin-deep", function() {
       });
       it("should return array", function() {
         expect(trees).to.be.an('array');
-        expect(trees).to.have.length(6);
+        expect(trees).to.have.length(5);
       });
       it("should have SkinDeep subtrees in array", function() {
         trees.forEach(function(subTree) {
@@ -651,7 +652,7 @@ describe("skin-deep", function() {
       });
       it("should be able to extract text from each", function() {
         var texts = trees.map(function(st) { return st.text(); });
-        expect(texts).to.eql(["1", "2", "3", "4", "5", "6"]);
+        expect(texts).to.eql(["1", "2", "3", "4", "5"]);
       });
     });
     describe("using tag selector", function() {
@@ -660,7 +661,7 @@ describe("skin-deep", function() {
       });
       it("should return array", function() {
         expect(trees).to.be.an('array');
-        expect(trees).to.have.length(6);
+        expect(trees).to.have.length(5);
       });
       it("should have SkinDeep subtrees in array", function() {
         trees.forEach(function(subTree) {
@@ -670,7 +671,7 @@ describe("skin-deep", function() {
       });
       it("should be able to extract text from each", function() {
         var texts = trees.map(function(st) { return st.text(); });
-        expect(texts).to.eql(["1", "2", "3", "4", "5", "6"]);
+        expect(texts).to.eql(["1", "2", "3", "4", "5"]);
       });
     });
     describe("using tag selector with props", function() {
@@ -736,14 +737,14 @@ describe("skin-deep", function() {
     before(function() {
       tree = sd.shallowRender(
         $('ul', {},
-          $('li', {className: "abc", idx: 1, more: 'li1'},
+          $('li', { className: "abc", idx: 1, more: 'li1' },
             $('span', { prop: 'val', idx: 1, more: '1' }, 1)),
-          $('li', {className: "abc", idx: 2, more: 'li2'},
+          $('li', { className: "abc", idx: 2, more: 'li2' },
             $('span', { prop: 'val', idx: 2, more: '2' }, 2)),
-          $('li', {className: "abc"}, 3),
-          $('li', {className: "abc"},
+          $('li', { className: "abc" }, 3),
+          $('li', { className: "abc" },
             $('span', { prop: 'val', idx: 4, more: '4' }, 4)),
-          $('li', {className: "abc"}, 5)
+          $('li', { className: "abc" }, 5)
         )
       );
     });
@@ -777,7 +778,7 @@ describe("skin-deep", function() {
     });
     describe("using class selector + partial props", function() {
       beforeEach(function() {
-        trees = tree.everySubTreeLike(".abc", {idx: 2});
+        trees = tree.everySubTreeLike(".abc", { idx: 2 });
       });
       it("should return array", function() {
         expect(trees).to.be.an('array');
@@ -830,13 +831,13 @@ describe("skin-deep", function() {
     describe("nested matches + partial props", function() {
       before(function() {
         tree = sd.shallowRender(
-          $('div', {idx: '1', prop: 'val', more: false},
-            $('div', {idx: '2', prop: 'val', more: true}, "deep ",
-              $('div', {idx: '3', prop: 'val', more: false},
-                $('div', {idx: '4', prop: 'val', more: true}, "deep")))
+          $('div', { idx: '1', prop: 'val', more: false },
+            $('div', { idx: '2', prop: 'val', more: true }, "deep ",
+              $('div', { idx: '3', prop: 'val', more: false },
+                $('div', { idx: '4', prop: 'val', more: true }, "deep")))
           )
         );
-        trees = tree.everySubTreeLike("div", {prop: 'val', more: true});
+        trees = tree.everySubTreeLike("div", { prop: 'val', more: true });
       });
       it("should find nodes deeply", function() {
         expect(trees).to.be.an('array');
@@ -862,12 +863,12 @@ describe("skin-deep", function() {
   describe("findComponent", function() {
     var Widget = React.createClass({
       displayName: 'Widget',
-      render: function() {}
+      render: function() { return null; }
     });
     var tree = sd.shallowRender(
       $('div', {},
         $('span', {}, "stuff", "and", "nonsense"),
-        $('b', { className: "go"}, "away"),
+        $('b', { className: "go" }, "away"),
         $(Widget, {}),
         $(Widget, { some: "value", num: 123 }),
         $(Widget, {}, "kids")
@@ -901,11 +902,11 @@ describe("skin-deep", function() {
       expect(c.props).to.eql({ children: "kids" });
     });
     it("should fail to find a DOM component", function() {
-      expect(tree.findComponent('span', { children: ["real", "stuff"]}))
+      expect(tree.findComponent('span', { children: ["real", "stuff"] }))
         .to.eql(false);
     });
     it("should fail to find a component", function() {
-      expect(tree.findComponent('Widget', { "other": "value"}))
+      expect(tree.findComponent('Widget', { "other": "value" }))
         .to.eql(false);
     });
     it("should fail to find a component with children", function() {
@@ -918,7 +919,9 @@ describe("skin-deep", function() {
       var warning;
       beforeEach(function() {
         warning = null;
-        console.warn = function(msg) { warning = msg; };
+        console.warn = function(msg) {
+          warning = msg;
+        };
       });
       afterEach(function() {
         console.warn = originalWarn;
@@ -954,12 +957,12 @@ describe("skin-deep", function() {
   describe("findComponentLike", function() {
     var Widget = React.createClass({
       displayName: 'Widget',
-      render: function() {}
+      render: function() { return null; }
     });
     var tree = sd.shallowRender(
       $('div', {},
         $('span', {}, "stuff", "&", "nonsense"),
-        $('b', { className: "go"}, "away"),
+        $('b', { className: "go" }, "away"),
         $(Widget, {}),
         $(Widget, { some: "value", num: 123 }),
         $(Widget, {}, "kids")
@@ -970,7 +973,7 @@ describe("skin-deep", function() {
         { children: ["stuff", "&", "nonsense"] }
       );
       expect(c).to.have.property('type', 'span');
-      expect(c.props).to.eql({ children: ["stuff", "&", "nonsense"]});
+      expect(c.props).to.eql({ children: ["stuff", "&", "nonsense"] });
     });
     it("should find a DOM component via partial match", function() {
       var c = tree.findComponentLike('b', { className: "go" });
@@ -1009,7 +1012,9 @@ describe("skin-deep", function() {
       var warning;
       beforeEach(function() {
         warning = null;
-        console.warn = function(msg) { warning = msg; };
+        console.warn = function(msg) {
+          warning = msg;
+        };
       });
       afterEach(function() {
         console.warn = originalWarn;
@@ -1018,7 +1023,7 @@ describe("skin-deep", function() {
       it("should find a DOM component", function() {
         var c = tree.findComponentLike($('span', {}, "stuff", "&", "nonsense"));
         expect(c).to.have.property('type', 'span');
-        expect(c.props).to.eql({ children: ["stuff", "&", "nonsense"]});
+        expect(c.props).to.eql({ children: ["stuff", "&", "nonsense"] });
         expect(warning).to.match(/deprecated/);
       });
       it("should find a DOM component via partial match", function() {
@@ -1102,51 +1107,50 @@ describe("skin-deep", function() {
     var Baby = React.createClass({
       displayName: 'Baby',
       render: function() {
-        return $('div', {id: this.props.goats});
+        return $('div', { id: this.props.goats });
       }
     });
     var Mum = React.createClass({
       displayName: 'Mum',
-      contextTypes: {name: React.PropTypes.string.isRequired},
+      contextTypes: { name: React.PropTypes.string.isRequired },
       render: function() {
-        return $('div', {contextName: this.context.name},
-          $(Baby, {goats: this.props.sheep}),
-          $(Baby, {goats: 'bye'})
+        return $('div', { contextName: this.context.name },
+          $(Baby, { goats: this.props.sheep }),
+          $(Baby, { goats: 'bye' })
         );
       }
     });
     var Granny = React.createClass({
       displayName: 'Granny',
       render: function() {
-        return $(Mum, {sheep: this.props.onions}, $('h1', {}));
+        return $(Mum, { sheep: this.props.onions }, $('h1', {}));
       }
     });
     var GreatGranny = React.createClass({
       displayName: 'GreatGranny',
       render: function() {
-        return $(Granny, {onions: this.props.cheese});
+        return $(Granny, { onions: this.props.cheese });
       }
     });
 
-    var greatTree = sd.shallowRender($(GreatGranny, {cheese: 'hello'}));
-    var context = {name: 'Jane'};
+    var greatTree = sd.shallowRender($(GreatGranny, { cheese: 'hello' }));
 
     it('should create instance of first component in path', function() {
-      var result = greatTree.dive(['Granny', 'Mum', 'Baby'], context);
+      var result = greatTree.dive(['Granny', 'Mum', 'Baby'], { name: 'Jane' });
       var babyTrees = [
-        sd.shallowRender($(Baby, {goats: 'hello'})),
-        sd.shallowRender($(Baby, {goats: 'bye'}))
+        sd.shallowRender($(Baby, { goats: 'hello' })),
+        sd.shallowRender($(Baby, { goats: 'bye' }))
       ];
       expect(result.getRenderOutput()).to.eql(
         babyTrees[0].getRenderOutput()
       );
     });
     it('should pass through the props', function() {
-      var result = greatTree.dive(['Granny', 'Mum', 'Baby'], context);
+      var result = greatTree.dive(['Granny', 'Mum', 'Baby'], { name: 'Jane' });
       expect(result.props.id).to.eql('hello');
     });
     it('should pass through the context', function() {
-      var result = greatTree.dive(['Granny', 'Mum'], context);
+      var result = greatTree.dive(['Granny', 'Mum'], { name: 'Jane' });
       expect(result.getRenderOutput().props.contextName).to.eql('Jane');
     });
     it('should work with children that are html elements', function() {
@@ -1154,13 +1158,13 @@ describe("skin-deep", function() {
       expect(other.toString()).to.eql('<h1></h1>');
     });
     it('should only traverse the given path', function() {
-      var result = greatTree.dive(['Granny', 'Mum'], context);
+      var result = greatTree.dive(['Granny', 'Mum'], { name: 'Jane' });
       var other = greatTree.dive(['Granny', 'h1']);
       expect(result.getRenderOutput()).to.not.eql(other.getRenderOutput());
     });
     it('should throw if element not found', function() {
       expect(function() {
-        return greatTree.dive(['Granny', 'Mum', 'h4'], context);
+        return greatTree.dive(['Granny', 'Mum', 'h4'], { name: 'Jane' });
       }).to.throw('h4 not found in tree');
     });
   });
