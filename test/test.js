@@ -273,7 +273,7 @@ describe("skin-deep", function() {
     });
   });
 
-  describe("textIn", function() {
+  describe.skip("textIn", function() {
     var tree = sd.shallowRender(
       $('div', {},
         $('div', { className: "abc" }, "ABC"),
@@ -496,8 +496,8 @@ describe("skin-deep", function() {
       it("should provide scoped findNode()", function() {
         expect(subTree.findNode(".abc")).to.eql(tree.findNode("#abc2"));
       });
-      it("should provide scoped textIn()", function() {
-        expect(subTree.textIn(".abc")).to.eql("ABC");
+      it("should provide scoped subTree()", function() {
+        expect(subTree.subTree('.abc').text()).to.eql("ABC");
       });
       it("should provide scoped text()", function() {
         expect(subTree.text()).to.eql("objection!objection!helloABC");
@@ -609,8 +609,8 @@ describe("skin-deep", function() {
       it("should provide scoped findNode()", function() {
         expect(subTreeLike.findNode(".abc")).to.eql(tree.findNode("#abc2"));
       });
-      it("should provide scoped textIn()", function() {
-        expect(subTreeLike.textIn(".abc")).to.eql("ABC");
+      it("should provide scoped subTree()", function() {
+        expect(subTreeLike.subTree(".abc").text()).to.eql("ABC");
       });
       it("should provide scoped text()", function() {
         expect(subTreeLike.text()).to.eql("objection!objection!helloABC");

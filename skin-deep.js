@@ -108,10 +108,6 @@ function SkinDeep(getCurrentNode, renderer, instance) {
     findNode: function(query) {
       return findNode(getCurrentNode(), createNodePredicate(query));
     },
-    textIn: function(query) {
-      var node = findNode(getCurrentNode(), createNodePredicate(query));
-      return getTextFromNode(node);
-    },
     text: function() {
       return getTextFromNode(getCurrentNode());
     },
