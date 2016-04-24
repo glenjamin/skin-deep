@@ -288,7 +288,7 @@ describe("skin-deep", function() {
     });
   });
 
-  describe("fillField", function() {
+  describe.skip("fillField", function() {
     var tree;
     var Component = React.createClass({
       getInitialState: function() {

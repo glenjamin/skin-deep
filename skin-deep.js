@@ -115,18 +115,6 @@ function SkinDeep(getCurrentNode, renderer, instance) {
     text: function() {
       return getTextFromNode(getCurrentNode());
     },
-    fillField: function(query, value) {
-      var node = findNode(getCurrentNode(), createNodePredicate(query));
-      if (!node || !node.props) throw new Error('Unknown field ' + query);
-
-      if (node.props.onChange) {
-
-        // workaround for https://github.com/facebook/react/issues/4019
-        global.document = global.document || { body: {} };
-
-        node.props.onChange({ target: { value: value } });
-      }
-    },
     findComponent: function(type, props) {
       if (arguments.length == 1) {
         // eslint-disable-next-line no-console
