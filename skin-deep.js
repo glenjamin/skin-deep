@@ -39,9 +39,13 @@ function shallowRender(elementOrFunction, context) {
     return TestUtils.isElement(elementOrFunction) ?
       elementOrFunction : elementOrFunction();
   });
+  shallowRenderer.originalType = element.type;
 
   if (typeof element.type == 'string') {
-    return new SkinDeep(function() { return element; }, shallowRenderer);
+    return new SkinDeep(
+      function() { return element; },
+      shallowRenderer
+    );
   }
 
   shallowRenderer.render(element, context);
@@ -59,18 +63,14 @@ function shallowRender(elementOrFunction, context) {
 
 function SkinDeep(getCurrentNode, renderer, instance) {
   var api = {
-    reRender: function(elementOrFunction, context) {
-      if (renderer) {
-        context = context || renderer.context;
+    reRender: function(props, context) {
+      context = context || renderer.context;
 
-        var element = withContext(context, function() {
-          return TestUtils.isElement(elementOrFunction) ?
-            elementOrFunction : elementOrFunction();
-        });
-        return renderer.render(element, context);
-      }
+      var element = withContext(context, function() {
+        return React.createElement(renderer.originalType, props);
+      });
 
-      throw new Error('This tree has no renderer');
+      return renderer.render(element, context);
     },
     getMountedInstance: function() {
       if (instance) return instance;
@@ -101,37 +101,19 @@ function SkinDeep(getCurrentNode, renderer, instance) {
         var rawTree = tree.subTree(path);
         if (!rawTree) throw new Error(path + ' not found in tree');
         var node = rawTree.getRenderOutput();
-        tree = shallowRender(
-          function() {return React.createElement(node.type, node.props)},
-          context
-        );
+        tree = shallowRender(reContext(node), context);
       }
       return tree;
     },
     findNode: function(query) {
       return findNode(getCurrentNode(), createNodePredicate(query));
     },
-    textIn: function(query) {
-      var node = findNode(getCurrentNode(), createNodePredicate(query));
-      return getTextFromNode(node);
-    },
     text: function() {
       return getTextFromNode(getCurrentNode());
     },
-    fillField: function(query, value) {
-      var node = findNode(getCurrentNode(), createNodePredicate(query));
-      if (!node || !node.props) throw new Error('Unknown field ' + query);
-
-      if (node.props.onChange) {
-
-        // workaround for https://github.com/facebook/react/issues/4019
-        global.document = global.document || { body: {} };
-
-        node.props.onChange({ target: { value: value } });
-      }
-    },
     findComponent: function(type, props) {
       if (arguments.length == 1) {
+        // eslint-disable-next-line no-console
         console.warn(
           "Using a component in findComponent is deprecated. " +
           "Pass name and props as separate arguments instead"
@@ -144,6 +126,7 @@ function SkinDeep(getCurrentNode, renderer, instance) {
     },
     findComponentLike: function(type, props) {
       if (arguments.length == 1) {
+        // eslint-disable-next-line no-console
         console.warn(
           "Using a component in findComponent is deprecated. " +
           "Pass name and props as separate arguments instead"
@@ -177,7 +160,18 @@ function SkinDeep(getCurrentNode, renderer, instance) {
 }
 
 function skinDeepNode(node) {
-  return new SkinDeep(function() { return node; });
+  return new SkinDeep(constantly(node));
+}
+
+/**
+ * Re-create node as a new react element wrapped in a function
+ *
+ * This is to ensure context is reapplied in React 0.13
+ */
+function reContext(node) {
+  return function() {
+    return React.createElement(node.type, node.props);
+  };
 }
 
 function getComponentName(type) {
@@ -195,18 +189,15 @@ function createNodePredicate(query) {
   if (query == '*') {
     return alwaysTrue;
   }
-  // React Component itself
-  if (typeof query !== 'string') {
-    return function(n) { return n.type == query };
+  // React Component itself or tag name
+  if (typeof query !== 'string' || query.match(/^[a-z][\w\-]*$/)) {
+    return findNodeByType(query);
   }
   if (query.match(/^\.[\S]+$/)) {
     return findNodeByClass(query.substring(1));
   }
-  if (query.match(/^\#[\S]+$/)) {
+  if (query.match(/^#[\S]+$/)) {
     return findNodeById(query.substring(1));
-  }
-  if (query.match(/^[a-z][\w\-]*$/)) { // tagnames begin with lowercase
-    return function(n) { return n.type == query; };
   }
   // component displayName
   return function(n) { return n.type && getComponentName(n.type) == query; };
@@ -221,13 +212,19 @@ function createFinder(selector, predicate, isLike) {
       return isLike
         ? subset(node.props, predicate)
         : subset(node.props, predicate) && subset(predicate, node.props);
-    }
+    };
   } else if (typeof predicate === 'function') {
     otherMatcher = predicate;
   }
   return function(node) {
     return nodeMatcher(node) && otherMatcher(node);
-  }
+  };
+}
+
+function findNodeByType(type) {
+  return function(n) {
+    return n.type == type;
+  };
 }
 
 function findNodeByClass(cls) {
@@ -283,7 +280,7 @@ function getTextFromNode(node) {
   }
   // strings and numbers are just text
   if (typeof node === 'string' || typeof node === 'number') {
-    return normaliseSpaces('' + node);
+    return normaliseSpaces(String(node));
   }
   // Iterables get combined with spaces
   if (typeof node.map === 'function') {
@@ -321,6 +318,12 @@ function mapcat(array, fn) {
     result.push.apply(result, fn(x, i));
   });
   return result;
+}
+
+function constantly(x) {
+  return function() {
+    return x;
+  };
 }
 
 function alwaysTrue() {

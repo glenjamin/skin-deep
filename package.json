@@ -1,12 +1,13 @@
 {
   "name": "skin-deep",
-  "version": "0.16.0",
-  "description": "Test assertion helpers for use with React's shallowRender test utils.",
+  "version": "1.0.0-DEV",
+  "description": "Testing helpers for use with React's shallowRender test utils.",
   "main": "skin-deep.js",
   "scripts": {
     "test": "mocha",
     "lint": "eslint . --max-warnings 0",
-    "travis": "npm run lint && istanbul cover _mocha --"
+    "coverage": "istanbul cover _mocha --",
+    "doc": "doctoc README.md"
   },
   "repository": {
     "type": "git",
@@ -32,9 +33,10 @@
     "is-subset": "^0.1.1"
   },
   "devDependencies": {
+    "@glenjamin/eslint-config": "^2.1.0",
     "chai": "^3.4.0",
     "coveralls": "^2.11.2",
-    "eslint": "^1.10.3",
+    "eslint": "^2.8.0",
     "istanbul": "^0.4.0",
     "mocha": "^2.2.5",
     "react": "^0.14.0",

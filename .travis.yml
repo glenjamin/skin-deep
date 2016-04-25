@@ -3,8 +3,10 @@ sudo: false
 node_js:
   - "0.12"
   - "4"
-  - "node"
-script: "npm run travis"
+  - "5"
+script:
+  - "npm run lint"
+  - "npm run coverage"
 after_script: "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
 env:
   - REACT=0.13
