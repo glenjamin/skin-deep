@@ -319,6 +319,29 @@ describe("skin-deep", function() {
     });
   });
 
+  describe("toString", function() {
+    var Child = React.createClass({
+      displayName: 'Child',
+      render: function() {
+        return $('p', {}, this.props.children);
+      }
+    });
+    var Component = React.createClass({
+      render: function() {
+        return $('h1', { title: "blah" }, $(Child, { x: "y" }));
+      }
+    });
+    it("should give HTML-like output", function() {
+      var tree = sd.shallowRender($('h1', { title: "blah" }, "Heading!"));
+      expect(String(tree)).to.eql('<h1 title="blah">\n  Heading!\n</h1>');
+    });
+    it("should not expand child components", function() {
+      var tree = sd.shallowRender($(Component));
+      expect(String(tree))
+        .to.eql('<h1 title="blah">\n  <Child x="y" />\n</h1>');
+    });
+  });
+
 });
 
 function isTree(obj) {

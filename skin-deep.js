@@ -3,19 +3,13 @@ var subset = require('is-subset');
 var React = require('react');
 var React013 = (React.version.substring(0, 4) == '0.13');
 
+var ReactElementToString = require('react-element-to-string');
+
 var TestUtils;
 if (React013) {
   TestUtils = require('react/addons').addons.TestUtils;
 } else {
   TestUtils = require('react-addons-test-utils');
-}
-
-function renderToStaticMarkup(element) {
-  if (React013) {
-    return React.renderToStaticMarkup(element);
-  }
-
-  return require("react-dom/server").renderToStaticMarkup(element);
 }
 
 function withContext(context, fn) {
@@ -145,7 +139,7 @@ function SkinDeep(getCurrentNode, renderer, instance) {
       return getCurrentNode();
     },
     toString: function() {
-      return renderToStaticMarkup(getCurrentNode());
+      return ReactElementToString(getCurrentNode());
     }
   };
   Object.defineProperty(api, 'props', {
