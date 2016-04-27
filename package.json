@@ -31,7 +31,7 @@
   "homepage": "https://github.com/glenjamin/skin-deep",
   "dependencies": {
     "is-subset": "^0.1.1",
-    "react-element-to-string": "^1.0.1"
+    "react-element-to-string": "^1.0.2"
   },
   "devDependencies": {
     "@glenjamin/eslint-config": "^2.1.0",
