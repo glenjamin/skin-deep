@@ -510,7 +510,7 @@ describe("skin-deep", function() {
     });
   });
 
-  describe("subTreeLike", function() {
+  describe("subTree", function() {
     var Widget = React.createClass({
       displayName: 'Widget',
       render: function() { return null; }
@@ -531,92 +531,92 @@ describe("skin-deep", function() {
       )
     );
     it("should return false when not found", function() {
-      var abc = tree.subTreeLike("#blah");
+      var abc = tree.subTree("#blah");
       expect(abc).to.eql(false);
     });
     it("should grab a subtree by * selector + partial props", function() {
-      var wut = tree.subTreeLike("*", { id: "wut" });
+      var wut = tree.subTree("*", { id: "wut" });
       expect(wut).to.be.an('object');
       expect(wut.getRenderOutput().props).to.have.property("prop", "val");
     });
     it("should grab a subtree by id selector", function() {
-      var abc = tree.subTreeLike("#abc");
+      var abc = tree.subTree("#abc");
       expect(abc).to.be.an('object');
       expect(abc.getRenderOutput().props).to.have.property("id", "abc");
     });
     it("should grab a subtree by id selector + partial props", function() {
-      var wut = tree.subTreeLike("#wut", { id: 'wut', prop: "foo" });
+      var wut = tree.subTree("#wut", { id: 'wut', prop: "foo" });
       expect(wut).to.eql(false);
 
-      var wut2 = tree.subTreeLike("#wut", { prop: "val" });
+      var wut2 = tree.subTree("#wut", { prop: "val" });
       expect(wut2).to.be.an('object');
       expect(wut2.getRenderOutput().props).to.have.property("id", "wut");
     });
     it("should grab a subtree by class selector", function() {
-      var abc = tree.subTreeLike(".abc");
+      var abc = tree.subTree(".abc");
       expect(abc).to.be.an('object');
       expect(abc.getRenderOutput().props).to.have.property("className", "abc");
     });
     it("should grab a subtree by class selector + partial props", function() {
-      var yup = tree.subTreeLike(".yup", { className: 'yup', prop: "foo" });
+      var yup = tree.subTree(".yup", { className: 'yup', prop: "foo" });
       expect(yup).to.eql(false);
 
-      var yup2 = tree.subTreeLike(".yup", { prop: "val" });
+      var yup2 = tree.subTree(".yup", { prop: "val" });
       expect(yup2).to.be.an('object');
       expect(yup2.getRenderOutput().props).to.have.property("className", "yup");
     });
     it("should grab a subtree by tag selector", function() {
-      var abc = tree.subTreeLike("object");
+      var abc = tree.subTree("object");
       expect(abc).to.be.an('object');
       expect(abc.getRenderOutput().props)
         .to.have.property("children", "objection!");
     });
     it("should grab a subtree by tag selector + partial props", function() {
-      var subtree = tree.subTreeLike("object", { children: 'not objection!' });
+      var subtree = tree.subTree("object", { children: 'not objection!' });
       expect(subtree).to.eql(false);
 
-      var subtree2 = tree.subTreeLike("object", { children: 'objection!' });
+      var subtree2 = tree.subTree("object", { children: 'objection!' });
       expect(subtree2).to.be.an('object');
       expect(subtree2.getRenderOutput().props).to.have.property('id', 'bob');
     });
     it("should grab a subtree by component name", function() {
-      var abc = tree.subTreeLike("Widget");
+      var abc = tree.subTree("Widget");
       expect(abc).to.be.an('object');
       expect(abc.getRenderOutput().props)
         .to.have.property("children", "stuff");
     });
     it("should grab a subtree by component + partial props", function() {
-      var subtree = tree.subTreeLike("Widget", { children: 'not stuff' });
+      var subtree = tree.subTree("Widget", { children: 'not stuff' });
       expect(subtree).to.eql(false);
 
-      var subtree2 = tree.subTreeLike("Widget", { more: true });
+      var subtree2 = tree.subTree("Widget", { more: true });
       expect(subtree2).to.be.an('object');
       expect(subtree2.getRenderOutput().props).to.have.property('test', 'abc');
     });
     it("should grab first subtree by * selector + partial props", function() {
-      var subtree = tree.subTreeLike("*", { prop: 'val' });
+      var subtree = tree.subTree("*", { prop: 'val' });
       expect(subtree).to.be.an('object');
       expect(subtree.getRenderOutput().props).to.have.property('id', 'bob');
     });
     describe("methods", function() {
-      var subTreeLike;
+      var subTree;
       beforeEach(function() {
-        subTreeLike = tree.subTreeLike('#abc');
+        subTree = tree.subTree('#abc');
       });
       it("should have same methods as main tree", function() {
-        expect(Object.keys(tree)).to.eql(Object.keys(subTreeLike));
+        expect(Object.keys(tree)).to.eql(Object.keys(subTree));
       });
       it("should provide scoped findNode()", function() {
-        expect(subTreeLike.findNode(".abc")).to.eql(tree.findNode("#abc2"));
+        expect(subTree.findNode(".abc")).to.eql(tree.findNode("#abc2"));
       });
       it("should provide scoped subTree()", function() {
-        expect(subTreeLike.subTree(".abc").text()).to.eql("ABC");
+        expect(subTree.subTree(".abc").text()).to.eql("ABC");
       });
       it("should provide scoped text()", function() {
-        expect(subTreeLike.text()).to.eql("objection!objection!helloABC");
+        expect(subTree.text()).to.eql("objection!objection!helloABC");
       });
       it("should expose .props", function() {
-        expect(tree.subTreeLike('#wut').props).to.eql({
+        expect(tree.subTree('#wut').props).to.eql({
           id: 'wut', prop: 'val'
         });
       });
@@ -732,7 +732,7 @@ describe("skin-deep", function() {
     });
   });
 
-  describe("everySubTreeLike", function() {
+  describe("everySubTree", function() {
     var tree, trees, classTrees, tagTrees;
     before(function() {
       tree = sd.shallowRender(
@@ -750,8 +750,8 @@ describe("skin-deep", function() {
     });
     describe("functionaly == everySubTree when used without props", function() {
       beforeEach(function() {
-        classTrees = tree.everySubTreeLike(".abc");
-        tagTrees = tree.everySubTreeLike("span");
+        classTrees = tree.everySubTree(".abc");
+        tagTrees = tree.everySubTree("span");
       });
       it("should return array", function() {
         expect(classTrees).to.be.an('array');
@@ -778,7 +778,7 @@ describe("skin-deep", function() {
     });
     describe("using class selector + partial props", function() {
       beforeEach(function() {
-        trees = tree.everySubTreeLike(".abc", { idx: 2 });
+        trees = tree.everySubTree(".abc", { idx: 2 });
       });
       it("should return array", function() {
         expect(trees).to.be.an('array');
@@ -794,7 +794,7 @@ describe("skin-deep", function() {
     });
     describe("using tag selector + partial props", function() {
       beforeEach(function() {
-        trees = tree.everySubTreeLike("span", { prop: 'val' });
+        trees = tree.everySubTree("span", { prop: 'val' });
       });
       it("should return array", function() {
         expect(trees).to.be.an('array');
@@ -814,7 +814,7 @@ describe("skin-deep", function() {
     });
     describe("using * selector + partial props", function() {
       beforeEach(function() {
-        trees = tree.everySubTreeLike("*", { idx: 4, prop: 'val' });
+        trees = tree.everySubTree("*", { idx: 4, prop: 'val' });
       });
       it("should return array", function() {
         expect(trees).to.be.an('array');
@@ -837,7 +837,7 @@ describe("skin-deep", function() {
                 $('div', { idx: '4', prop: 'val', more: true }, "deep")))
           )
         );
-        trees = tree.everySubTreeLike("div", { prop: 'val', more: true });
+        trees = tree.everySubTree("div", { prop: 'val', more: true });
       });
       it("should find nodes deeply", function() {
         expect(trees).to.be.an('array');

@@ -36,7 +36,7 @@ describe("skin-deep", function() {
   beforeEach(hardFailConsole);
   beforeEach(resetConsole);
 
-  describe('shallowRender + getRenderOutput()', function() {
+  describe('rendering', function() {
     var Component = React.createClass({
       render: function() {
         return $('h1', { title: "blah" }, "Heading!");
