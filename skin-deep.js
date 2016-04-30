@@ -22,6 +22,8 @@ function withContext(context, fn) {
   return result;
 }
 
+var traversal = require('./lib/traversal');
+
 exports.shallowRender = shallowRender;
 function shallowRender(elementOrFunction, context) {
   context = context || {};
@@ -228,35 +230,12 @@ function findNodeById(id) {
 }
 
 function findNode(node, predicate) {
-  var all = findNodes(node, predicate, 'one');
+  var all = traversal.collect(node, predicate);
   return all.length >= 1 && all[0];
 }
 
-function findNodes(node, predicate, findOne) {
-  // Falsy stuff can't match or have children
-  if (!node) return [];
-
-  // Array nodes all get checked
-  if (typeof node.filter === 'function') {
-    return mapcat(node, function(n) {
-      return findNodes(n, predicate, findOne);
-    });
-  }
-
-  // normal nodes might match
-  var found = [];
-  if (predicate(node)) {
-    found.push(node);
-    if (findOne) return found;
-  }
-
-  // matching node might have matching children
-  if (node.props && node.props.children) {
-    var children = childrenArray(node.props.children);
-    return found.concat(findNodes(children, predicate, findOne));
-  }
-
-  return found;
+function findNodes(node, predicate) {
+  return traversal.collect(node, predicate);
 }
 
 function getTextFromNode(node) {
@@ -297,14 +276,6 @@ function childrenArray(children) {
 
 function normaliseSpaces(str) {
   return str.replace(/\s+/g, ' ');
-}
-
-function mapcat(array, fn) {
-  var result = [];
-  array.forEach(function(x, i) {
-    result.push.apply(result, fn(x, i));
-  });
-  return result;
 }
 
 function constantly(x) {
