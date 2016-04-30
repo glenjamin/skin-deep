@@ -387,6 +387,10 @@ describe("skin-deep", function() {
       displayName: 'Widget',
       render: function() { return null; }
     });
+    var ReduxWidget = React.createClass({
+      displayName: 'Connect(Widget)',
+      render: function() { return 'redux-widget'; }
+    });
     var tree = sd.shallowRender(
       $('div', {},
         $('div', { id: "def", className: "abc" },
@@ -399,7 +403,8 @@ describe("skin-deep", function() {
         ),
         $('div', { id: 'wut', prop: 'val' }),
         $('div', { className: 'yup', prop: 'val' }),
-        $(Widget, {}, "stuff")
+        $(Widget, {}, "stuff"),
+        $(ReduxWidget, {})
       )
     );
     it("should return false when not found", function() {
@@ -456,6 +461,10 @@ describe("skin-deep", function() {
       expect(abc).to.be.an('object');
       expect(abc.getRenderOutput().props)
         .to.have.property("children", "stuff");
+    });
+    it("should find a node in tree by fancy displayName", function() {
+      var abc = tree.subTree("Connect(Widget)");
+      expect(abc).to.have.property('type', ReduxWidget);
     });
     it("should grab a subtree by component type", function() {
       var abc = tree.subTree(Widget);
