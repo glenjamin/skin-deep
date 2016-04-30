@@ -70,19 +70,11 @@ function SkinDeep(getCurrentNode, renderer, instance) {
       if (instance) return instance;
       throw new Error('This tree has no mounted instance');
     },
-    subTreeOld: function(query, predicate) {
-      var node = findNode(getCurrentNode(), createFinder(query, predicate));
-      return node && skinDeepNode(node);
-    },
     subTree: function(query, predicate) {
       var node = findNode(
         getCurrentNode(), createFinder(query, predicate, 'isLike')
       );
       return node && skinDeepNode(node);
-    },
-    everySubTreeOld: function(query, predicate) {
-      var finder = createFinder(query, predicate);
-      return findNodes(getCurrentNode(), finder).map(skinDeepNode);
     },
     everySubTree: function(query, predicate) {
       var finder = createFinder(query, predicate, 'isLike');
