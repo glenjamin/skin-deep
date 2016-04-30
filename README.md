@@ -18,6 +18,7 @@ Testing helpers for use with React's shallowRender test utils.
 
 - [Install](#install)
 - [Quick Start](#quick-start)
+- [Breaking Changes in 1.0](#breaking-changes-in-10)
 - [Usage](#usage)
   - [Rendering](#rendering)
   - [Extracting portions of the result](#extracting-portions-of-the-result)
@@ -26,10 +27,10 @@ Testing helpers for use with React's shallowRender test utils.
   - [Use with test frameworks](#use-with-test-frameworks)
 - [API Docs](#api-docs)
   - [.shallowRender(element [, context])](#shallowrenderelement--context)
-  - [tree.reRender(element [, context])](#treererenderelement--context)
   - [tree](#tree)
     - [tree.type](#treetype)
     - [tree.props](#treeprops)
+  - [tree.reRender(props [, context])](#treererenderprops--context)
     - [tree.text()](#treetext)
     - [tree.toString()](#treetostring)
     - [tree.getRenderOutput()](#treegetrenderoutput)
@@ -41,6 +42,7 @@ Testing helpers for use with React's shallowRender test utils.
   - [Using Matchers](#using-matchers)
   - [.exact(props)](#exactprops)
   - [.any](#any)
+  - [.hasClass(node, className)](#hasclassnode-classname)
 - [Troubleshooting](#troubleshooting)
   - [Errors when bundling](#errors-when-bundling)
 
@@ -261,17 +263,21 @@ Returns `null`
 
 Access the textual content of the rendered root element including any text of its children. This method doesn't understand CSS, or really anything about HTML rendering, so might include text which wouldn't be displayed to the user.
 
+If any components are found in the tree, their textual representation will be a stub like `<Widget />`. This is because they could do anything with their props, and thus are not really suitable for text assertions. If you have any suggestions for how to make it easier to do text assertions on custom components, please let me know via issues.
+
 Returns `string`
 
 #### tree.toString()
 
-Produce a friendly JSX-esque representation of the tree
+Produce a friendly JSX-esque representation of the tree.
 
 Returns `string`
 
 #### tree.getRenderOutput()
 
 Access the rendered component tree. This is the same result you would get using shallow rendering without skin-deep.
+
+You usually shouldn't need to use this.
 
 Returns [`ReactElement`](http://facebook.github.io/react/docs/glossary.html#react-elements)
 
