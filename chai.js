@@ -6,7 +6,7 @@ module.exports = function(chai, utils) {
     if (msg) flag(this, 'message', msg);
     var renderer = flag(this, 'object');
 
-    var node = renderer.findNode(query);
+    var node = renderer.subTree(query);
     this.assert(node,
       'Expected to find #{exp} in #{act}',
       'Expected not to find #{exp} in #{act}',

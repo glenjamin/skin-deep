@@ -93,41 +93,8 @@ function SkinDeep(getCurrentNode, renderer, instance) {
       }
       return tree;
     },
-    findNode: function(query) {
-      return findNode(getCurrentNode(), createNodePredicate(query));
-    },
     text: function() {
       return getTextFromNode(getCurrentNode());
-    },
-    findComponent: function(type, props) {
-      if (arguments.length == 1) {
-        // eslint-disable-next-line no-console
-        console.warn(
-          "Using a component in findComponent is deprecated. " +
-          "Pass name and props as separate arguments instead"
-        );
-        var search = type;
-        type = getComponentName(search.type) || search.type;
-        props = search.props;
-      }
-      return findNode(getCurrentNode(), createFinder(type, props));
-    },
-    findComponentLike: function(type, props) {
-      if (arguments.length == 1) {
-        // eslint-disable-next-line no-console
-        console.warn(
-          "Using a component in findComponent is deprecated. " +
-          "Pass name and props as separate arguments instead"
-        );
-        var search = type;
-        type = getComponentName(search.type) || search.type;
-        props = search.props;
-      }
-      props = props || {};
-      return findNode(getCurrentNode(), function(node) {
-        return matchComponentType(type, node) &&
-          subset(node.props, props);
-      });
     },
     getRenderOutput: function() {
       return getCurrentNode();
@@ -166,13 +133,6 @@ function getComponentName(type) {
   return type.displayName || type.name;
 }
 
-function matchComponentType(type, node) {
-  if (!type || !node) return false;
-  if (!node.type) return false;
-  if (typeof node.type === 'string') return node.type == type;
-  return getComponentName(node.type) == type;
-}
-
 function createNodePredicate(query) {
   if (query == '*') {
     return alwaysTrue;
@@ -191,15 +151,13 @@ function createNodePredicate(query) {
   return function(n) { return n.type && getComponentName(n.type) == query; };
 }
 
-function createFinder(selector, predicate, isLike) {
+function createFinder(selector, predicate) {
   var nodeMatcher = createNodePredicate(selector);
   var otherMatcher = alwaysTrue;
   if (typeof predicate === 'object') {
     // predicate is a props object to match
     otherMatcher = function(node) {
-      return isLike
-        ? subset(node.props, predicate)
-        : subset(node.props, predicate) && subset(predicate, node.props);
+      return subset(node.props, predicate);
     };
   } else if (typeof predicate === 'function') {
     otherMatcher = predicate;

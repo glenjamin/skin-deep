@@ -150,7 +150,7 @@ describe("skin-deep", function() {
 
   });
 
-  describe("findNode", function() {
+  describe.skip("findNode", function() {
     var Widget = React.createClass({
       displayName: 'Widget',
       render: function() { return 'widget'; }
@@ -502,9 +502,6 @@ describe("skin-deep", function() {
       it("should have same methods as main tree", function() {
         expect(Object.keys(tree)).to.eql(Object.keys(subTree));
       });
-      it("should provide scoped findNode()", function() {
-        expect(subTree.findNode(".abc")).to.eql(tree.findNode("#abc2"));
-      });
       it("should provide scoped subTree()", function() {
         expect(subTree.subTree('.abc').text()).to.eql("ABC");
       });
@@ -614,9 +611,6 @@ describe("skin-deep", function() {
       });
       it("should have same methods as main tree", function() {
         expect(Object.keys(tree)).to.eql(Object.keys(subTree));
-      });
-      it("should provide scoped findNode()", function() {
-        expect(subTree.findNode(".abc")).to.eql(tree.findNode("#abc2"));
       });
       it("should provide scoped subTree()", function() {
         expect(subTree.subTree(".abc").text()).to.eql("ABC");
@@ -869,7 +863,7 @@ describe("skin-deep", function() {
     });
   });
 
-  describe("findComponent", function() {
+  describe.skip("findComponent", function() {
     var Widget = React.createClass({
       displayName: 'Widget',
       render: function() { return null; }
@@ -963,7 +957,7 @@ describe("skin-deep", function() {
     });
   });
 
-  describe("findComponentLike", function() {
+  describe.skip("findComponentLike", function() {
     var Widget = React.createClass({
       displayName: 'Widget',
       render: function() { return null; }
@@ -1085,7 +1079,7 @@ describe("skin-deep", function() {
         })
       )
     );
-    describe('findNode', function() {
+    describe.skip('findNode', function() {
       it('should work within Children', function() {
         expect(tree1.findNode('#a')).to.not.eql(false);
         expect(tree1.findNode('#b')).to.not.eql(false);
