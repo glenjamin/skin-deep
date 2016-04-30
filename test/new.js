@@ -298,11 +298,12 @@ describe("skin-deep", function() {
   });
 
   describe('text()', function() {
-    // var Component = React.createClass({
-    //   render: function() {
-    //     return $('h1', {}, this.props.thing);
-    //   }
-    // });
+    var Widget = React.createClass({
+      displayName: 'Widget',
+      render: function() {
+        return $('hr', {});
+      }
+    });
     it('should read primitive ReactElement', function() {
       var tree = sd.shallowRender($('h1', { not: 'this' }, 'Textually'));
       expect(tree.text()).to.eql('Textually');
@@ -316,6 +317,25 @@ describe("skin-deep", function() {
         )
       );
       expect(tree.text()).to.eql('One Two Three');
+    });
+    it('should collapse multiple spaces', function() {
+      var tree = sd.shallowRender(
+        $('div', {},
+          $('p', {}, 'A  B  C'),
+          '\n',
+          '  ',
+          $('p', {}, '  blah'))
+      );
+      expect(tree.text()).to.eql('A B C blah');
+    });
+    it('should not traverse inside children ReactElements', function() {
+      var tree = sd.shallowRender(
+        $('p', { attr: 'not this' },
+          $('strong', {}, 'include this bit'),
+          $(Widget, {}),
+          $(Widget, {}, 'but not this'))
+      );
+      expect(tree.text()).to.eql('include this bit<Widget /><Widget />');
     });
   });
 

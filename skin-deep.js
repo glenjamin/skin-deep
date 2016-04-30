@@ -282,7 +282,8 @@ function getTextFromNode(node) {
   }
   // Non-dom components are a black box
   if (TestUtils.isElement(node) && typeof node.type !== 'string') {
-    return '<' + getComponentName(node.type) + ' />';
+    var name = getComponentName(node.type) || 'Unknown';
+    return '<' + name + ' />';
   }
 
   // Recurse down through children if present
