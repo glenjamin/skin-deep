@@ -2,30 +2,20 @@ var chai = require('chai');
 var expect = chai.expect;
 
 var React = require('react');
-var React013 = (React.version.substring(0, 4) == '0.13');
-
 
 /* eslint-disable no-console */
-var consoleWarn = console.warn, consoleError = console.error;
+var consoleError = console.error;
 function throwError(msg) {
   throw new Error(msg);
 }
 function hardFailConsole() {
-  console[React013 ? 'warn' : 'error'] = throwError;
+  console.error = throwError;
 }
 function resetConsole() {
-  console.warn = consoleWarn;
   console.error = consoleError;
 }
 /* eslint-enable no-console */
 
-
-// var createFragment;
-// if (React013) {
-//   createFragment = require('react/addons').addons.createFragment;
-// } else {
-//   createFragment = require('react-addons-create-fragment');
-// }
 
 var sd = require('../skin-deep');
 
@@ -76,11 +66,6 @@ describe("skin-deep", function() {
     });
 
     context('stateless component function ReactElement', function() {
-      if (React013) {
-        it("doesn't apply");
-        return;
-      }
-
       function PureComponent(props) {
         return $('h1', { title: 'blah' }, props.thing);
       }
@@ -144,7 +129,7 @@ describe("skin-deep", function() {
         }
       });
 
-      context('wrapped in function (for 0.13)', function() {
+      context('wrapped in function', function() {
         var tree = sd.shallowRender(
           function() { return $(ContextComponent); },
           { title: "Heading!" }
@@ -162,12 +147,7 @@ describe("skin-deep", function() {
         });
       });
 
-      context('with parent context (0.14+ only)', function() {
-        if (React013) {
-          it("doesn't apply");
-          return;
-        }
-
+      context('with parent context', function() {
         var tree = sd.shallowRender($(ContextComponent), { title: "Heading!" });
         var output = tree.getRenderOutput();
         it('should return a tree', function() {

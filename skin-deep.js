@@ -1,26 +1,10 @@
 var subset = require('is-subset');
 
 var React = require('react');
-var React013 = (React.version.substring(0, 4) == '0.13');
 
 var ReactElementToString = require('react-element-to-string');
 
-var TestUtils;
-if (React013) {
-  TestUtils = require('react/addons').addons.TestUtils;
-} else {
-  TestUtils = require('react-addons-test-utils');
-}
-
-function withContext(context, fn) {
-  if (!React013) return fn();
-
-  var ReactContext = require('react/lib/ReactContext');
-  ReactContext.current = context;
-  var result = fn();
-  ReactContext.current = {};
-  return result;
-}
+var TestUtils = require('react-addons-test-utils');
 
 var traversal = require('./lib/traversal');
 
@@ -31,10 +15,9 @@ function shallowRender(elementOrFunction, context) {
   var shallowRenderer = TestUtils.createRenderer();
   shallowRenderer.context = context;
 
-  var element = withContext(context, function() {
-    return TestUtils.isElement(elementOrFunction) ?
+  var element = TestUtils.isElement(elementOrFunction) ?
       elementOrFunction : elementOrFunction();
-  });
+
   shallowRenderer.originalType = element.type;
 
   if (typeof element.type == 'string') {
@@ -62,9 +45,7 @@ function SkinDeep(getCurrentNode, renderer, instance) {
     reRender: function(props, context) {
       context = context || renderer.context;
 
-      var element = withContext(context, function() {
-        return React.createElement(renderer.originalType, props);
-      });
+      var element = React.createElement(renderer.originalType, props);
 
       return renderer.render(element, context);
     },
@@ -89,7 +70,7 @@ function SkinDeep(getCurrentNode, renderer, instance) {
         var rawTree = tree.subTree(path);
         if (!rawTree) throw new Error(path + ' not found in tree');
         var node = rawTree.getRenderOutput();
-        tree = shallowRender(reContext(node), context);
+        tree = shallowRender(node, context);
       }
       return tree;
     },
@@ -116,17 +97,6 @@ function SkinDeep(getCurrentNode, renderer, instance) {
 
 function skinDeepNode(node) {
   return new SkinDeep(constantly(node));
-}
-
-/**
- * Re-create node as a new react element wrapped in a function
- *
- * This is to ensure context is reapplied in React 0.13
- */
-function reContext(node) {
-  return function() {
-    return React.createElement(node.type, node.props);
-  };
 }
 
 function getComponentName(type) {

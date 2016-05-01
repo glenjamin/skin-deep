@@ -9,7 +9,6 @@ script:
   - "npm run coverage"
 after_script: "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
 env:
-  - REACT=0.13
   - REACT=0.14
   - REACT=15.0
-before_script: "npm install -g npm@2; sh install-relevant-react.sh"
+before_script: "sh install-relevant-react.sh"
