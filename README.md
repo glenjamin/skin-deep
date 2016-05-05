@@ -89,6 +89,7 @@ assert.equal(homeLink.text(), 'Home');
 ## Breaking Changes in 1.0
 
  * React 0.13 is no longer supported
+ * Rendering a function (which would be called) is no longer supported, this only existed for React 0.13's owner-based context
  * `subTreeLike` has been renamed to `subTree`
  * `everySubTreeLike` has been renamed to `everySubTree`
  * The original `subTree` has been removed, `exact` can be used to get this behaviour back, but I don't recommend you do.
@@ -98,7 +99,7 @@ assert.equal(homeLink.text(), 'Home');
  * removed `fillField`, use `subTree().props.onChange` instead
  * removed `findComponent`, use `subTree()` instead
  * removed `findComponentLike`, use `subTree()` instead
- * `toString()` no-longer expands child components
+ * `toString()` uses a completely different approach now. Previously it would use React's string rendering and produce the HTML including expanded children. Now it produces a pretty-printed representation of the result of the render.
  * `reRender()` now takes props instead of a ReactElement.
 
 ## Usage
@@ -268,7 +269,9 @@ Returns `string`
 
 #### tree.toString()
 
-Produce a friendly JSX-esque representation of the tree.
+Produce a friendly JSX-esque representation of the rendered tree.
+
+This is not really suitable for asserting against as it will lead to very brittle tests. Its main purpose is supposed to be for printing out nice debugging information, eg `"no <selector> found in <tree.toString()>"`.
 
 Returns `string`
 

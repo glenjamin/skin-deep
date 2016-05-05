@@ -9,14 +9,11 @@ var TestUtils = require('react-addons-test-utils');
 var traversal = require('./lib/traversal');
 
 exports.shallowRender = shallowRender;
-function shallowRender(elementOrFunction, context) {
+function shallowRender(element, context) {
   context = context || {};
 
   var shallowRenderer = TestUtils.createRenderer();
   shallowRenderer.context = context;
-
-  var element = TestUtils.isElement(elementOrFunction) ?
-      elementOrFunction : elementOrFunction();
 
   shallowRenderer.originalType = element.type;
 

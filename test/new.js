@@ -84,42 +84,6 @@ describe("skin-deep", function() {
       });
     });
 
-    context('function returning primitive ReactElement', function() {
-      var tree = sd.shallowRender(
-        function() { return $('h1', { title: "blah" }, "Heading!"); }
-      );
-      var output = tree.getRenderOutput();
-
-      it('should return a tree', function() {
-        expect(tree).to.satisfy(isTree);
-      });
-      it('should have type in rendered output', function() {
-        expect(output).to.have.property('type', 'h1');
-      });
-      it('should have props in rendered output', function() {
-        expect(output).to.have.property('props');
-        expect(output.props).to.eql({ title: "blah", children: "Heading!" });
-      });
-    });
-
-    context('function returning component ReactElement', function() {
-      var tree = sd.shallowRender(
-        function() { return $(Component); }
-      );
-      var output = tree.getRenderOutput();
-
-      it('should return a tree', function() {
-        expect(tree).to.satisfy(isTree);
-      });
-      it('should have type in rendered output', function() {
-        expect(output).to.have.property('type', 'h1');
-      });
-      it('should have props in rendered output', function() {
-        expect(output).to.have.property('props');
-        expect(output.props).to.eql({ title: "blah", children: "Heading!" });
-      });
-    });
-
     context('with context', function() {
 
       var ContextComponent = React.createClass({
@@ -128,39 +92,20 @@ describe("skin-deep", function() {
           return $('h1', { title: "blah" }, this.context.title);
         }
       });
+      var tree = sd.shallowRender($(ContextComponent), { title: "Heading!" });
+      var output = tree.getRenderOutput();
 
-      context('wrapped in function', function() {
-        var tree = sd.shallowRender(
-          function() { return $(ContextComponent); },
-          { title: "Heading!" }
-        );
-        var output = tree.getRenderOutput();
-        it('should return a tree', function() {
-          expect(tree).to.satisfy(isTree);
-        });
-        it('should have type in rendered output', function() {
-          expect(output).to.have.property('type', 'h1');
-        });
-        it('should have props in rendered output', function() {
-          expect(output).to.have.property('props');
-          expect(output.props).to.eql({ title: "blah", children: "Heading!" });
-        });
+      it('should return a tree', function() {
+        expect(tree).to.satisfy(isTree);
+      });
+      it('should have type in rendered output', function() {
+        expect(output).to.have.property('type', 'h1');
+      });
+      it('should have props in rendered output', function() {
+        expect(output).to.have.property('props');
+        expect(output.props).to.eql({ title: "blah", children: "Heading!" });
       });
 
-      context('with parent context', function() {
-        var tree = sd.shallowRender($(ContextComponent), { title: "Heading!" });
-        var output = tree.getRenderOutput();
-        it('should return a tree', function() {
-          expect(tree).to.satisfy(isTree);
-        });
-        it('should have type in rendered output', function() {
-          expect(output).to.have.property('type', 'h1');
-        });
-        it('should have props in rendered output', function() {
-          expect(output).to.have.property('props');
-          expect(output.props).to.eql({ title: "blah", children: "Heading!" });
-        });
-      });
     });
   });
 
@@ -260,7 +205,7 @@ describe("skin-deep", function() {
       });
       beforeEach(function() {
         tree = sd.shallowRender(
-          function() { return $(ContextComponent, { thing: 'A' }); },
+          $(ContextComponent, { thing: 'A' }),
           { beep: false }
         );
       });
