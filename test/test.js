@@ -11,6 +11,58 @@ var $ = React.createElement;
 
 describe("skin-deep", function() {
 
+  describe('getCurrentNodeRef', function() {
+    var aReactComponentChildRef = 'childrenRef';
+    var aDOMElementChildRef = 'childrenRef2';
+    var aRootRef = 'rootRef';
+    var anUnexistingRef = 'aSillyRef';
+
+    var ComponentWithChildrenRefs = React.createClass({
+      render: function() {
+        return $('h1', { ref: aReactComponentChildRef }, this.context.title);
+      }
+    });
+
+    var RootComponent = React.createClass({
+      render: function() {
+        return $('div', {},
+                 $(ComponentWithChildrenRefs),
+                 $('div', {ref: aRootRef},
+                   $('div', {ref: aDOMElementChildRef})
+                  )
+                );
+      }
+    });
+
+    it('should return false if the root does not have any element with the\
+       given ref', function() {
+      var tree = sd.shallowRender($(RootComponent));
+      var result = tree.getRootRef(anUnexistingRef);
+      expect(result).to.be.false;
+    });
+
+    it('should return the subtree of the requested ref at immediate\
+       level', function() {
+      var tree = sd.shallowRender($(RootComponent));
+      var result = tree.getRootRef(aRootRef);
+      expect(result.ref).to.be.equal(aRootRef);
+    });
+
+    it('should return the subtree of the requested ref even at\
+       DOM-nested-level', function() {
+      var tree = sd.shallowRender($(RootComponent));
+      var result = tree.getRootRef(aDOMElementChildRef);
+      expect(result.ref).to.be.equal(aDOMElementChildRef);
+    });
+
+    it('should not return the ref of the root react component children even if\
+       they match the requested value', function() {
+      var tree = sd.shallowRender($(RootComponent));
+      var result = tree.getRootRef(aReactComponentChildRef);
+      expect(result).to.be.false;
+    });
+  })
+
   describe("getRenderOutput", function() {
 
     it("should render a ReactElement", function() {

@@ -50,6 +50,9 @@ function SkinDeep(getCurrentNode, renderer, instance) {
       if (instance) return instance;
       throw new Error('This tree has no mounted instance');
     },
+    getRootRef: function(ref) {
+      return getCurrentNodeRef(getCurrentNode(), ref)
+    },
     subTree: function(query, predicate) {
       var node = findNode(
         getCurrentNode(), createFinder(query, predicate, 'isLike')
@@ -189,6 +192,54 @@ function getTextFromNode(node) {
 
   // Otherwise, stop
   return '';
+}
+
+function getCurrentNodeRef(node, ref) {
+  // Falsy stuff can't match or have children
+  if (!node) return false;
+
+  if (Array.isArray(node)) {
+    var result = findRefAmongArrayEntries(node, ref)
+    if (result) return result
+  }
+
+  if (node.ref === ref) {
+    return node;
+  }
+
+  if (!isAReactComponent(node)) {
+    return findRefAmongChildren(node, ref)
+  }
+
+  return false;
+}
+
+function findRefAmongArrayEntries(array, ref) {
+  var found = false;
+  for (var i = 0; i < array.length; i++){
+    var node = array[i]
+    found = getCurrentNodeRef(node, ref);
+    if (found) {
+      return found;
+    }
+  }
+  return found
+}
+
+function findRefAmongChildren(node, ref) {
+  if (hasChildren(node)) {
+    var children = childrenArray(node.props.children);
+    return getCurrentNodeRef(children, ref);
+  }
+  return false
+}
+
+function hasChildren(node) {
+  return node.props && node.props.children
+}
+
+function isAReactComponent(node) {
+  return typeof node.type === 'function'
 }
 
 function childrenArray(children) {
