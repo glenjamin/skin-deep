@@ -54,7 +54,7 @@ Testing helpers for use with React's shallowRender test utils.
 npm install skin-deep
 ```
 
-This lib should work on any version of React above 0.14. To allow for greater flexibility by users, no `peerDependencies` are included in the `package.json`. You will need to be have `react` and `react-addons-test-utils` in your project's dependencies for it to work.
+This lib should work on any version of React since 0.14. To allow for greater flexibility by users, no `peerDependencies` are included in the `package.json`. You will need to be have `react` and `react-addons-test-utils` in your project's dependencies for it to work.
 
 ## Quick Start
 
@@ -103,7 +103,7 @@ assert.equal(homeLink.text(), 'Home');
 
 ## Usage
 
-The goal of skin-deep is to provide higher level functionality built on top of the Shallow Rendering test utilities provided by React 0.13+.
+The goal of skin-deep is to provide higher level functionality built on top of the Shallow Rendering test utilities provided by React.
 
 By default, shallow rendering gives you a way to see what a component would render without continuing along into rendering its children. This is a very powerful baseline, but in my opinion it isn't enough to create good UI tests. You either have to assert on the whole rendered component, or manually traverse the tree like this:
 
