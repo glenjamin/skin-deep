@@ -207,4 +207,45 @@ describe('traversal', function() {
       ]);
     });
   });
+  describe('tree with components', function() {
+    function Component(props) {
+      return $('p', {}, props.thing);
+    }
+    var tree = $('div', {},
+      $('ul', { id: "123" },
+        $('li', {}, 'One'),
+        $('li', null, 'Two'),
+        '  ',
+        $('li', {}, 'Three'),
+        $(Component, {},
+          $('p', {}, 'A', $('b', null, 'c'))
+        )
+      )
+    );
+
+    it('can treat components as black boxes', function() {
+      var nodes = traversal.collect(tree, constantly(true), {
+        blackboxComponents: true
+      });
+
+      var nodesOutsideBlackbox = 10;
+      expect(nodes).to.have.length(nodesOutsideBlackbox);
+
+      var ul;
+      expect(nodes).to.eql([
+        tree,
+        (ul = tree.props.children),
+        ul.props.children[0],
+        ul.props.children[0].props.children,
+        ul.props.children[1],
+        ul.props.children[1].props.children,
+        ul.props.children[2],
+        ul.props.children[3],
+        ul.props.children[3].props.children,
+        ul.props.children[4]
+      ]);
+      expect(ul.props.children[4]).to.have.property('type', Component);
+    });
+
+  });
 });

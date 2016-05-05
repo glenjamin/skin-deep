@@ -164,39 +164,28 @@ function findNodes(node, predicate) {
 }
 
 function getTextFromNode(node) {
-  // Ignore null/undefined children
-  if (node === null || node === undefined) {
-    return '';
-  }
-  // strings and numbers are just text
-  if (typeof node === 'string' || typeof node === 'number') {
-    return normaliseSpaces(String(node));
-  }
-  // Iterables get combined with spaces
-  if (typeof node.map === 'function') {
-    return normaliseSpaces(node.map(getTextFromNode).join(''));
-  }
-  // Non-dom components are a black box
-  if (TestUtils.isElement(node) && typeof node.type !== 'string') {
-    var name = getComponentName(node.type) || 'Unknown';
-    return '<' + name + ' />';
-  }
+  var relevantNodes = traversal.collect(node, textOrComponentNode, {
+    blackboxComponents: true
+  });
 
-  // Recurse down through children if present
-  if (node.props && 'children' in node.props) {
-    return getTextFromNode(childrenArray(node.props.children));
-  }
-
-  // Otherwise, stop
-  return '';
+  return normaliseSpaces(relevantNodes.map(nodeToString).join(''));
 }
 
-function childrenArray(children) {
-  var array = [];
-  React.Children.forEach(children, function(child) {
-    array.push(child);
-  });
-  return array;
+function textOrComponentNode(node) {
+  if (typeof node === 'string' || typeof node === 'number') {
+    return true;
+  }
+  if (TestUtils.isElement(node) && typeof node.type !== 'string') {
+    return true;
+  }
+  return false;
+}
+
+function nodeToString(node) {
+  if (TestUtils.isElement(node)) {
+    return '<' + (getComponentName(node.type) || 'Unknown') + ' />';
+  }
+  return String(node);
 }
 
 function normaliseSpaces(str) {
