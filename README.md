@@ -30,7 +30,7 @@ Testing helpers for use with React's shallowRender test utils.
   - [tree](#tree)
     - [tree.type](#treetype)
     - [tree.props](#treeprops)
-  - [tree.reRender(props [, context])](#treererenderprops--context)
+    - [tree.reRender(props [, context])](#treererenderprops--context)
     - [tree.text()](#treetext)
     - [tree.toString()](#treetostring)
     - [tree.getRenderOutput()](#treegetrenderoutput)
@@ -43,8 +43,6 @@ Testing helpers for use with React's shallowRender test utils.
   - [.exact(props)](#exactprops)
   - [.any](#any)
   - [.hasClass(node, className)](#hasclassnode-classname)
-- [Troubleshooting](#troubleshooting)
-  - [Errors when bundling](#errors-when-bundling)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -250,7 +248,7 @@ Access the props of the rendered root element.
 
 Returns `object`
 
-### tree.reRender(props [, context])
+#### tree.reRender(props [, context])
 
 Re-render the element with new props into the same tree as the previous render. Useful for testing how a component changes over time in response to new props from its parent.
 
