@@ -1,14 +1,14 @@
 language: node_js
 sudo: false
 node_js:
-  - "0.12"
   - "4"
   - "5"
+  - "6"
 script:
   - "npm run lint"
   - "npm run coverage"
 after_script: "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
 env:
   - REACT=0.14
-  - REACT=15.0
+  - REACT=15
 before_script: "sh install-relevant-react.sh"
