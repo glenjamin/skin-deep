@@ -1,4 +1,5 @@
 var subset = require('is-subset');
+var escapeStringRegexp = require('escape-string-regexp');
 
 var React = require('react');
 
@@ -35,6 +36,11 @@ function shallowRender(element, context) {
     shallowRenderer._instance._instance
     /* eslint-enable no-underscore-dangle */
   );
+}
+
+exports.hasClass = hasClass;
+function hasClass(node, cls) {
+  return Boolean(findNodeByClass(cls)(node));
 }
 
 function SkinDeep(getCurrentNode, renderer, instance) {
@@ -141,7 +147,7 @@ function findNodeByType(type) {
 }
 
 function findNodeByClass(cls) {
-  var regex = new RegExp('(?:^|\\s)' + cls + '(?:\\s|$)');
+  var regex = new RegExp('(?:^|\\s)' + escapeStringRegexp(cls) + '(?:\\s|$)');
 
   return function(n) {
     return n.props && String(n.props.className).match(regex);

@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/glenjamin/skin-deep",
   "dependencies": {
+    "escape-string-regexp": "^1.0.5",
     "is-subset": "^0.1.1",
     "react-element-to-string": "^1.0.2"
   },

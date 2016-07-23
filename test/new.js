@@ -24,7 +24,7 @@ var $ = React.createElement;
 describe("skin-deep", function() {
 
   beforeEach(hardFailConsole);
-  beforeEach(resetConsole);
+  afterEach(resetConsole);
 
   describe('rendering', function() {
     var Component = React.createClass({
@@ -284,6 +284,42 @@ describe("skin-deep", function() {
       var tree = sd.shallowRender($(Component));
       expect(String(tree))
         .to.eql('<h1 title="blah">\n  <Child x="y" />\n</h1>');
+    });
+  });
+
+  describe("hasClass", function() {
+    it("should match whole class", function() {
+      expect(sd.hasClass($('div', { className: "abc" }), "abc"))
+        .to.eql(true);
+    });
+    it("should identify wrong whole class", function() {
+      expect(sd.hasClass($('div', { className: "abc" }), "def"))
+        .to.eql(false);
+    });
+    it("should match classes with dashes", function() {
+      expect(sd.hasClass($('div', { className: "abc-123" }), "abc-123"))
+        .to.eql(true);
+    });
+    it("should identify wrong class with dashes", function() {
+      expect(sd.hasClass($('div', { className: "abc-23" }), "abc-234"))
+        .to.eql(false);
+    });
+    it("should match one of multiple classes", function() {
+      var node = $('div', { className: "space-after abc-123 space-before" });
+      expect(sd.hasClass(node, "space-before")).to.eql(true);
+      expect(sd.hasClass(node, "abc-123")).to.eql(true);
+      expect(sd.hasClass(node, "space-after")).to.eql(true);
+    });
+    it("should match wrong in multiple classes", function() {
+      var node = $('div', { className: "space-after abc-123 space-before" });
+      expect(sd.hasClass(node, "space")).to.eql(false);
+      expect(sd.hasClass(node, "abc")).to.eql(false);
+      expect(sd.hasClass(node, "after")).to.eql(false);
+      expect(sd.hasClass(node, "before")).to.eql(false);
+    });
+    it("should match classes with non-regex-safe characters", function() {
+      expect(sd.hasClass($('div', { className: "???" }), "???"))
+        .to.eql(true);
     });
   });
 
