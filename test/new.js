@@ -133,7 +133,7 @@ describe("skin-deep", function() {
   describe('.props', function() {
     var Component = React.createClass({
       render: function() {
-        return $('h1', { blah: 1234, and: this.props.woo }, "Hello");
+        return $('h1', { tabIndex: 1234, title: this.props.woo }, "Hello");
       }
     });
     context('on primitive ReactElement', function() {
@@ -150,13 +150,13 @@ describe("skin-deep", function() {
       it('should access props', function() {
         var tree = sd.shallowRender($(Component, { woo: 'hoo' }));
         expect(tree.props).to.eql({
-          blah: 1234, and: 'hoo', children: "Hello"
+          tabIndex: 1234, title: 'hoo', children: "Hello"
         });
       });
       it('should access more props', function() {
         var tree = sd.shallowRender($(Component, { woo: 'girl' }));
         expect(tree.props).to.eql({
-          blah: 1234, and: 'girl', children: "Hello"
+          tabIndex: 1234, title: 'girl', children: "Hello"
         });
       });
     });
