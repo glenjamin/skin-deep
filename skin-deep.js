@@ -68,13 +68,12 @@ function SkinDeep(getCurrentNode, renderer, instance) {
     },
     dive: function(paths, context) {
       var tree = api;
-      while (paths.length) {
-        var path = paths.shift();
+      paths.forEach(function(path) {
         var rawTree = tree.subTree(path);
         if (!rawTree) throw new Error(path + ' not found in tree');
         var node = rawTree.getRenderOutput();
         tree = shallowRender(node, context);
-      }
+      });
       return tree;
     },
     text: function() {
