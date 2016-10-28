@@ -1124,5 +1124,13 @@ describe("skin-deep", function() {
         return greatTree.dive(['Granny', 'Mum', 'h4'], { name: 'Jane' });
       }).to.throw('h4 not found in tree');
     });
+    it('should not alter the input path variable', function() {
+      var path = ['Granny', 'Mum'];
+      var result = greatTree.dive(path, { name: 'Jane' });
+      expect(result.getRenderOutput().props.contextName).to.eql('Jane');
+
+      var result2 = greatTree.dive(path, { name: 'Jane' });
+      expect(result2.getRenderOutput().props.contextName).to.eql('Jane');
+    });
   });
 });
