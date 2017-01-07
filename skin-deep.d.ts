@@ -7,9 +7,9 @@ export interface Tree<P, C> {
   type: ComponentClass<P> | string;
   props: P;
   reRender(props: P, context?: C): void;
-  getMountedInstance(): Object;
-  subTree(query: Selector, predicate?: Matcher): Tree<any, any>;
-  everySubTree(query: Selector, predicate?: Matcher): Tree<any, any>[];
+  getMountedInstance(): any;
+  subTree(query: Selector, predicate?: Matcher): Tree<any, C>;
+  everySubTree(query: Selector, predicate?: Matcher): Tree<any, C>[];
   dive(paths: Selector[]): Tree<any, {}>;
   dive<C>(paths: Selector[], context: C): Tree<any, C>;
   text(): string;
