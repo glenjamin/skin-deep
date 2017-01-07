@@ -1,6 +1,6 @@
 import { ReactElement, ComponentClass } from 'react';
 
-export type Selector = any;
+export type Selector = string | ComponentClass<{}>;
 export type Matcher = any;
 
 export interface Tree<P, C> {
