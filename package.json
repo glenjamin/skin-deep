@@ -3,6 +3,7 @@
   "version": "1.0.0-alpha1",
   "description": "Testing helpers for use with React's shallowRender test utils.",
   "main": "skin-deep.js",
+  "typings": "skin-deep.d.ts",
   "scripts": {
     "test": "mocha",
     "lint": "eslint . --max-warnings 0",
@@ -35,10 +36,12 @@
     "react-element-to-string": "^1.0.2"
   },
   "peerDependencies": {
+    "@types/react": ">=0.14.0",
     "react": ">=0.14.0"
   },
   "devDependencies": {
     "@glenjamin/eslint-config": "^2.1.0",
+    "@types/react": "^0.14.57",
     "chai": "^3.4.0",
     "coveralls": "^2.11.2",
     "eslint": "2.8.0",
