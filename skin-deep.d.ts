@@ -1,17 +1,17 @@
 import { ReactElement, ComponentClass } from 'react';
 
 export type Selector = string | ComponentClass<{}>;
-export type Matcher = { [prop: string]: any } | ((node: JSX.Element) => boolean);
+export type Matcher = {} | ((node: JSX.Element) => boolean);
 
 export interface Tree<P, C> {
   type: ComponentClass<P> | string;
   props: P;
   reRender(props: P, context?: C): void;
-  getMountedInstance(): any;
-  subTree(query: Selector, predicate?: Matcher): Tree<any, C>;
-  everySubTree(query: Selector, predicate?: Matcher): Tree<any, C>[];
-  dive(paths: Selector[]): Tree<any, {}>;
-  dive<C>(paths: Selector[], context: C): Tree<any, C>;
+  getMountedInstance(): {};
+  subTree(query: Selector, predicate?: Matcher): Tree<{}, C>;
+  everySubTree(query: Selector, predicate?: Matcher): Tree<{}, C>[];
+  dive(paths: Selector[]): Tree<{}, {}>;
+  dive<C>(paths: Selector[], context: C): Tree<{}, C>;
   text(): string;
   getRenderOutput(): ReactElement<P>;
   toString(): string;
