@@ -1,7 +1,7 @@
 import { ReactElement, ComponentClass } from 'react';
 
 export type Selector = string | ComponentClass<{}>;
-export type Matcher = any;
+export type Matcher = { [prop: string]: any } | ((node: JSX.Element) => boolean);
 
 export interface Tree<P, C> {
   type: ComponentClass<P> | string;
