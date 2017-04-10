@@ -8,11 +8,8 @@
     "lint": "eslint . --max-warnings 0",
     "coverage": "istanbul cover _mocha --",
     "doc": "doctoc README.md",
-    "test": "npm run react:14 && mocha && npm run react:15 && mocha && npm run react:155 && mocha",
-    "react:clean": "rimraf node_modules/react node_modules/react-dom node_modules/react-addons-test-utils react-test-renderer react-addons-create-fragment @types/react create-react-class prop-types",
-    "react:14": "rimraf node_modules/.bin/npm && npm run react:clean && npm i react@0.14 react-dom@0.14 react-addons-test-utils@0.14 react-addons-create-fragment@0.14 @types/react@0.14 && npm install",
-    "react:15": "rimraf node_modules/.bin/npm && npm run react:clean && npm i react@15.4 react-dom@15.4 react-addons-test-utils@15.4 react-addons-create-fragment@15.4 @types/react@15 && npm install",
-    "react:155": "rimraf node_modules/.bin/npm && npm run react:clean && npm i react@15.5 react-dom@15.5 react-test-renderer@15.5 react-addons-create-fragment@15.5 @types/react@15 create-react-class@15.5 prop-types@15.5 && npm install"
+    "test": "mocha",
+    "test:all": "REACT=0.14 sh ./install-relevant-react.sh && npm run test && REACT=15.4 sh ./install-relevant-react.sh && npm run test && REACT=15.5 sh ./install-relevant-react.sh && npm run test"
   },
   "repository": {
     "type": "git",
@@ -41,11 +38,18 @@
   },
   "devDependencies": {
     "@glenjamin/eslint-config": "^2.1.0",
+    "@types/react": "^15.0.21",
     "chai": "^3.4.0",
     "coveralls": "^2.11.2",
+    "create-react-class": "^15.5.2",
     "eslint": "2.8.0",
     "istanbul": "^0.4.0",
     "mocha": "^2.2.5",
-    "rimraf": "^2.6.1"
+    "prop-types": "^15.5.6",
+    "react": "^15.5.3",
+    "react-addons-create-fragment": "^15.5.3",
+    "react-addons-test-utils": "^15.5.1",
+    "react-dom": "^15.5.3",
+    "react-test-renderer": "^15.5.4"
   }
 }
