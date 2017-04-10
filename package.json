@@ -9,7 +9,7 @@
     "coverage": "istanbul cover _mocha --",
     "doc": "doctoc README.md",
     "test": "mocha",
-    "test:all": "REACT=0.14 sh ./install-relevant-react.sh && npm run test && REACT=15.4 sh ./install-relevant-react.sh && npm run test && REACT=15.5 sh ./install-relevant-react.sh && npm run test"
+    "test:all": "for i in $(grep 'REACT=' .travis.yml |sed 's/.*=//'); do REACT=$i sh ./install-relevant-react.sh && npm run test; done"
   },
   "repository": {
     "type": "git",
