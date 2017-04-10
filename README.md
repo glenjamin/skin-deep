@@ -52,7 +52,17 @@ Testing helpers for use with React's shallowRender test utils.
 npm install skin-deep
 ```
 
-This lib should work on any version of React since 0.14. To allow for greater flexibility by users, no `peerDependencies` are included in the `package.json`. You will need to be have `react` and `react-addons-test-utils` in your project's dependencies for it to work.
+This lib should work on any version of React since 0.14. To allow for greater flexibility by users, no `peerDependencies` are included in the `package.json`. Your dependencies need to be as follows:
+
+For React < 15.5:
+ * `react`
+ * `react-addons-test-utils`
+
+
+For React >= 15.5:
+ * `react`
+ * `react-dom`
+ * `react-test-renderer`
 
 ## Quick Start
 

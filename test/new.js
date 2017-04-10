@@ -2,6 +2,9 @@ var chai = require('chai');
 var expect = chai.expect;
 
 var React = require('react');
+var ReactCompat = require('./react-compat');
+var PropTypes = ReactCompat.PropTypes;
+var createClass = ReactCompat.createClass;
 
 /* eslint-disable no-console */
 var consoleError = console.error;
@@ -27,7 +30,7 @@ describe("skin-deep", function() {
   afterEach(resetConsole);
 
   describe('rendering', function() {
-    var Component = React.createClass({
+    var Component = createClass({
       render: function() {
         return $('h1', { title: "blah" }, "Heading!");
       }
@@ -86,8 +89,8 @@ describe("skin-deep", function() {
 
     context('with context', function() {
 
-      var ContextComponent = React.createClass({
-        contextTypes: { title: React.PropTypes.string },
+      var ContextComponent = createClass({
+        contextTypes: { title: PropTypes.string },
         render: function() {
           return $('h1', { title: "blah" }, this.context.title);
         }
@@ -111,7 +114,7 @@ describe("skin-deep", function() {
 
 
   describe('.type', function() {
-    var Component = React.createClass({
+    var Component = createClass({
       render: function() {
         return $('h1', {}, "Hello");
       }
@@ -131,7 +134,7 @@ describe("skin-deep", function() {
   });
 
   describe('.props', function() {
-    var Component = React.createClass({
+    var Component = createClass({
       render: function() {
         return $('h1', { tabIndex: 1234, title: this.props.woo }, "Hello");
       }
@@ -164,7 +167,7 @@ describe("skin-deep", function() {
 
   describe('reRender()', function() {
     var tree;
-    var Component = React.createClass({
+    var Component = createClass({
       render: function() {
         return $(this.props.tag || 'h1', {}, this.props.thing);
       }
@@ -197,8 +200,8 @@ describe("skin-deep", function() {
       });
     });
     context('with context', function() {
-      var ContextComponent = React.createClass({
-        contextTypes: { beep: React.PropTypes.bool },
+      var ContextComponent = createClass({
+        contextTypes: { beep: PropTypes.bool },
         render: function() {
           return $('h1', {}, this.props.thing, this.context.beep);
         }
@@ -223,7 +226,7 @@ describe("skin-deep", function() {
   });
 
   describe('text()', function() {
-    var Widget = React.createClass({
+    var Widget = createClass({
       displayName: 'Widget',
       render: function() {
         return $('hr', {});
@@ -265,13 +268,13 @@ describe("skin-deep", function() {
   });
 
   describe("toString", function() {
-    var Child = React.createClass({
+    var Child = createClass({
       displayName: 'Child',
       render: function() {
         return $('p', {}, this.props.children);
       }
     });
-    var Component = React.createClass({
+    var Component = createClass({
       render: function() {
         return $('h1', { title: "blah" }, $(Child, { x: "y" }));
       }

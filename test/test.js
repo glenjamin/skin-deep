@@ -2,6 +2,10 @@ var chai = require('chai');
 var expect = chai.expect;
 
 var React = require('react');
+var ReactCompat = require('./react-compat');
+
+var PropTypes = ReactCompat.PropTypes;
+var createClass = ReactCompat.createClass;
 
 var createFragment = require('react-addons-create-fragment');
 
@@ -22,7 +26,7 @@ describe("skin-deep", function() {
     });
 
     it("should render a React Component", function() {
-      var Component = React.createClass({
+      var Component = createClass({
         render: function() {
           return $('h1', { title: "blah" }, "Heading!");
         }
@@ -37,7 +41,7 @@ describe("skin-deep", function() {
 
   describe.skip("reRender", function() {
     it("should reRender a React Component without context", function() {
-      var Component = React.createClass({
+      var Component = createClass({
         render: function() {
           return $('h1', {}, this.props.thing);
         }
@@ -54,8 +58,8 @@ describe("skin-deep", function() {
     });
 
     it("should reRender a React Component with context", function() {
-      var Component = React.createClass({
-        contextTypes: { checkMe: React.PropTypes.string },
+      var Component = createClass({
+        contextTypes: { checkMe: PropTypes.string },
         render: function() {
           return $('h1', {}, this.props.thing, this.context.checkMe);
         }
@@ -81,7 +85,7 @@ describe("skin-deep", function() {
   describe("getMountedInstance", function() {
 
     it("should provide the React Component instance", function() {
-      var Component = React.createClass({
+      var Component = createClass({
         render: function() {
           return $('h1', { title: "blah" }, "Heading!");
         },
@@ -104,12 +108,12 @@ describe("skin-deep", function() {
   });
 
   describe.skip("findNode", function() {
-    var Widget = React.createClass({
+    var Widget = createClass({
       displayName: 'Widget',
       render: function() { return 'widget'; }
     });
 
-    var ReduxWidget = React.createClass({
+    var ReduxWidget = createClass({
       displayName: 'Connect(Widget)',
       render: function() { return 'redux-widget'; }
     });
@@ -243,7 +247,7 @@ describe("skin-deep", function() {
 
   describe.skip("fillField", function() {
     var tree;
-    var Component = React.createClass({
+    var Component = createClass({
       getInitialState: function() {
         return { "username": "" };
       },
@@ -312,7 +316,7 @@ describe("skin-deep", function() {
   });
 
   describe("text", function() {
-    var Widget = React.createClass({
+    var Widget = createClass({
       displayName: 'Widget',
       render: function() { return 'Should not see'; }
     });
@@ -336,11 +340,11 @@ describe("skin-deep", function() {
   });
 
   describe("subTree", function() {
-    var Widget = React.createClass({
+    var Widget = createClass({
       displayName: 'Widget',
       render: function() { return null; }
     });
-    var ReduxWidget = React.createClass({
+    var ReduxWidget = createClass({
       displayName: 'Connect(Widget)',
       render: function() { return 'redux-widget'; }
     });
@@ -470,7 +474,7 @@ describe("skin-deep", function() {
   });
 
   describe("subTree", function() {
-    var Widget = React.createClass({
+    var Widget = createClass({
       displayName: 'Widget',
       render: function() { return null; }
     });
@@ -817,7 +821,7 @@ describe("skin-deep", function() {
   });
 
   describe.skip("findComponent", function() {
-    var Widget = React.createClass({
+    var Widget = createClass({
       displayName: 'Widget',
       render: function() { return null; }
     });
@@ -911,7 +915,7 @@ describe("skin-deep", function() {
   });
 
   describe.skip("findComponentLike", function() {
-    var Widget = React.createClass({
+    var Widget = createClass({
       displayName: 'Widget',
       render: function() { return null; }
     });
@@ -1004,7 +1008,7 @@ describe("skin-deep", function() {
   });
 
   describe("React.Children & Fragments", function() {
-    var WithKids = React.createClass({
+    var WithKids = createClass({
       displayName: 'WithKids',
       render: function() {
         return $('ul', {},
@@ -1060,15 +1064,15 @@ describe("skin-deep", function() {
     });
   });
   describe('dive', function() {
-    var Baby = React.createClass({
+    var Baby = createClass({
       displayName: 'Baby',
       render: function() {
         return $('div', { id: this.props.goats });
       }
     });
-    var Mum = React.createClass({
+    var Mum = createClass({
       displayName: 'Mum',
-      contextTypes: { name: React.PropTypes.string.isRequired },
+      contextTypes: { name: PropTypes.string.isRequired },
       render: function() {
         return $('div', { contextName: this.context.name },
           $(Baby, { goats: this.props.sheep }),
@@ -1076,13 +1080,13 @@ describe("skin-deep", function() {
         );
       }
     });
-    var Granny = React.createClass({
+    var Granny = createClass({
       displayName: 'Granny',
       render: function() {
         return $(Mum, { sheep: this.props.onions }, $('h1', {}));
       }
     });
-    var GreatGranny = React.createClass({
+    var GreatGranny = createClass({
       displayName: 'GreatGranny',
       render: function() {
         return $(Granny, { onions: this.props.cheese });
