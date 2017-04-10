@@ -5,10 +5,11 @@
   "main": "skin-deep.js",
   "typings": "skin-deep.d.ts",
   "scripts": {
-    "test": "mocha",
     "lint": "eslint . --max-warnings 0",
     "coverage": "istanbul cover _mocha --",
-    "doc": "doctoc README.md"
+    "doc": "doctoc README.md",
+    "test": "mocha",
+    "test:all": "for i in $(grep 'REACT=' .travis.yml |sed 's/.*=//'); do REACT=$i sh ./install-relevant-react.sh && npm run test; done"
   },
   "repository": {
     "type": "git",
@@ -37,14 +38,18 @@
   },
   "devDependencies": {
     "@glenjamin/eslint-config": "^2.1.0",
-    "@types/react": "^0.14.57",
+    "@types/react": "^15.0.21",
     "chai": "^3.4.0",
     "coveralls": "^2.11.2",
+    "create-react-class": "^15.5.2",
     "eslint": "2.8.0",
     "istanbul": "^0.4.0",
     "mocha": "^2.2.5",
-    "react": "^0.14.0",
-    "react-addons-create-fragment": "^0.14.0",
-    "react-addons-test-utils": "^0.14.0"
+    "prop-types": "^15.5.6",
+    "react": "^15.5.3",
+    "react-addons-create-fragment": "^15.5.3",
+    "react-addons-test-utils": "^15.5.1",
+    "react-dom": "^15.5.3",
+    "react-test-renderer": "^15.5.4"
   }
 }

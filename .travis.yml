@@ -10,5 +10,6 @@ script:
 after_script: "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
 env:
   - REACT=0.14
-  - REACT=15
+  - REACT=15.4
+  - REACT=15.5
 before_script: "sh install-relevant-react.sh"

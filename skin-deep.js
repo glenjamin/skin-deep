@@ -1,19 +1,23 @@
 var subset = require('is-subset');
+
 var escapeStringRegexp = require('escape-string-regexp');
 
 var React = require('react');
 
 var ReactElementToString = require('react-element-to-string');
 
-var TestUtils = require('react-addons-test-utils');
-
 var traversal = require('./lib/traversal');
+
+var ReactCompat = require('./lib/react-compat');
+
+var TestUtils = ReactCompat.TestUtils;
+var createShallowRenderer = ReactCompat.createShallowRenderer;
 
 exports.shallowRender = shallowRender;
 function shallowRender(element, context) {
   context = context || {};
 
-  var shallowRenderer = TestUtils.createRenderer();
+  var shallowRenderer = createShallowRenderer();
   shallowRenderer.context = context;
 
   shallowRenderer.originalType = element.type;
