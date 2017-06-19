@@ -12,7 +12,7 @@ npm install react@$REACT \
     react-addons-create-fragment@$REACT \
     @types/react
 
-if (( $(echo "$REACT >= 15.5" | bc -l) )); then
+if node_modules/.bin/semver -r '>= 15.5' "$REACT.0"; then
     npm install create-react-class@$REACT \
         prop-types@15 \
         react-test-renderer@15
