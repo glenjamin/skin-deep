@@ -8,7 +8,6 @@
     "lint": "eslint . --max-warnings 0",
     "coverage": "istanbul cover _mocha --",
     "doc": "doctoc README.md",
-    "postinstall": "sh ./install-relevant-react.sh",
     "test": "mocha",
     "test:all": "for i in $(grep 'REACT=' .travis.yml |sed 's/.*=//'); do REACT=$i sh ./install-relevant-react.sh && npm run test; done"
   },
