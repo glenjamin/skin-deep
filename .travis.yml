@@ -12,4 +12,5 @@ env:
   - REACT=15.4
   - REACT=15.5
   - REACT=15.6
+  - REACT=16.0
 before_script: "sh install-relevant-react.sh"

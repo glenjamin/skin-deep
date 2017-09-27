@@ -8,6 +8,8 @@ var ReactElementToString = require('react-element-to-string');
 
 var traversal = require('./lib/traversal');
 
+var Versions = require('./lib/versions');
+
 var ReactCompat = require('./lib/react-compat');
 
 var TestUtils = ReactCompat.TestUtils;
@@ -37,7 +39,9 @@ function shallowRender(element, context) {
     },
     shallowRenderer,
     /* eslint-disable no-underscore-dangle */
-    shallowRenderer._instance._instance
+    Versions.ReactBefore16
+      ? shallowRenderer._instance._instance
+      : shallowRenderer._instance
     /* eslint-enable no-underscore-dangle */
   );
 }
